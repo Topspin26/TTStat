@@ -84,7 +84,7 @@ def main():
 
     driver = initDriver(url)
 
-    curDate = '2016-05-18'
+    curDate = '2016-05-24'
     
     lastUrl = ''
     while (1):

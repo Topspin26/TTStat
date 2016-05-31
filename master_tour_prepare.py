@@ -147,8 +147,8 @@ def getPlayerId(player, men2_players, women2_players):
 
 def main():
 
-    (men_players, men2_players) = read_players('data/master_tour/master_tour_players_men.txt')
-    (women_players, women2_players) = read_players('data/master_tour/master_tour_players_women.txt')
+    (men_players, men2_players) = read_players('prepared_data/master_tour/master_tour_players_men.txt')
+    (women_players, women2_players) = read_players('prepared_data/master_tour/master_tour_players_women.txt')
 #    for e in men2_players.items():
 #        print(e)
 #    for e in women2_players.items():
@@ -158,7 +158,7 @@ def main():
     for e in sorted(list(wrongLines)):
         print(e.strip())
 
-    with open('data/master_tour/all_results.txt', 'w', encoding='utf-8') as fout:
+    with open('prepared_data/master_tour/all_results.txt', 'w', encoding='utf-8') as fout:
         fout.write('date\ttime\tisPair\tid1\tid2\t')
         fout.write('win1\twin2\tset1\tset2\tpoints1\tpoints2\tsetsScore\tpointsScore\n')
         for f in walk('data/master_tour/results'):
