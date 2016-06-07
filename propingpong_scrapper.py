@@ -133,19 +133,6 @@ def main():
         driver.quit()        
 
     
-    '''
-    trs = table[0].find_elements_by_xpath('//tr')
-    k = 0
-    for tr in trs:
-        k += 1
-        s = tr.get_attribute('outerHTML')
-        href = tr.find_element_by_xpath('//*//a')
-        #print(s)
-        print(href.get_attribute('outerHTML'))
-        if k == 2:
-            break
-    '''
-    return
 
 if __name__ == "__main__":
     main()

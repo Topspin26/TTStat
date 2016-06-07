@@ -22,7 +22,6 @@ def scrappTournament(curDate, url):
                 lines.append(tokens[4])
     except:
         pass
-
 #    if len(lines) != 0:
 #        return 2
     
@@ -77,14 +76,15 @@ def scrappTournament(curDate, url):
                 
 def main():
 
-#    fl = scrappTournament('2013-01-01', 'http://master-tour.pro/tournaments/2013-01-01.html')
+#    fl = scrappTournament('2016-02-27', 'http://master-tour.pro/tournaments/2016-02-27.html')
+#    print(fl)
 #    return
 
     url = 'http://master-tour.pro/archive-new.html'
 
     driver = initDriver(url)
 
-    curDate = '2016-05-24'
+    curDate = '2016-06-05'
     
     lastUrl = ''
     while (1):
