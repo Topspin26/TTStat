@@ -5,6 +5,16 @@ import random
 import re
 
 
+def read_corrections(filename):
+    corrections = dict()
+    with open(filename, 'r', encoding = 'utf-8') as fin:
+        lastLine = None
+        for i, line in enumerate(fin):
+            if i % 2 == 1:
+                corrections[lastLine] = line
+            lastLine = line
+    return corrections
+
 def read_players(filename):
     players = dict()
     players2 = dict()
@@ -24,6 +34,15 @@ def read_players(filename):
                         players2[short_player].append(id)
                         players2[short_player] = list(set(players2[short_player]))
     return (players, players2) 
+
+def getPlayerId(player, men2_players, women2_players):
+    res = '0'
+    if player in men2_players:
+        res = men2_players[player][0]
+    if player in women2_players:
+        res = women2_players[player][0]
+    return res
+
 
 def checkSetScore(score):
     tt = score.split(':')
@@ -54,7 +73,7 @@ def getPoints(pointsScore):
             pass
     return res
 
-def checkCorrectness(men_players, men2_players, women_players, women2_players, wrongLines):
+def checkCorrectness(men_players, men2_players, women_players, women2_players, corrections, wrongLines):
     new_players_dict = dict()
     pairs_players = set()
     for f in walk('data/master_tour/results'):
@@ -62,6 +81,8 @@ def checkCorrectness(men_players, men2_players, women_players, women2_players, w
 #            print(ff)
             with open('data/master_tour/results/' + ff, 'r', encoding='utf-8') as fin:
                 for line in fin:
+                    if line in corrections:
+                        line = corrections[line]
                     tokens = line.split('\t')
                     tokens = [e.strip() for e in tokens]
                     if tokens[5] == '':
@@ -70,6 +91,7 @@ def checkCorrectness(men_players, men2_players, women_players, women2_players, w
                         continue
                     for i in range(2,4):
                         t = tokens[i]
+                        t = t.replace('ё', 'е')
                         if t.find('(') != -1:
                             wrongLines.add(line)
                             if t.find('дисквалификация') == -1:
@@ -137,14 +159,6 @@ def checkCorrectness(men_players, men2_players, women_players, women2_players, w
         print(e)
         
 
-def getPlayerId(player, men2_players, women2_players):
-    res = '0'
-    if player in men2_players:
-        res = men2_players[player][0]
-    if player in women2_players:
-        res = women2_players[player][0]
-    return res
-
 def main():
 
     (men_players, men2_players) = read_players('prepared_data/master_tour/master_tour_players_men.txt')
@@ -153,8 +167,11 @@ def main():
 #        print(e)
 #    for e in women2_players.items():
 #        print(e)
+    
+    corrections = read_corrections('data/master_tour/corrections.txt')
+
     wrongLines = set()
-    checkCorrectness(men_players, men2_players, women_players, women2_players, wrongLines)
+    checkCorrectness(men_players, men2_players, women_players, women2_players, corrections, wrongLines)
     for e in sorted(list(wrongLines)):
         print(e.strip())
 

@@ -5,12 +5,13 @@ import time
 import datetime as datetime
 import random
 import re
+from os import walk
 
 
 def initDriver(url):
-    driver = webdriver.Chrome('chromedriver_win32/chromedriver', port = 5938)
+    driver = webdriver.Chrome('chromedriver_win32/chromedriver')#, port = 5938)
     driver.get(url)
-    time.sleep(random.random()) # Let the user actually see something!
+    time.sleep(1 + random.random()) # Let the user actually see something!
     return driver
 
 def scrappTournament(curDate, url):
@@ -54,9 +55,11 @@ def scrappTournament(curDate, url):
                 lines1.append(dt + '\t' + tt + '\t' + p1 + '\t' + p2 + '\t' + sets_score + '\t' + match_score + '\n')
                 lines2.append(sets_score)
                 print(dt + ' ' + tt + '\t' + p1 + '\t' + p2 + '\t' + sets_score + '\t' + match_score)
-    except:
-        pass
-    driver.close()
+    except Exception as e:
+        print(e)
+#        pass
+#    driver.close()
+    driver.quit()
     
     fl = 0
     if len(lines) != len(lines2):
@@ -80,11 +83,15 @@ def main():
 #    print(fl)
 #    return
 
-    url = 'http://master-tour.pro/archive-new.html'
+#    url = 'http://master-tour.pro/archive-new.html'
+#    driver = initDriver(url)
 
-    driver = initDriver(url)
-
-    curDate = '2016-06-05'
+    curDate = '2013-03-29'
+    for f in walk('data/master_tour/results'):
+        for ff in f[2]:
+            curDate = max(curDate, ff[:-4])
+    curDate = (datetime.datetime.strptime(curDate, "%Y-%m-%d").date() - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+    print(curDate)
     
     lastUrl = ''
     while (1):
@@ -99,15 +106,17 @@ def main():
 #                lastUrl = tUrl
             fl = scrappTournament(curDate, tUrl)
             print(fl)
-        except:
-            pass
+        except Exception as e:
+            print(e)
+#            pass
+#        break
         if curDate == datetime.datetime.now().strftime("%Y-%m-%d"):
             break
         curDate = (datetime.datetime.strptime(curDate, "%Y-%m-%d").date() + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
 #        print(curDate)
         continue
     
-    driver.quit()        
+#    driver.quit()        
     return
 
 if __name__ == "__main__":

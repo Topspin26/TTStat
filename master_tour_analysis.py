@@ -256,8 +256,8 @@ def main():
 #    foo1()
 #    return
 
-    men_players = read_players('data/master_tour/master_tour_players_men.txt')
-    women_players = read_players('data/master_tour/master_tour_players_women.txt')
+    men_players = read_players('prepared_data/master_tour/master_tour_players_men.txt')
+    women_players = read_players('prepared_data/master_tour/master_tour_players_women.txt')
 #    men_players = women_players
 
 #    for e in men2_players.items():
@@ -278,7 +278,7 @@ def main():
  
     k = 0
     k1 = 0
-    with open('data/master_tour/all_results.txt', 'r', encoding='utf-8') as fin:
+    with open('prepared_data/master_tour/all_results.txt', 'r', encoding='utf-8') as fin:
 #    with open('master_tour/foo.txt', 'r', encoding='utf-8') as fin:
         next(fin)
         for line in fin:
