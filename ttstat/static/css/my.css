@@ -1,0 +1,119 @@
+#header a, h6{
+    margin-left: 20px;
+}
+#main{
+    width: 50%;
+    margin-left: 50px;
+    float: left;
+}
+#main h3{
+    margin-top: 10px;
+}
+
+h2{
+    text-align: center;
+}
+
+#right{
+    width: 40%;
+    margin-top: 30px;
+    margin-left: 20px;
+    margin-right: 20px;
+    float: right;
+}
+.player_clear{
+    margin-left: 10px;
+}
+
+#prognosis_button {
+    text-align: center;
+    margin-top: 10px;
+}
+
+#right1{
+    width: 40%;
+    margin-right: 50px;
+    float: left;
+}
+#right2{
+    width: 40%;
+    margin-left: 50px;
+    float: left;
+}
+
+
+.selected_player{
+    width: 80%;
+//    margin: 50px;
+}
+
+.pagination{
+    padding-top: 3px;
+}
+.pagination > li > a, .pagination > li > span{
+     color:black !Important;
+     padding: 2px 6px;
+}
+
+.pagination > li.active a,
+.pagination > li.active a:hover{
+    background-color: #eee;
+    border-color: #ddd;
+}
+.pagination > li a:hover{
+    background-color: #f7f7e0;
+}
+
+#table_data{
+    width: 100%;
+    cellspacing: 0;
+}
+
+#mySelect {
+    width: auto;
+}
+
+#matches_table tr:hover{
+    background-color: #f7f7e0;
+    cursor: pointer;
+}
+
+table.dataTable{
+    font-size: 12px;
+}
+table.dataTable tr td{
+    padding: 4px;
+}
+table.dataTable thead tr th{
+    padding: 4px;
+    //vertical-align: top;
+}
+
+
+table.dataTable thead tr th.sorting,
+table.dataTable thead tr th.sorting_asc,
+table.dataTable thead tr th.sorting_desc,
+table.dataTable thead tr th.sorting {
+    padding-right: 25px;
+}
+
+table.dataTable thead .sorting::after,
+table.dataTable thead .sorting_asc::after,
+table.dataTable thead .sorting_desc::after,
+table.dataTable thead .sorting_asc_disabled::after,
+table.dataTable thead .sorting_desc_disabled::after{
+    bottom: 4px;
+    right: 4px;
+}
+
+/*
+table.dataTable thead .sorting{
+    background-image: none;
+}
+
+table.dataTable thead .sorting_asc{
+    background-image:url("../images/ic_arrow_upward_black_24dp_1x.png");
+    background-repeat:no-repeat;
+    background-position:center right;
+}
+*/
