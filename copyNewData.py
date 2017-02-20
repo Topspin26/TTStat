@@ -1,7 +1,7 @@
 from os import walk
 
 def main():
-    dirName = '2016-08-17'
+    dirName = '2017-02-06'
     for f in walk('data/bkfon/live/new/' + dirName):
         for ff in f[2]:
             print(ff)
