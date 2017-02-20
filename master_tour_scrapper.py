@@ -90,7 +90,7 @@ def main():
     for f in walk('data/master_tour/results'):
         for ff in f[2]:
             curDate = max(curDate, ff[:-4])
-    curDate = (datetime.datetime.strptime(curDate, "%Y-%m-%d").date() - datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+    curDate = (datetime.datetime.strptime(curDate, "%Y-%m-%d").date() - datetime.timedelta(days=2)).strftime("%Y-%m-%d")
     print(curDate)
     
     lastUrl = ''

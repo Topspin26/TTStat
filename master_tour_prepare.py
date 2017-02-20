@@ -3,37 +3,8 @@ import time
 import datetime as datetime
 import random
 import re
-
-
-def read_corrections(filename):
-    corrections = dict()
-    with open(filename, 'r', encoding = 'utf-8') as fin:
-        lastLine = None
-        for i, line in enumerate(fin):
-            if i % 2 == 1:
-                corrections[lastLine] = line
-            lastLine = line
-    return corrections
-
-def read_players(filename):
-    players = dict()
-    players2 = dict()
-    with open(filename, 'r', encoding = 'utf-8') as fin:
-        for line in fin:
-            tokens = line.split('\t')
-            id = tokens[0].strip()
-            names = tokens[1].strip().split(';')
-            for name in names:
-                players[name] = id
-                tn = name.split(' ')
-#                print(tn)
-                for short_player in [name, tn[1], tn[1] + ' ' + tn[0][0] + '.', tn[1] + ' ' + tn[0][0]]:
-                    if not (short_player in players2):
-                        players2[short_player] = [id]
-                    else:
-                        players2[short_player].append(id)
-                        players2[short_player] = list(set(players2[short_player]))
-    return (players, players2) 
+from common import *
+from Entity import *
 
 def getPlayerId(player, men2_players, women2_players):
     res = '0'
@@ -41,36 +12,6 @@ def getPlayerId(player, men2_players, women2_players):
         res = men2_players[player][0]
     if player in women2_players:
         res = women2_players[player][0]
-    return res
-
-
-def checkSetScore(score):
-    tt = score.split(':')
-    res = True
-    try:
-        set1 = int(tt[0])
-        set2 = int(tt[1])
-        if min(set1, set2) < 0 or max(set1, set2) < 11:
-            res = False
-        if max(set1, set2) == 11:
-            if min(set1, set2) > 9:
-                res = False
-        else:
-            if max(set1, set2) - min(set1, set2) != 2:
-                res = False
-    except:
-        res = False
-    return res
-
-def getPoints(pointsScore):
-    res = [0, 0]
-    for e in pointsScore.split(';'):
-        try:
-            tt = e.split(':')
-            res[0] += int(tt[0])
-            res[1] += int(tt[1])
-        except:
-            pass
     return res
 
 def checkCorrectness(men_players, men2_players, women_players, women2_players, corrections, wrongLines):
@@ -157,58 +98,118 @@ def checkCorrectness(men_players, men2_players, women_players, women2_players, c
     for e in new_players_dict.items():
         print('NEW SINGLE PLAYER')
         print(e)
-        
+
+def getMatches(corrections, wrongLines):
+    pattern = re.compile('|'.join(corrections.keys()))
+    matches = []
+    for f in walk('data/master_tour/results'):
+        for ff in f[2]:
+            with open('data/master_tour/results/' + ff, 'r', encoding='utf-8') as fin:
+                for line in fin:
+                    line = corrections.get(line, line)
+                    line = pattern.sub(lambda x: corrections[x.group()], line)
+                    tokens = line.split('\t')
+                    tokens = [e.strip() for e in tokens]
+                    if tokens[5] == '':
+                        wrongLines.append(line)
+                        continue
+
+                    if tokens[2].find('(') != -1:
+                        wrongLines.append(line)
+                        continue
+                    if tokens[3].find('(') != -1:
+                        wrongLines.append(line)
+                        continue
+                    if not (tokens[5] in ['0:3', '1:3', '2:3', '3:2', '3:1', '3:0']) or len(tokens[4]) == 0:
+                        wrongLines.append(line)
+                        continue
+                    matches.append(Match(tokens[0],
+                                         [[e.strip() for e in tokens[2].replace('ё', 'е').strip().split('-')],
+                                          [e.strip() for e in tokens[3].replace('ё', 'е').strip().split('-')]],
+                                         setsScore=tokens[5].strip(),
+                                         pointsScore=tokens[4].strip(),
+                                         time=tokens[1],
+                                         compName='Мастер-тур, ' + ff[:10]))
+    return matches
 
 def main():
 
-    (men_players, men2_players) = read_players('prepared_data/master_tour/master_tour_players_men.txt')
-    (women_players, women2_players) = read_players('prepared_data/master_tour/master_tour_players_women.txt')
-#    for e in men2_players.items():
-#        print(e)
-#    for e in women2_players.items():
-#        print(e)
-    
-    corrections = read_corrections('data/master_tour/corrections.txt')
+    filenameGlobalPlayersMen = r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_men.txt'
+    (mIdG, mId2G) = readPlayersInv(filenameGlobalPlayersMen)
+    filenameGlobalPlayersWomen = r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_women.txt'
+    (wIdG, wId2G) = readPlayersInv(filenameGlobalPlayersWomen)
 
-    wrongLines = set()
-    checkCorrectness(men_players, men2_players, women_players, women2_players, corrections, wrongLines)
+#    (men_players, men2_players) = readPlayersInv('prepared_data/master_tour/master_tour_players_men.txt')
+#    (women_players, women2_players) = readPlayersInv('prepared_data/master_tour/master_tour_players_women.txt')
+
+    corrections = readCorrections('data/master_tour/corrections.txt')
+
+    wrongLines = list()
+    matches = getMatches(corrections, wrongLines)
+    print(len(matches))
+    for line in wrongLines:
+        print(line, end = ' ')
+    #return
+
+#    checkCorrectness(men_players, men2_players, women_players, women2_players, corrections, wrongLines)
     for e in sorted(list(wrongLines)):
         print(e.strip())
 
     with open('prepared_data/master_tour/all_results.txt', 'w', encoding='utf-8') as fout:
-        fout.write('date\ttime\tisPair\tid1\tid2\t')
-        fout.write('win1\twin2\tset1\tset2\tpoints1\tpoints2\tsetsScore\tpointsScore\n')
+        fout.write('date\ttime\tcompName\tid1\tid2\t')
+        fout.write('setsScore\tpointsScore\tname1\tname2\n')
         for f in walk('data/master_tour/results'):
             for ff in f[2]:
                 with open('data/master_tour/results/' + ff, 'r', encoding='utf-8') as fin:
                     for line in fin:
+                        if line in corrections:
+                            line = corrections[line]                        
                         if line in wrongLines:
                             continue
-                        tokens = line.split('\t')
-                        tokens = [e.strip() for e in tokens]
-                        isPair = '0'
-                        for i in range(2,4):
-                            t = tokens[i]
-                            if t.find('-') != -1:
-                                isPair = '1'
-                                p = t.split('-')
-                                p = getPlayerId(p[0].strip(), men2_players, women2_players) + \
-                                ';' + getPlayerId(p[1].strip(), men2_players, women2_players)
-                            else:
-                                p = getPlayerId(t.strip(), men2_players, women2_players)
-                            tokens[i] = p
-                        tokens1 = list(tokens[:2])
-                        tokens1.append(str(isPair))
-                        tokens1 += tokens[2:4]
-                        sets = tokens[5].split(':')
-                        tokens1.append(str(0 + (int(sets[0]) > int(sets[1]))))
-                        tokens1.append(str(0 + (int(sets[1]) > int(sets[0]))))
-                        tokens1 += sets
-                        points = getPoints(tokens[4])
-                        tokens1 += [str(points[0]), str(points[1])]
-                        tokens1 += [tokens[-1], tokens[-2]]
-                        fout.write('\t'.join(tokens1) + '\n')
-                                
+                        try:
+                            flBad = 0
+                            tokens = line.split('\t')
+                            tokens = [e.strip() for e in tokens]
+                            isPair = '0'
+                            pp = [[], []]
+                            for i in range(2,4):
+                                t = tokens[i]
+                                if t.find('-') != -1:
+                                    isPair = '1'
+                                    p = t.split('-')
+                                    pp[i - 2] = [ee.strip() for ee in p]
+                                    id0 = getPlayerId(p[0].strip(), mId2G, wId2G)
+                                    id1 = getPlayerId(p[1].strip(), mId2G, wId2G)
+                                    if id0 == '0' or id1 == '0':
+                                        flBad = 1 
+                                    p = id0 + ';' + id1
+                                else:
+                                    pp[i - 2].append(t.strip())
+                                    id0 = getPlayerId(t.strip(), mId2G, wId2G)
+                                    p = id0
+                                    if id0 == '0':
+                                        print(t.strip())
+                                        flBad = 1 
+                                tokens[i] = p
+                            if flBad == 1:
+                                continue
+                            tokens1 = list(tokens[:2])
+                            tokens1.append('Мастер Тур ' + ff[:-4])
+                            #tokens1.append(str(isPair))
+                            tokens1 += tokens[2:4]
+                            #sets = tokens[5].split(':')
+                            #tokens1.append(str(0 + (int(sets[0]) > int(sets[1]))))
+                            #tokens1.append(str(0 + (int(sets[1]) > int(sets[0]))))
+                            #tokens1 += sets
+                            #points = getPoints(tokens[4])
+                            #tokens1 += [str(points[0]), str(points[1])]
+                            tokens1 += [tokens[-1], tokens[-2]]
+                            tokens1 += [';'.join(pp[0]), ';'.join(pp[1])]
+
+                            fout.write('\t'.join(tokens1) + '\n')
+                        except Exception as exc:
+                            print(exc)
+                            print(line)
 
 if __name__ == "__main__":
     main()

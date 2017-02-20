@@ -32,8 +32,6 @@ def getPoints(pointsScore):
             pass
     return res
 
-        
-
 def getPlayerId(player, men2_players, women2_players):
     res = '0'
     if player in men2_players:
