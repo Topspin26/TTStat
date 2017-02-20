@@ -8,7 +8,7 @@ def main():
 
     for f in os.listdir(dir):
 #        print(os.path.isfile(os.path.join(dir, f)))
-        if f[:7] == 'segment':
+        if f[:7] == 'segment':# and f >= 'segment29623':
             trSegmentLine = None
             trEventLines = None
             trEventS = None
@@ -42,7 +42,7 @@ def main():
                                 fout.write(trEventLines)
                             eventsDict[lastEventId] = trEventS
                         if cl != 'trSegment':
-                            lastEventId = tr.get('id')
+                            lastEventId = str(tr.get('id'))
                         else:
                             lastEventId = None
                         trEventLines = ''
