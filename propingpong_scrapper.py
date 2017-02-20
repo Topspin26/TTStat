@@ -6,12 +6,13 @@ import datetime as datetime
 import random
 import re
 import os
+from os import walk
 
 
 def initDriver(url):
     driver = webdriver.Chrome('chromedriver_win32/chromedriver', port = 5938)
     driver.get(url)
-#    time.sleep(random.random()) # Let the user actually see something!
+    #time.sleep(2) # Let the user actually see something!
     return driver
 
 '''
@@ -46,52 +47,125 @@ def scrappTournament(curDate, url):
     driver.close()
 '''    
                 
-def updatePlayers(mw, driver):
+def updateRusPlayers(mw, driver):
     playersDict = dict()
-    with open('data/propingpong/propingpong_players_' + mw + '.txt', 'r') as fin:
+    playersDictInv = dict()
+    with open('data/propingpong/propingpong_players_' + mw + '.txt', 'r', encoding='utf-8') as fin:
         for line in fin:
             tokens = line.split('\t')
             tokens = [e.strip() for e in tokens]
-            playersDict[tokens[0]] = tokens[1]
+            if len(tokens[1]) > 0:
+                playersDict[tokens[1]] = tokens[0]
+            playersDictInv[tokens[0]] = tokens[1:]
 
-    table = driver.find_elements_by_xpath('//*//table[@class = "main"]')
+    table = driver.find_elements_by_xpath('//*//table[@class = "main"][@width="98%"]')
 
-#    return playersDict
-    
-    s = table[1].get_attribute('outerHTML')
+    s = table[0].get_attribute('outerHTML')
 #    print(s[:200])
 #    print(len(s))
     indexesPlayers = [[m.start(), m.end(), 0] for m in re.finditer('<a href=\"profile.php(.)*</a>', s)]
     for e in indexesPlayers:
         href = s[e[0]:e[1]]
         tokens = href.split('"')
-        playerId = tokens[1].split('=')[1]
+        playerId = tokens[1].split('=')[1].strip()
         tokens1 = href.split('>')
-        playerName = tokens1[1].split('<')[0]
+        playerName = tokens1[1].split('<')[0].strip()
         if not (playerId in playersDict):
             print((playerId, playerName))
             playersDict[playerId] = playerName  
-            with open('data/propingpong/propingpong_players_' + mw + '.txt', 'a') as fout:
-                fout.write(playerId + '\t' + playerName + '\n')
+
+        if playerName in playersDictInv:
+            if playersDictInv[playerName][0] == '':
+                playersDictInv[playerName][0] = playerId
+            elif playersDictInv[playerName][0] != playerId:
+                print('COLLISION: ' + playerName + '\t' + playersDictInv[playerName][0] + '\t' + playerId)
+        else:
+            playersDictInv[playerName] = [playerId, '']
+
+    with open('data/propingpong/propingpong_players_' + mw + '.txt', 'w', encoding='utf-8') as fout:
+        for k,v in sorted(playersDictInv.items(), key = lambda x: x[1][0] + '_' + x[1][1]):
+            fout.write(k + '\t' + '\t'.join(v) + '\n')
+
     return playersDict
-                
-def getPlayersRankings(mw, playersDict):
+
+
+def updateIttfPlayers(mw, driver):
+    playersDict = dict()
+    playersDictInv = dict()
+    with open('data/propingpong/propingpong_players_' + mw + '.txt', 'r', encoding='utf-8') as fin:
+        for line in fin:
+            tokens = line.split('\t')
+            tokens = [e.strip() for e in tokens]
+            if len(tokens[2]) > 0:
+                playersDict[tokens[2]] = tokens[0]
+            playersDictInv[tokens[0]] = tokens[1:]
+
+    namesList = []
+    for i in range(2):
+        table = driver.find_elements_by_xpath('//*//table[@class = "main"][@width="98%"]')
+        s = table[0].get_attribute('outerHTML')
+        #print(s[:200])
+        #print(len(s))
+        indexesPlayers = [[m.start(), m.end(), 0] for m in re.finditer('<a href=\"profile.php(.)*</a>', s)]
+        for j,e in enumerate(indexesPlayers):
+            href = s[e[0]:e[1]]
+            tokens = href.split('"')
+            playerId = tokens[1].split('=')[1]
+            tokens1 = href.split('>')
+            playerName = tokens1[1].split('<')[0]
+            if i == 0:
+                namesList.append([playerName, ''])
+            else:
+                namesList[j][1] = playerName
+            if not (playerId in playersDict):
+                print((playerId, playerName))
+                playersDict[playerId] = playerName
+            if playerName in playersDictInv:
+                if playersDictInv[playerName][1] == '':
+                    playersDictInv[playerName][1] = playerId
+                elif playersDictInv[playerName][1] != playerId:
+                    print('COLLISION: ' + playerName + '\t' + playersDictInv[playerName][1] + '\t' + playerId)
+            else:
+                playersDictInv[playerName] = ['', playerId]
+        driver.find_element_by_xpath('//*//a[@class = "setenglang"]').click()
+
+    for e in namesList:
+        for i in range(2):
+            if playersDictInv[e[0]][i] == '':
+                if playersDictInv[e[1]][i] != '':
+                    playersDictInv[e[0]][i] = playersDictInv[e[1]][i]
+            else:
+                if playersDictInv[e[1]][i] == '':
+                    playersDictInv[e[1]][i] = playersDictInv[e[0]][i]
+                else:
+                    if playersDictInv[e[1]][i] != playersDictInv[e[0]][i]:
+                        print('COLLISION: ' + e[0] + '\t' + playersDictInv[e[0]][i] + '\t' + e[1] + '\t' + playersDictInv[e[1]][i])
+
+    with open('data/propingpong/propingpong_players_' + mw + '.txt', 'w', encoding='utf-8') as fout:
+        for k,v in sorted(playersDictInv.items(), key = lambda x: x[1][0] + '_' + x[1][1]):
+            if len(k) > 0:
+                fout.write(k + '\t' + '\t'.join(v) + '\n')
+    return playersDict
+
+#def readPlayersRankings(mw, playersDict):
+def readPlayersRankings():
     playersRankings = dict()
     for f in os.listdir('data/propingpong/ranking_rus'):
-        with open('data/propingpong/ranking_rus/' + f, 'r') as fin:
+        with open('data/propingpong/ranking_rus/' + f, 'r', encoding='utf-8') as fin:
             for line in fin:
                 tokens = line.split('\t')
                 tokens = [e.strip() for e in tokens]
                 playersRankings[f[:7] + '\t' + tokens[0]] = line
     return playersRankings
 
-months = dict(zip(['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'], list(range(1,13))))
+months = dict(zip(['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+                  list(range(1,13))))
 
-def updateRankings(mw, driver, playersRankings):
-    table = driver.find_elements_by_xpath('//*//table[@class = "main"]')
+def updateRusRankings(mw, driver, playersRankings):
+    table = driver.find_elements_by_xpath('//*//table[@class = "main"][@width="98%"]')
     
-    s = table[1].get_attribute('outerHTML')
-#    print(s[:200])
+    s = table[0].get_attribute('outerHTML')
+    print(s[:200])
 #    print(len(s))
     indexesPlayers = [[m.start(), m.end(), 0] for m in re.finditer('<a href=\"profile.php(.)*</a>', s)]
     for e in indexesPlayers:
@@ -103,8 +177,13 @@ def updateRankings(mw, driver, playersRankings):
         tokens1 = href.split('>')
         playerName = tokens1[1].split('<')[0]
 
-        driver.get(url)
-        table = driver.find_elements_by_xpath('//*//table[@class = "main"]')
+        try:
+            driver.get(url)
+            table = driver.find_elements_by_xpath('//*//table[@class = "main"]')
+        except:
+            driver.get(url)
+            table = driver.find_elements_by_xpath('//*//table[@class = "main"]')
+
         tr = table[1].find_element_by_xpath('//tr')
 #        for tr in trs:
         tds = tr.find_elements_by_xpath('//td[@class = "main"]') + tr.find_elements_by_xpath('//td[@class = "mainempty"]') 
@@ -117,22 +196,115 @@ def updateRankings(mw, driver, playersRankings):
             print(idate + '\t' + playerId + '\t' + rt + '\t' + rg)
             if not (key in playersRankings):
                 print(playerId + '\t' + rt + '\t' + rg)
-                with open('data/propingpong/ranking_rus/' + idate + '_' + mw + '.txt', 'a') as fout:
+                with open('data/propingpong/ranking_rus/' + idate + '_' + mw + '.txt', 'a', encoding='utf-8') as fout:
                     fout.write(playerId + '\t' + rt + '\t' + rg + '\n')
 #        break
-    
-    
-def main():
 
+def updateRusRanking():
+    playersRankings = readPlayersRankings()
     for mw in ['men', 'women']:
+        #    for mw in ['women']:
         url = 'http://propingpong.ru/rating_rf.php?gender=' + str(int(mw == 'men')) + '&&page=1'
         driver = initDriver(url)
-        playersDict = updatePlayers(mw, driver)
-        playersRankings = getPlayersRankings(mw, playersDict)
-        updateRankings(mw, driver, playersRankings)
-        driver.quit()        
+        playersDict = updateRusPlayers(mw, driver)
+        #continue
+        print('updateRankings')
+        updateRusRankings(mw, driver, playersRankings)
+        driver.quit()
 
-    
+def getIttfRankings(mw, driver, year, month):
+    tds = driver.find_elements_by_xpath('//*//table[@class = "main"][@width="98%"]//tr//td')
+    playerId = None
+    playerRating = None
+    res = dict()
+    ths = driver.find_elements_by_xpath('//*//table[@class = "main"][@width="98%"]//tr//th')
+    numCols = 8
+    indName = 4
+    indR = 7
+    if len(ths) == 7:
+        numCols = 10
+        indName = 5
+        indR = 8
+    for i,td in enumerate(tds[4:]):
+#        print(i, td.get_attribute('innerHTML')[:100].replace('\n', ' '))
+        if i % numCols == indName:
+            try:
+                playerId = td.get_attribute('innerHTML').split('ittfid=')[1].split('">')[0]
+            except:
+                playerId = None
+        if i % numCols == indR:
+            if not (playerId is None):
+                playerRating = int(td.get_attribute('innerHTML'))
+                res[playerId] = playerRating
+#            print((playerId, playerRating))
+    return res
+
+def updateIttfRanking():
+    curDate = datetime.datetime.now().date().strftime("%Y-%m-%d")
+    for mw in ['men', 'women']:
+#    for mw in ['men']:
+        #    for mw in ['women']:
+        for year in range(2001,2018):
+            for month in range(1, 13):
+                if str(year) + '-' + str(month).zfill(2) >= curDate:
+                    break
+                filename = 'data/propingpong/ranking_ittf/' + str(year) + '-' + str(month).zfill(2) + '_' + mw + '.txt'
+                if not os.path.exists(filename):
+                    url = 'http://propingpong.ru/rating_ittf.php?gender=' + str(int(mw == 'men')) + '&&page=1&sortby=undefined&year=' + str(year - 1) + '&month=' + str(month)
+                    driver = initDriver(url)
+                    playersDict = updateIttfPlayers(mw, driver)
+                    r = getIttfRankings(mw, driver, year, month)
+                    with open(filename, 'w', encoding='utf-8') as fout:
+                        lastR = -1
+                        rank = 0
+                        i = 0
+                        for k,v in sorted(r.items(), key = lambda x: -x[1]):
+                            i += 1
+                            if lastR != v:
+                                rank = i
+                                lastR = v
+                            fout.write('\t'.join([k, str(v), str(rank)]) + '\n')
+                    driver.quit()
+                '''
+                else:
+                    r = dict()
+                    with open(filename, 'r', encoding='utf-8') as fin:
+                        for line in fin:
+                            tokens = line.strip().split('\t')
+                            r[tokens[0]] = int(tokens[1])
+
+                    with open(filename, 'w', encoding='utf-8') as fout:
+                        lastR = -1
+                        rank = 0
+                        i = 0
+                        for k,v in sorted(r.items(), key = lambda x: -x[1]):
+                            i += 1
+                            if lastR != v:
+                                rank = i
+                                lastR = v
+                            fout.write('\t'.join([k, str(v), str(rank)]) + '\n')
+                '''
+
+
+def main():
+
+    updateIttfRanking()
+    updateRusRanking()
+
+
+    '''
+    for f in walk('data/propingpong/ranking_rus'):
+        for ff in f[2]:
+            print(ff)
+            lines = []
+            with open('data/propingpong/ranking_rus/' + ff) as fin:
+                for line in fin:
+                    lines.append(line)
+            with open('data/propingpong/ranking_rus/' + ff, 'w', encoding = 'utf-8') as fout:
+                for line in lines:
+                    fout.write(line)
+    '''
+
 
 if __name__ == "__main__":
     main()
