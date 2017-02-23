@@ -40,6 +40,16 @@ def readPlayersInv(filename):
                         players2[short_player] = list(set(players2[short_player]))
     return (players, players2)
 
+def getPlayerId(player, men2_players, women2_players):
+    if (player in men2_players) and not (player in women2_players):
+        return men2_players[player]
+    if not (player in men2_players) and (player in women2_players):
+        return women2_players[player]
+    if not (player in men2_players) and not (player in women2_players):
+        return -1
+    return -2
+
+
 def readCorrections(filename):
     corrections = dict()
     with open(filename, 'r', encoding = 'utf-8') as fin:

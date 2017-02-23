@@ -1,0 +1,23 @@
+data/bkfon/live/*
+data/bkfon/line/*
+data/bkfon/results/*
+data/master_tour/results_2016_05_29/*
+data/master_tour/results_2016_06_21/*
+data/propingpong/*
+data/ittf/results/*
+data/ittf/results_2017_01_23/*
+test/*.txt
+chromedriver_win32/*
+.ipynb_checkpoints/*
+__pycache__/*
+ttstat/__pycache__/*
+operadriver_win32.zip
+chromedriver_win32_old/*
+prepared_data/bkfon/*
+prepared_data/players_men - копия (2).txt
+prepared_data/players_men - копия.txt
+prepared_data/players_women - копия (2).txt
+prepared_data/players_women - копия.txt
+prepared_data/propingpong/ranking_ittf.txt
+prepared_data/propingpong/ranking_rus.txt
+prepared_data/master_tour/master_tour_players_*.txt
