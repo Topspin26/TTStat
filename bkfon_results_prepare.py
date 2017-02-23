@@ -59,8 +59,18 @@ def getMatches(corrections, wrongLines):
                                     time = timeArr[1].strip()
                                 else:
                                     time = time.strip()
+                                dt = timeArr[0].strip()
+                                if len(dt) == 2:
+                                    day = dt.split('.')[0].zfill(2)
+                                    month = dt.split('.')[1].zfill(2)
+                                    year = ff[:4]
+                                    dt = year + '-' + month + '-' + day
+                                else:
+                                    dt = ff[:10]
+#                                if dt != ff[:10]:
+#                                    print(dt + ' ' + ff[:10])
                                 if arr[4] != 'отмена':
-                                    matches.append(Match(ff[:10],
+                                    matches.append(Match(dt,
                                                          [[e.strip() for e in names[0].strip().split('/')],
                                                           [e.strip() for e in names[1].strip().split('/')]],
                                                          setsScore=arr[3],
@@ -158,7 +168,7 @@ def main():
         for e in sorted(empty.keys()):
             fout.write(e + '\t' + '?' + '\n')
 
-    with open(prefix + 'all_results.txt', 'w', encoding='utf-8') as fout:
+    with open(prefix + 'all_results.txt', 'w', encoding='utf-8') as fout, open(prefix + 'players_collisions.txt', 'w', encoding='utf-8') as fout1:
         fout.write('\t'.join(['date', 'time', 'compName', 'id1', 'id2', 'setsScore', 'pointsScore', 'name1', 'name2']) + '\n')
         for match in matches:
             if match.flError == 0:
@@ -175,12 +185,18 @@ def main():
                             else:
                                 if player.find('Желуб') != -1:
                                     print(match.toStr())
+                                if len(mId2G[player]) > 1:
+                                    fout1.write('MANY ' + player + ' ' + str(mId2G[player]) + ' ' + match.toStr() + '\n')
+                                    print('MANY ' + player + ' ' + str(mId2G[player]) + ' ' + match.toStr())
                                 flError = 1
                         elif (player in w):
                             if len(wId2G[player]) == 1:
                                 ids[i].append(wId2G[player][0])
                             else:
                                 flError = 1
+                                if len(wId2G[player]) > 1:
+                                    fout1.write('MANY ' + player + ' ' + str(wId2G[player]) + ' ' + match.toStr() + '\n')
+                                    print('MANY ' + player + ' ' + str(wId2G[player]) + ' ' + match.toStr())
                         else:
                             flError = 1
                 if flError == 0:

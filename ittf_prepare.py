@@ -109,11 +109,11 @@ def main():
         print([f, len(matches)])
         with open(dirname + '/' + f, 'r', encoding='utf-8') as fin:
             for line in fin:
-                tokens = line.split('\t')
+                tokens = line.replace('&nbsp;', '').replace('&amp;', '').split('\t')
                 ids = [[], []]
                 for ii,i in enumerate([1, 3]):
                     if len(tokens[i]) > 0:
-                        arr = tokens[i].replace('&nbsp;', '').split(';')
+                        arr = tokens[i].split(';')
                         for j in range(len(arr)):
                             if j % 2 == 0:
                                 name = ' '.join(arr[j].split(' ')[:-1])
