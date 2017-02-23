@@ -1,0 +1,65 @@
+2015-2016/men/Лига-A/1 тур/tabula-a-muzhchiny-1t-1-gr.tsv	12-15 ноября 2015	Ульяновск
+2015-2016/men/Лига-A/2 тур/tabula-vysshaya-liga-a.-muzhchiny.-2-tur.tsv	10-13 декабря 2015	Коломна
+2015-2016/men/Лига-A/3 тур/tabula-ma-1.-3-tur.tsv	10-13 марта 2016	Коломна
+2015-2016/men/Лига-A/4 тур/tabula-muzhchiny.-vysshaya-a-2016.tsv	27-30 апреля 2016	Санкт-Петербург
+2015-2016/men/Лига-B/1 тур/tabula-b.-m.-1-tur.-2-gr.tsv	12-15 ноября 2015	Видное
+2015-2016/men/Лига-B/1 тур/tabula-b.-m.-tur-1-gr.1-.tsv	12-15 ноября 2015	Пенза
+2015-2016/men/Лига-B/3 тур/tabula-mb-1.-3-tur.tsv	10-13 марта 2016	Нижний Новгород
+2015-2016/men/Лига-B/3 тур/tabula-new-3-tour-muzhchiny.-vysshaya-v.-2-gr.tsv	10-13 марта 2016	Казань
+2015-2016/men/Лига-B/4 тур/tabula-muzhchiny.-vysshaya-v-2016.tsv	27-30 апреля 2016	Пенза
+2015-2016/men/Премьер-лига/1 тур/tabula-1-3muzh-kchr-premer.1-tur-1-moskva.tsv	5-8 ноября 2015	Москва
+2015-2016/men/Премьер-лига/1 тур/tabula-1-tur-2-gruppa-verhnyaya-pyshma.tsv	5-8 ноября 2015	Верхняя Пышма
+2015-2016/men/Премьер-лига/2 тур/tabula-muzh_premer_2tur_itogi.tsv	24-27 декабря 2015	Санкт-Петербург
+2015-2016/men/Премьер-лига/3 тур/tabula-15.05.2016-mpr.3tur.2gr.tsv	12-15 мая 2016	Славянск-на-Кубани
+2015-2016/men/Премьер-лига/3 тур/tabula-16.05-mpr.3tur.1gr-1.tsv	12-15 мая 2016	Славянск-на-Кубани
+2015-2016/men/Премьер-лига/4 тур/tabula-m-kchr-premer.-4-tur.4.tsv	2-5 июня 2016	Верхняя Пышма
+2015-2016/men/Премьер-лига/Переходной турнир/tabula-muzhchiny.-perehodnyi-turnir.tsv	1-3 июля 2016	Владимир
+2015-2016/men/Премьер-лига/Плей-офф/tabula-kch-fntr-plei-off-muzhchiny.tsv	21-26 июня 2016	Сочи
+2015-2016/men/Премьер-лига/Плей-офф (9-12)/tabula-muzh.-kchr-premer.-9-12-mesta.tsv	24-26 июня 2016	Владимир
+2015-2016/men/Суперлига/1 тур/tabula-muzhchiny.-super.-1-tur.-1-gr.tsv	12-15 ноября 2015	Людиново
+2015-2016/men/Суперлига/1 тур/tabula-muzhchiny.-superliga-gr-2.tsv	12-15 ноября 2015	Самара
+2015-2016/men/Суперлига/2 тур/tabula-superliga.-muzhchiny.-2-tur.tsv	10-13 декабря 2015	Оренбург
+2015-2016/men/Суперлига/3 тур/tabula-3-i-tur-muzhchiny.-super.-1-gr.tsv	10-13 марта 2016	Казань
+2015-2016/men/Суперлига/3 тур/tabula-3-i-tur-muzhchiny.-super.-2-gr.tsv	10-13 марта 2016	Казань
+2015-2016/men/Суперлига/4 тур/tabula-4-i-tur-muzhchiny.-superliga-n.tsv	26-29 апреля 2016	пос. Большевик Серпуховского района
+2015-2016/women/Лига-A/1 тур/tabula-liga-a-zh-1-tur-1-gr..tsv	12-15 ноября 2015	Ярославль
+2015-2016/women/Лига-A/1 тур/tabula-liga-a-zhenshchiny-1-i-tur.-2-gr..tsv	12-15 ноября 2015	Ярославль
+2015-2016/women/Лига-A/2 тур/tabula-2015_10_13_zhen_a_2-tur_kazan.tsv	10-13 декабря 2015	Казань
+2015-2016/women/Лига-A/3 тур/tabula-zha-2.-3-tur.tsv	10-13 марта 2016	Ярославль
+2015-2016/women/Лига-A/3 тур/tabula-zhenshchiny.-vysshaya-a.-1-gr-new.tsv	10-13 марта 2016	Нижний Новгород
+2015-2016/women/Лига-A/4 тур/tabula-zhenshchiny.-vysshaya-a.-4-tur.tsv	27-30 апреля 2016	Оренбург
+2015-2016/women/Премьер-лига/1 тур/tabula-2015-11-08-kch-fntr-premer-liga-zhenshchiny-1-gruppa.tsv	5-8 ноября 2015	Таганрог
+2015-2016/women/Премьер-лига/1 тур/tabula-3-2.kch-fntrpremer-ligazhenshchinyitogi.tsv	5-8 ноября 2015	Самара
+2015-2016/women/Премьер-лига/2 тур/tabula-zhen-kchr-premer.-2-tur-itogi.tsv	24-27 декабря 2015	Оренбург
+2015-2016/women/Премьер-лига/3 тур/tabula-15.05-1-zhpr-2.-3-tur.tsv	12-15 мая 2016	Самара
+2015-2016/women/Премьер-лига/3 тур/tabula-15.05.-zhpl-3-tur-1-gr.tsv	12-15 мая 2016	Самара
+2015-2016/women/Премьер-лига/4 тур/tabula-2016-06-05-01-kch-premer-zh-gr-1-2-slavyansk.tsv	2-5 июня 2016	Славянск-на-Кубани
+2015-2016/women/Премьер-лига/Плей-офф/tabula-kch-fntr-plei-off-zhenshchiny.tsv	21-26 июня 2016	Сочи
+2015-2016/women/Премьер-лига/Плей-офф (9-12)/tabula-zhen-kchr-premer.-9-12.tsv	24-26 июня 2016	Оренбург
+2015-2016/women/Суперлига/1 тур/tabula-super-liga-zhenshchiny-1-gr.-2015-2016.tsv	12-15 ноября 2015	Санкт-Петербург
+2015-2016/women/Суперлига/1 тур/tabula-superliga.zhenshch.-2-1-i-tur.tsv	12-15 ноября 2015	Новочебоксарск
+2015-2016/women/Суперлига/2 тур/tabula-superliga.-zhenshchiny.-2-tur.tsv	10-13 декабря 2015	Ярославль
+2015-2016/women/Суперлига/3 тур/tabula-zhsup-1.-3tur.tsv	10-13 марта 2016	Санкт-Петербург
+2015-2016/women/Суперлига/3 тур/tabula-zhsup-2.-3-tur.tsv	10-13 марта 2016	Магнитогорск
+2015-2016/women/Суперлига/4 тур/tabula-otchet-zh-super-4-tur-2015-2016.tsv	27-30 апреля 2016	Сиверский
+2016-2017/men/Лига-A/1 тур/tabula-2016-17.-1-t.-m.-a.-2-gr.tsv	20-23 октября 2016	Пенза
+2016-2017/men/Лига-A/1 тур/tabula-2016-17.-1-t.-m.a.-1-gr.tsv	20-23 октября 2016	Пенза
+2016-2017/men/Лига-A/2 тур/tabula-2016-17-2-tur.-muzhchiny.-a.tsv	15-18 декабря 2016	Коломна
+2016-2017/men/Лига-B/1 тур/tabula-2016-17.-1-t.-m.-v.-1-gr.tsv	20-23 октября 2016	Малое Видное
+2016-2017/men/Лига-B/1 тур/tabula-2016-2017-muzhchiny.-vysshaya-v.-2-gr.tsv	20-23 октября 2016	Казань
+2016-2017/men/Лига-B/2 тур/tabula-2016-17-2-tur.-muzhchiny.-v.tsv	15-18 декабря 2016	Ульяновск
+2016-2017/men/Премьер-лига/1 тур/tabula-2016-2017-muzhchiny.-premer.-1-gr.tsv	17-20 ноября 2016	Верхняя Пышма
+2016-2017/men/Премьер-лига/1 тур/tabula-2016-2017-nov-muzhchiny.-premer.-2-gr-2-.tsv	17-20 ноября 2016	Славянск-на-Кубани
+2016-2017/men/Премьер-лига/2 тур/tabula-23.12-2-tur.-muzhchiny.-premer.tsv	20-23 декабря 2016	Санкт-Петербург
+2016-2017/men/Суперлига/1 тур/tabula-2016-17.-1-i-tur-muzhchiny.-super.-1-gr.tsv	20-23 октября 2016	пос. Большевик Серпуховского района
+2016-2017/men/Суперлига/1 тур/tabula-2016-17.-1-i-tur-muzhchiny.-super.-2-gr.tsv	20-23 октября 2016	пос. Большевик Серпуховского района
+2016-2017/men/Суперлига/2 тур/tabula-2016-17-2-tur.-muzhchiny.-superliga.tsv	15-18 декабря 2016	Оренбург
+2016-2017/women/Лига-A/1 тур/tabula-2016-17-1-t.-zh.-a.-1-gr.tsv	20-23 октября 2016	Оренбург
+2016-2017/women/Лига-A/1 тур/tabula-2016-17-1-t.-zh.-a.-2-gr.tsv	20-23 октября 2016	Санкт-Петербург
+2016-2017/women/Лига-A/2 тур/tabula-2016-17-2-tur.-zhenshchiny.-a.tsv	15-18 декабря 2016	Оренбург
+2016-2017/women/Премьер-лига/1 тур/tabula-2016.17-1-tur.-zhpl-1.tsv	17-20 ноября 2016	Кстово
+2016-2017/women/Премьер-лига/1 тур/tabula-2016.17-1-tur.-zhpl-2.tsv	16-19 ноября 2016	Кстово
+2016-2017/women/Премьер-лига/2 тур/tabula-2-tur.-zhenshchiny.-premer-itogi.tsv	19-23 декабря 2016	Оренбург
+2016-2017/women/Суперлига/1 тур/tabula-2016-17.-zh-.-super.-2-gr.tsv	27-30 октября 2016	Чебоксары
+2016-2017/women/Суперлига/1 тур/tabula-2016-17.-zh.-super.-1-gr.tsv	27-30 октября 2016	Чебоксары
+2016-2017/women/Суперлига/2 тур/tabula-2016-17-2-tur.-zhenshchiny.-super.tsv	15-18 декабря 2016	Магнитогорск

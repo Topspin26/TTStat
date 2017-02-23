@@ -116,6 +116,12 @@ class Match:
             res = False
         return res
 
+    @staticmethod
+    def checkSetsScore(score):
+        res = score in {'3:0', '3:1', '3:2', '2:3', '1:3', '0:3',
+                        '4:0', '4:1', '4:2', '4:3', '3:4', '2:4', '1:4', '0:4'}
+        return res
+
     def getSumPoints(self):
         return [sum(self.points[0]), sum(self.points[1])]
 
