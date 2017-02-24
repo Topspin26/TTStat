@@ -2,12 +2,19 @@
     margin-left: 20px;
 }
 #main{
-    width: 50%;
+    width: 55%;
     margin-left: 50px;
     float: left;
 }
 #main h3{
     margin-top: 10px;
+}
+
+#heading{
+    margin-bottom: 10px;
+}
+#heading h3{
+    margin-right: 30px;
 }
 
 h2{

@@ -20,7 +20,15 @@ def players():
 @ttstat.route('/players/<id>')
 def player_info(id):
     return render_template('player_info.html', id = id, name = ttModel.players[ttModel.playersDict[id]].name,
-                           matches_columns = ttModel.matches_columns, rankings_columns = ttModel.rankings_columns)
+                           matches_columns = ttModel.matches_columns, rankings_columns = ttModel.player_rankings_columns)
+
+@ttstat.route('/rankings')
+def rankings():
+    return render_template('rankings.html', columns = ttModel.rankings_columns, sex = 'men')
+
+@ttstat.route('/rankings/<sex>')
+def rankings1(sex):
+    return render_template('rankings.html', columns = ttModel.rankings_columns, sex = sex)
 
 @ttstat.route('/prognosis')
 def prognosis():
@@ -98,9 +106,9 @@ def get_matches_data():
     results = output
     return json.dumps(results)
 
-@ttstat.route("/_retrieve_rankings_data")
-def get_rankings_data():
-    columns = ttModel.rankings_columns
+@ttstat.route("/_retrieve_player_rankings_data")
+def get_player_rankings_data():
+    columns = ttModel.player_rankings_columns
 
     playerIdFilter = None
     if 'playerId' in request.values:
@@ -113,26 +121,27 @@ def get_rankings_data():
     output['sEcho'] = str(int(request.values['sEcho']))
 
     c = 0
+    output['iTotalRecords'] = 0
     aaData_rows = []
     if playerIdFilter in ttModel.rusRankings:
-        output['iTotalRecords'] = str(len(ttModel.rusRankings[playerIdFilter]))
+        output['iTotalRecords'] += len(ttModel.rusRankings[playerIdFilter])
         for e in sorted(ttModel.rusRankings[playerIdFilter].items(), key = lambda x: x[0], reverse=True):
             aaData_rows.append([e[0], 'TTFR', e[1][0], e[1][1]])
             c += 1
     if playerIdFilter in ttModel.ittfRankings:
-        output['iTotalRecords'] = str(len(ttModel.ittfRankings[playerIdFilter]))
+        output['iTotalRecords'] += len(ttModel.ittfRankings[playerIdFilter])
         for e in sorted(ttModel.ittfRankings[playerIdFilter].items(), key = lambda x: x[0], reverse=True):
             aaData_rows.append([e[0], 'ITTF', e[1][0], e[1][1]])
             c += 1
     if playerIdFilter in ttModel.myRankings:
-        output['iTotalRecords'] = str(len(ttModel.myRankings[playerIdFilter]))
+        output['iTotalRecords'] += len(ttModel.myRankings[playerIdFilter])
         for e in sorted(ttModel.myRankings[playerIdFilter].items(), key = lambda x: x[0], reverse=True):
             aaData_rows.append([e[0], 'MY', e[1][0], e[1][1]])
             c += 1
-
+    output['iTotalRecords'] = str(output['iTotalRecords'])
     sortInd = int(request.values['iSortCol_0'])
     sortAsc = request.values['sSortDir_0']
-    if ttModel.rankings_dtypes[sortInd] == 'string':
+    if ttModel.player_rankings_dtypes[sortInd] == 'string':
         aaData_rows = sorted(aaData_rows, key=lambda x: x[sortInd], reverse=(sortAsc != 'asc'))
     else:
         aaData_rows = sorted(aaData_rows, key=lambda x: float(x[sortInd]), reverse=(sortAsc != 'asc'))
@@ -143,6 +152,54 @@ def get_rankings_data():
     results = output
     return json.dumps(results)
 
+@ttstat.route("/_retrieve_rankings_data")
+def get_rankings_data():
+    columns = ttModel.rankings_columns
+
+#    playerIdFilter = None
+#    if 'playerId' in request.values:
+#        playerIdFilter = request.values['playerId']
+#    print(playerIdFilter)
+
+    leftInd = int(request.values['iDisplayStart'])
+    rightInd = leftInd + int(request.values['iDisplayLength'])
+    output = {}
+    output['sEcho'] = str(int(request.values['sEcho']))
+
+    text = request.values['sSearch'].lower()
+    print(text)
+
+    mw = request.values['rankingsSex'][0]
+
+    c = 0
+    total = 0
+    aaData_rows = []
+    for i in range(len(ttModel.players)):
+        player = ttModel.players[i]
+        if player.mw == mw:
+            if player.name.lower().find(text) != -1:
+                r = ttModel.getRankings(player.id, '2017-03-01', 100)
+                aaData_rows.append(['0', player.id, player.name, r['rus'], r['ittf'], r['my']])
+                c += 1
+            total += 1
+    output['iTotalRecords'] = str(total)
+
+    sortInd = int(request.values['iSortCol_0'])
+    sortAsc = request.values['sSortDir_0']
+    if ttModel.rankings_dtypes[sortInd] == 'string':
+        aaData_rows = sorted(aaData_rows, key=lambda x: x[sortInd], reverse=(sortAsc != 'asc'))
+    else:
+        aaData_rows = sorted(aaData_rows, key=lambda x: float(x[sortInd]), reverse=(sortAsc != 'asc'))
+
+    for i,row in enumerate(aaData_rows):
+        row[2] = ttModel.getHref(row[1], row[2])
+        row[0] = (i + 1)
+
+    output['iTotalDisplayRecords'] = str(c)
+
+    output['aaData'] = aaData_rows[leftInd:rightInd]
+    results = output
+    return json.dumps(results)
 
 @ttstat.route("/_retrieve_players_data")
 def get_players_data():

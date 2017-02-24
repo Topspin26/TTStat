@@ -16,7 +16,7 @@ w15	Анастасия Шевцова
 w16	Ангелина Испирян
 w17	Анна Блажко;BLAZHKO Anna
 w18	Анна Волошина
-w19	Анна Гапонова
+w19	Анна Гапонова;Ганна Гапонова;Gaponova Ganna
 w20	Анна Козловская;KOZLOVSKAIAI Anna
 w21	Анна Плотникова;Plotnikova Anna
 w22	Анна Россихина;ROSSIKHINA Anna
@@ -1399,7 +1399,7 @@ w1399	Лю Шивэнь;Liu Shiwen;Лю Шивень
 w1400	NGUYEN Thi Viet Linh
 w1401	GUMULA Renata
 w1402	IMAMURA Yuko
-w1403	Zhou Yihan;Чжоу Ихань
+w1403	Zhou Yihan;Чжоу Ихань;Чжоу Йихан
 w1404	MUKHERJEE Ayhika
 w1405	CZAJKOWSKI Desiree
 w1406	Хан Инь;Han Ying
@@ -1793,7 +1793,7 @@ w1793	TATIANINA Tetiana
 w1794	Екатерина Рыльская;RYLSKAYA Ekaterina
 w1795	Park Seri;Пак Сери
 w1796	JEONG Soyeon
-w1797	Шань Сяона;Shan Xiaona
+w1797	Шань Сяона;Шан Ксяона;Shan Xiaona
 w1798	ARNAU Elisabet
 w1799	HUANG Kang Kang
 w1800	WON Youngah
@@ -2234,7 +2234,6 @@ w2234	Дарья Триголос;Trigolos Daria
 w2235	WANG Xuan
 w2236	VIKTORCHYK Maryia
 w2237	Ивета Ваченковска;Vacenovska Iveta
-w2238	Ганна Гапонова;Gaponova Ganna
 w2239	Oktariyani Novita;Новита Октарияни
 w2240	DURAND Christelle
 w2241	ITO Midori
@@ -2637,7 +2636,7 @@ w2638	PAREDES Nathaly
 w2639	YU Jingwei
 w2640	ZANARDI Marine
 w2641	REGINSTER Natacha
-w2642	Барбора Балашова;Balazova Barbora
+w2642	Барбора Балашова;Барбора Балажова;Balazova Barbora
 w2643	MOLNAR Monika
 w2644	KERKEZ Dragana
 w2645	WATANABE Yuko

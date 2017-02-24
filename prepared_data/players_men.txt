@@ -1475,7 +1475,7 @@ m1478	SANTOSO Ficky
 m1479	MONTUFAR Kevin
 m1480	WANG Qingliang
 m1481	Allegro Martin;Мартин Аллегро
-m1482	LINDNER Adam
+m1482	LINDNER Adam;Адам Линднер
 m1483	LIU Yanan
 m1484	PICCOLIN Jordy
 m1485	FILIMON Lucian
@@ -1558,7 +1558,7 @@ m1561	Ким Тоюб;Kim Doyub
 m1562	URRUTIA Jose
 m1563	Ярослав Жмуденко;ZHMUDENKO Yaroslav
 m1564	WEI Dianren
-m1565	Mengel Steffen;Штеффен Менгель
+m1565	Mengel Steffen;Штеффен Менгель;Стеффен Менгель
 m1566	NICOLLE Dorian
 m1567	Doherty Sean;Шон Доэрти
 m1568	Wisutmaythangkoon Supanut;Супанут Висутмайтхангкун;Супанут Висутмайтангкоон
@@ -1731,7 +1731,7 @@ m1734	SALEH Mohamed Aly
 m1735	CHEN Junji
 m1736	CRUZ Rebo
 m1737	BASHT BAVI Hamed
-m1738	Ирвин Бертран;Bertrand Irvin
+m1738	Ирвин Бертран;Ирвин Бертранд;Bertrand Irvin
 m1739	Achanta Sharath Kamal;Шарат Камал Ачанта
 m1740	ONAOLAPO Ojo
 m1741	HINSE Pierre-Luc
@@ -2261,7 +2261,7 @@ m2264	Мирослав Горжейший;Horejsi Miroslav;Мирослав Хо
 m2265	VARIN Eric
 m2266	Yoshida Masaki;Масаки Йошида
 m2267	Янош Бенце Майорош;Majoros Bence;Бенце Майорош
-m2268	Ким Мин Хёк;Kim Minhyeok
+m2268	Ким Мин Хёк;Ким Минхеок;Kim Minhyeok
 m2269	DAVIDOVITZ Ron
 m2270	HAKANSSON Fredrik
 m2271	YANG Ce
@@ -2455,7 +2455,7 @@ m2458	HOTZ Christian
 m2459	CHEN Longcan
 m2460	KOPEIKA Artis
 m2461	XIAO Han
-m2462	Джо Сефри;Seyfried Joe
+m2462	Джо Сефри;Джо Сейфрид;Seyfried Joe
 m2463	Kozul Deni;Дени Козул
 m2464	MEHTA Pathik
 m2465	Жан Жике;Zhang Jike

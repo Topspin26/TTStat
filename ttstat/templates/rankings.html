@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+    <div id="main">
+        <div id="heading">
+            <h3 id="rankingsSex" sex="{{sex}}" style="display: inline;">
+                Рейтинги
+            </h3>
+            {% if sex == "men" %}
+                <h4 style="display: inline;"><a href = "/rankings/men"> Мужчины </a></h4>
+                <h5 style="display: inline;"><a href = "/rankings/women"> Женщины </a></h5>
+            {% else %}
+                <h5 style="display: inline;"><a href = "/rankings/men"> Мужчины </a></h5>
+                <h4 style="display: inline;"><a href = "/rankings/women"> Женщины </a></h4>
+            {% endif %}
+
+        <div class="bootstrap-iso">
+         <div class="container-fluid">
+          <div class="row">
+           <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="form-group"> <!-- Date input -->
+                <label class="control-label" for="date">Date</label>
+                <input class="form-control" id="date" name="date" placeholder="YYYY-MM-DD" type="text"/>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+
+        <table id="rankings_table" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    {% for column in columns %}
+                        <th data-type="number"> {{column}} </th>
+                    {% endfor %}
+<!--                            <th data-type="number"> id </th>
+                    <th data-type="string"> name </th>
+                    <th data-type="string"> freq </th> -->
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

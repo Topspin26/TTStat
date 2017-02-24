@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import xgboost as xgb
 import pickle
+import datetime
 
 from Entity import *
 from common import *
@@ -14,6 +15,7 @@ def readPlayersRankings(filename):
         for line in fin:
             tokens = line.split('\t')
             tokens = [e.strip() for e in tokens]
+            tokens[0] += '-01'
             if not(tokens[1] in playersRankings):
                 playersRankings[tokens[1]] = dict()
             playersRankings[tokens[1]][tokens[0]] = tokens[2:]
@@ -28,8 +30,8 @@ class TTModel:
         self.players_columns = ['id', 'Игрок', 'Матчи']
         self.players_dtypes = ['string'] * 2 + ['number']
 
-        self.rankings_columns = ['Дата', 'Источник', 'Рейтинг', 'Ранг']
-        self.rankings_dtypes = ['string'] * 2 + ['number'] * 2
+        self.player_rankings_columns = ['Дата', 'Источник', 'Рейтинг', 'Ранг']
+        self.player_rankings_dtypes = ['string'] * 2 + ['number'] * 2
 
         filenamePlayersMen = r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_men.txt'
         self.mId = readPlayers(filenamePlayersMen)
@@ -40,6 +42,9 @@ class TTModel:
         self.rusRankings = readPlayersRankings('prepared_data/propingpong/ranking_rus.txt')
         self.ittfRankings = readPlayersRankings('prepared_data/propingpong/ranking_ittf.txt')
         self.myRankings = readPlayersRankings('test/all_rankings_mw.txt')
+
+        self.rankings_columns = ['#', 'id', 'Игрок', 'TTFR', 'ITTF', 'MY']
+        self.rankings_dtypes = ['number'] + ['string'] * 2 + ['number'] * 3
 
         self.players = []
         self.playersDict = dict()
@@ -53,6 +58,7 @@ class TTModel:
         filenames = []
         filenames.append(r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\master_tour\all_results.txt')
         filenames.append(r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\bkfon\all_results.txt')
+        filenames.append(r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\local\kchr_results.txt')
         filenames.append(r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\ittf\all_results.txt')
         self.matches = []
 
@@ -153,6 +159,32 @@ class TTModel:
         ittfR = -1
         if playerId in self.ittfRankings:
             ittfR = self.ittfRankings[playerId].get(dt, [-1])[0]
+        return {'rus': rusR, 'ittf': ittfR, 'my': myR}
+
+    def getRankings(self, playerId, curDate, ws = 1):
+        #[leftDAte = curDate - ws < date <= curDate]
+        leftDate = (datetime.datetime.strptime(curDate, "%Y-%m-%d").date() - datetime.timedelta(days=ws)).strftime("%Y-%m-%d")
+        myR = -1
+        if playerId in self.myRankings:
+            for e in sorted(self.myRankings[playerId].items(), key = lambda x: x[0], reverse=True):
+                if e[0] > leftDate and e[0] <= curDate:
+                    myR = e[1][0]
+                    break
+            if myR == '-100':
+                myR = -1
+
+        rusR = -1
+        if playerId in self.rusRankings:
+            for e in sorted(self.rusRankings[playerId].items(), key = lambda x: x[0], reverse=True):
+                if e[0] > leftDate and e[0] <= curDate:
+                    rusR = e[1][0]
+                    break
+        ittfR = -1
+        if playerId in self.ittfRankings:
+            for e in sorted(self.ittfRankings[playerId].items(), key = lambda x: x[0], reverse=True):
+                if e[0] > leftDate and e[0] <= curDate:
+                    ittfR = e[1][0]
+                    break
         return {'rus': rusR, 'ittf': ittfR, 'my': myR}
 
     def makePrediction(self, playerId1, playerId2):
