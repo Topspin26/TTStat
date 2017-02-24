@@ -15,7 +15,9 @@ def getMatches(corrections, wrongLines):
             print(ff)
             if ff.find('old') != -1:
                 continue
-#            if ff.find('2016-12') == -1 and ff.find('2017-') == -1:
+#            if ff.find('2016-11') == -1 and ff.find('2016-12') == -1 and ff.find('2017-') == -1:
+#                continue
+#            if ff.find('2017-02-07') == -1:
 #                continue
             with open('data/bkfon/results/' + ff, 'r', encoding='utf-8') as fin:
                 for line in fin:
@@ -34,11 +36,31 @@ def getMatches(corrections, wrongLines):
                                 flTT = 0
                         else:
                             if flTT == 1:
+                                tcorr = corrections.copy()
+                                if compName == 'Наст. теннис. Лига Про. Москва':
+                                    tcorr.append(['Бурдин А', 'Алексей Бурдин'])
                                 arr = [re.sub(' +', ' ', e.replace(u'\xa0', ' ')) for e in tr.xpath('.//text()')]
+
+
+                                timeArr = arr[1].split(' ')
+                                if len(timeArr) == 2:
+                                    time = timeArr[1].strip()
+                                else:
+                                    time = time.strip()
+
+                                dt = timeArr[0].strip()
+                                if len(dt.split('.')) == 2:
+                                    day = dt.split('.')[0].zfill(2)
+                                    month = dt.split('.')[1].zfill(2)
+                                    year = ff[:4]
+                                    dt = year + '-' + month + '-' + day
+                                else:
+                                    dt = ff[:10]
+
                                 s0 = '\t'.join(arr)
-                                for k,v in corrections:
+                                for k,v in tcorr:
                                     if k.find(';') != -1:
-                                        if k.split(';')[0] == ff[:10]:
+                                        if k.split(';')[0] == dt:
                                             arr = [e.replace(k.split(';')[1], v) for e in arr]
                                     else:
                                         arr = [e.replace(k, v) for e in arr]
@@ -54,19 +76,6 @@ def getMatches(corrections, wrongLines):
                                     continue
                                 if names[0].lower().find('game') != -1:
                                     continue
-                                timeArr = arr[1].split(' ')
-                                if len(timeArr) == 2:
-                                    time = timeArr[1].strip()
-                                else:
-                                    time = time.strip()
-                                dt = timeArr[0].strip()
-                                if len(dt) == 2:
-                                    day = dt.split('.')[0].zfill(2)
-                                    month = dt.split('.')[1].zfill(2)
-                                    year = ff[:4]
-                                    dt = year + '-' + month + '-' + day
-                                else:
-                                    dt = ff[:10]
 #                                if dt != ff[:10]:
 #                                    print(dt + ' ' + ff[:10])
                                 if arr[4] != 'отмена':
