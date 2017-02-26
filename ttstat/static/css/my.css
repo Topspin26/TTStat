@@ -16,6 +16,13 @@
 #heading h3{
     margin-right: 30px;
 }
+#date{
+    width: 120px;
+    margin-left: 0;
+}
+#dategr{
+    width: 120px;
+}
 
 h2{
     text-align: center;

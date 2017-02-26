@@ -23,3 +23,4 @@ prepared_data/propingpong/ranking_rus.txt
 prepared_data/master_tour/master_tour_players_*.txt
 chromedriver_win32.zip
 ttstat/static/js/Simple-Date-Picker-for-Bootstrap/*
+data/rttf/results/*

@@ -81,6 +81,29 @@ $(document).ready(function(){
         "order": [[ 0, "desc" ]]
     });
 
+    var date_input=$('input[name="date"]'); //our date input has the name "date"
+          var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
+          var options={
+            format: 'yyyy-mm-dd',
+            container: container,
+            "setDate": new Date(),
+            todayHighlight: true,
+            autoclose: true,
+            weekStart: 1,
+            language: "ru",
+            orientation: "top",
+            daysOfWeekHighlighted: "6",
+          };
+    date_input.datepicker(options);
+    date_input.datepicker("setDate", new Date());
+
+    $('#date').on('click', function(e){
+        $('input[name="date"]').focus();
+    });
+    $('#calendar').on('click', function(e){
+        $('#date').click();
+    });
+
     $('#rankings_table').DataTable({
         "sScrollY": "300px",
         "bScrollCollapse": true,
@@ -99,6 +122,7 @@ $(document).ready(function(){
                 aoData.push( { "name":"playerId", "value": $('#playerName').attr("playerId")});
             if ($('#rankingsSex'))
                 aoData.push( { "name":"rankingsSex", "value": $('#rankingsSex').attr("sex")});
+            aoData.push( { "name":"rankingDate", "value": $('#date').val()});
         },
         "columnDefs": [{
         "targets": 0,
@@ -107,24 +131,9 @@ $(document).ready(function(){
         "order": [[ 5, "desc" ]]
     });
 
-    var date_input=$('input[name="date"]'); //our date input has the name "date"
-          var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
-          var options={
-            format: 'yyyy-mm-dd',
-            container: container,
-            "setDate": new Date(),
-            todayHighlight: true,
-            autoclose: true,
-            weekStart: 1,
-            language: "ru",
-            orientation: "top",
-            daysOfWeekHighlighted: "6",
-          };
-    date_input.datepicker(options);
-    date_input.datepicker("setDate", new Date());
-
     date_input.datepicker().on('changeDate', function (ev) {
-        alert($('#date').val());
+        //alert($('#date').val());
+        $('#rankings_table').DataTable().ajax.reload();
     });
 
     $('#players_table').on('click', 'tr', function(e){

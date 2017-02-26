@@ -171,6 +171,8 @@ def get_rankings_data():
 
     mw = request.values['rankingsSex'][0]
 
+    dt = request.values['rankingDate']
+
     c = 0
     total = 0
     aaData_rows = []
@@ -178,7 +180,7 @@ def get_rankings_data():
         player = ttModel.players[i]
         if player.mw == mw:
             if player.name.lower().find(text) != -1:
-                r = ttModel.getRankings(player.id, '2017-03-01', 100)
+                r = ttModel.getRankings(player.id, dt, 100)
                 aaData_rows.append(['0', player.id, player.name, r['rus'], r['ittf'], r['my']])
                 c += 1
             total += 1
