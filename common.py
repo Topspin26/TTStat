@@ -49,7 +49,6 @@ def getPlayerId(player, men2_players, women2_players):
         return -1
     return -2
 
-
 def readCorrections(filename):
     corrections = dict()
     with open(filename, 'r', encoding = 'utf-8') as fin:

@@ -60,7 +60,7 @@ def scrappMonth(month):
 
 
 def main():
-    for year in range(2015, 2018):
+    for year in range(2014, 2018):
         for month in range(1, 13):
             month = str(year) + '-' + str(month).zfill(2)
             scrappMonth(month)
