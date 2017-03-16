@@ -82,13 +82,9 @@ def getMW(s):
     return '?'
 
 def main():
-    filenameGlobalPlayersMen = r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_men.txt'
 
-    (mIdG, mId2G) = readPlayersInv(filenameGlobalPlayersMen)
-    filenameGlobalPlayersWomen = r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_women.txt'
-    (wIdG, wId2G) = readPlayersInv(filenameGlobalPlayersWomen)
+    playersDict = GlobalPlayersDict()
 
-#    getIttfMatches(driver, url, list(range(1,11109)))
     player2id = dict()
     id2player = dict()
     with open('data/ittf/player2id.txt', encoding = 'utf-8') as fin:
@@ -135,6 +131,9 @@ def main():
 
     prefix = r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\ittf\\'
 
+    multiple = dict()
+    unknown = dict()
+
     with open(prefix + 'all_results.txt', 'w', encoding='utf-8') as fout:
         fout.write('\t'.join(['date', 'time', 'compName', 'id1', 'id2', 'setsScore', 'pointsScore', 'name1', 'name2']) + '\n')
         for match in matches:
@@ -146,18 +145,25 @@ def main():
                     for player in match.players[i]:
                         player = id2player.get(player, player).title()
                         players[i].append(player)
-                        if (player in mId2G) and not (player in wId2G):
-                            if len(mId2G[player]) == 1:
-                                ids[i].append(mId2G[player][0])
-                            else:
-                                flError = 1
-                        elif not (player in mId2G) and (player in wId2G):
-                            if len(wId2G[player]) == 1:
-                                ids[i].append(wId2G[player][0])
-                            else:
-                                flError = 1
+                        id = playersDict.getId(player)
+
+                        if len(id) == 1:
+                            ids[i].append(id[0])
+                        elif len(id) == 0:
+                            flError = 1
+                            if not (player in unknown):
+                                unknown[player] = 0
+                            unknown[player] += 1
                         else:
                             flError = 1
+                            fl_mw = ''
+                            for e in id:
+                                fl_mw += e[0]
+                            fl_mw = ''.join(sorted(set(list(fl_mw))))
+                            if not (fl_mw + ' ' + player in multiple):
+                                multiple[fl_mw + ' ' + player] = 0
+                            multiple[fl_mw + ' ' + player] += 1
+
                 if flError == 0 and len(ids[0]) > 0 and len(ids[1]) > 0 and match.date < '2018':
                     resTokens = match.toArr()
                     resTokens.append(';'.join(players[0]))
@@ -166,8 +172,14 @@ def main():
                     resTokens[4] = ';'.join(ids[1])
                     fout.write('\t'.join(resTokens) + '\n')
 
-    return
+    print('\nMULTIPLE')
+    for k, v in sorted(multiple.items(), key=lambda x: -x[1]):
+        print([k, v])
+    print('\nUNKNOWN')
+    for k, v in sorted(unknown.items(), key=lambda x: -x[1]):
+        print([k, v])
 
+    return
 
     print('id')
     for k, v in player2id.items():

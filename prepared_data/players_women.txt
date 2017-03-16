@@ -41,7 +41,7 @@ w40	Виктория Ли
 w41	Виктория Прищепа
 w42	Виктория Серебренникова
 w43	Дарья Бордюговская
-w44	Дарья Семёнова
+w44	Дарья Семенова
 w45	Дарья Чернова;CHERNOVA Daria
 w46	Диана Стигарь
 w47	Евгения Васильева;Vasylieva Ievgeniia
@@ -93,7 +93,7 @@ w92	Наталья Сычева;Наталия Сычева
 w93	Наталья Шохова;Shokhova Natalia
 w94	Нели Шойфер
 w95	Оксана Фадеева;Fadeeva Oxana
-w96	Ольга Воробьева;Ольга Баранова;Ольга Воробьёва;Vorobeva Olga
+w96	Ольга Воробьева;Ольга Баранова;Ольга Воробьева;Vorobeva Olga
 w97	Ольга Вишнякова
 w98	Ольга Власова;VLASOVA Olga
 w99	Ольга Волошина;Voloshina Olga
@@ -102,9 +102,8 @@ w101	Ольга Куликова;Kulikova Olga
 w102	Ольга Куп
 w103	Ольга Лососовская;Lososovskaya Olga
 w104	Ольга Михайлова
-w105	Ольга Мохначёва
 w106	Ольга Овчинникова;Ольга Коренькова
-w107	Ольга Шишмарева;Ольга Шишмарёва;SHISHMAREVA Olga
+w107	Ольга Шишмарева;Ольга Шишмарева;SHISHMAREVA Olga
 w108	Петра Ловаш;Петра Ловас;Lovas Petra
 w109	Полина Гусар
 w110	Полина Куниченко
@@ -155,7 +154,6 @@ w155	Наталья Тирских
 w156	Кристина Гречишникова
 w157	Альфия Халикова;KHALIKOVA Alfiya
 w158	Елена Яковлева
-w159	Дарья Семенова
 w160	Елена Брус
 w161	Полина Бикеева;BIKEEVA Polina
 w162	Дарья Шадрина;Shadrina Daria
@@ -633,7 +631,7 @@ w633	STOIAN Mariana
 w634	BUENO Paula
 w635	Анастасия Бондарева;Bondareva Anastasia
 w636	Дагмар Блашкова;Blaskova Dagmar
-w637	Алёна Леммер;Lemmer Alena
+w637	Алена Леммер;Lemmer Alena
 w638	LIU Yuan
 w639	FERNANDES Simone
 w640	ROHR Meike
@@ -813,7 +811,7 @@ w813	KUO Shu-Hua
 w814	TOLLSTOY Alice
 w815	SINTYA Rina
 w816	JUHASZ Mariann
-w817	Zetterstrom Kristina;Кристина Цеттерстрём
+w817	Zetterstrom Kristina;Кристина Цеттерстрем
 w818	AN Chorong
 w819	DRINKHALL Joanna
 w820	GOMEZ Leyla
@@ -874,7 +872,7 @@ w874	APONTE Lyanne
 w875	MOLODTSOVA Olesya
 w876	LEE Yujin
 w877	Элин Лойен;Loyen Eline
-w878	Рианна Ван Дёйн;Van Duin Rianne
+w878	Рианна Ван Дейн;Van Duin Rianne
 w879	JACOB Seraha
 w880	GALVEZ Eunice
 w881	TU Ji Hyang
@@ -916,7 +914,6 @@ w916	SCARDIGNO Rossella
 w917	CHANG Ya-Chuan
 w918	KWAK Bangbang
 w919	PENG Luyang
-w920	FU Yu
 w921	YAO Linjing
 w922	AAS Merje
 w923	ASHRAF Ayatollah
@@ -1004,7 +1001,7 @@ w1004	YANG Fen
 w1005	BERNARD Jana
 w1006	SUN Xiaotong
 w1007	BAS Azize
-w1008	Ри Мёнь Сун;Ri Myong Sun
+w1008	Ри Мень Сун;Ri Myong Sun
 w1009	HUANG Xuan-Chun
 w1010	YILDIRIM Fulya
 w1011	ARGAMAN Michal
@@ -1054,7 +1051,7 @@ w1054	Ян Сяосинь
 w1055	SZVITAN Krisztina
 w1056	JANG Un Hwa
 w1057	THOMPSON Jennifer
-w1058	Со Хё Вон;Suh Hyowon
+w1058	Со Хе Вон;Suh Hyowon
 w1059	ADAMASZEK Beata
 w1060	Chasselin Pauline;Полина Шасселин
 w1061	ZAHARIA Alina
@@ -1116,7 +1113,7 @@ w1116	WU Xianjing
 w1117	Hsing Ariel;Ариель Син
 w1118	VARGAS Francesca
 w1119	KIM Mun Yong
-w1120	Бернадетт Сёч;Бернадетт Сеч;Szocs Bernadette;Бернадетт Шоц
+w1120	Бернадетт Сеч;Бернадетт Сеч;Szocs Bernadette;Бернадетт Шоц
 w1121	CHOW Wai Yeung
 w1122	STROFOVA Tereza
 w1123	WONG Iok Sim
@@ -1299,7 +1296,7 @@ w1299	Phillips Megan;Меган Филлипс
 w1300	UCHNAST Agata
 w1301	LIN Xiu Zhen
 w1302	KARAGODINA Inna
-w1303	Choi Moonyoung;Чхве Мун Ён
+w1303	Choi Moonyoung;Чхве Мун Ен
 w1304	LEE Jacqueline
 w1305	LUNDSTROM Annika
 w1306	SVENSSON Marie
@@ -1336,7 +1333,7 @@ w1336	HE Zhuojia
 w1337	FITZGERALD Emelie
 w1338	DOTI Monica
 w1339	NG Sock Khim
-w1340	Bajor Natalia;Баёр Наталья;Наталья Байор
+w1340	Bajor Natalia;Баер Наталья;Наталья Байор
 w1341	VOICULESCU Natalia
 w1342	LI Tao
 w1343	Grzybowska-Franc Katarzyna;Катаржина Гржибовская
@@ -1516,7 +1513,7 @@ w1516	ROUSSY Marie-Christine
 w1517	Kato Yuko;Юко Като
 w1518	Odorova Eva;Ева Одорова
 w1519	EL-ALFY Shahira
-w1520	Сим Хён Чжу;Sim Hyunju
+w1520	Сим Хен Чжу;Sim Hyunju
 w1521	SHU Sophie
 w1522	WANG Jianwen
 w1523	HE Xiaolan
@@ -1755,7 +1752,7 @@ w1755	Марико Такахаши;Takahashi Mariko
 w1756	DAUNTON Bethan
 w1757	DUTTA Moumita
 w1758	Ким Хе Сон;Kim Hye Song
-w1759	An Yeongeun;Ан Ён Гён
+w1759	An Yeongeun;Ан Ен Ген
 w1760	SIMEONOVA Julia
 w1761	MAKINYAN Armine
 w1762	KIM Jin Hyang
@@ -1862,7 +1859,6 @@ w1862	LINKE Camille-Chloe
 w1863	GUAN Mengyuan
 w1864	GUNASEKERA Namal
 w1865	MURASHIGE Aily
-w1866	REMZI Sibel
 w1867	CHUN Emillia
 w1868	PEROCHEAU Laura
 w1869	Furkova Karolina;Каролина Фуркова
@@ -1892,7 +1888,6 @@ w1892	BORZA Valeria
 w1893	LIU Yu-Hsin
 w1894	Hirano Sayaka;Хирано Саяка
 w1895	YOON Jihye
-w1896	LI Qian
 w1897	CHURABAEVA Tatiana
 w1898	ANDRYAN Yulia
 w1899	HUANG Yu-Jie
@@ -1923,7 +1918,7 @@ w1923	Саки Таширо;Tashiro Saki
 w1924	COTE Alicia
 w1925	JOHANSSON Sandra
 w1926	MOREL Sandrine
-w1927	Линда Бергстрём;Bergstrom Linda
+w1927	Линда Бергстрем;Bergstrom Linda
 w1928	HERCZIG Judit
 w1929	WIGOW Susanna
 w1930	Vejnovic Ivana;Ивана Вейнович
@@ -2083,7 +2078,7 @@ w2083	Zhu Yuling;Жу Юлин;Чжу Юлинг
 w2084	VENSLAVICIUTE Ieva
 w2085	IMASAKA Ryoko
 w2086	HUNG Ke-Shan
-w2087	Ким Пёл Ним;Kim Byeolnim
+w2087	Ким Пел Ним;Kim Byeolnim
 w2088	ZHANG Xueling
 w2089	TODOROVIC Biljana
 w2090	FAZLIC Selja
@@ -2214,7 +2209,7 @@ w2214	HUDUSAN Andreea
 w2215	GARCIA Enerys
 w2216	TOMANOVA Tamara
 w2217	DRABANT Anita
-w2218	Yoon Hyobin;Юн Хёбин
+w2218	Yoon Hyobin;Юн Хебин
 w2219	HOLOK Dijana
 w2220	JANG Hyon Ae
 w2221	NOREND Naw
@@ -2245,12 +2240,12 @@ w2246	HUANG Yingqi
 w2247	MODERT Michelle
 w2248	ANTONIC Miljana
 w2249	Катаржина Вегжин;Wegrzyn Katarzyna
-w2250	Jo Yujin;Ё Юджин
+w2250	Jo Yujin;Е Юджин
 w2251	GEE Diana
 w2252	CASSAR TORREGIANI Christine
 w2253	SAHIN Sanem
 w2254	INDRIANI Lilis
-w2255	Юстина Ёнг;Yeung Justina
+w2255	Юстина Енг;Yeung Justina
 w2256	OKSANEN Jannika
 w2257	GOROWSKA Magdalena
 w2258	SAMET Mahshid
@@ -2460,7 +2455,7 @@ w2461	DAUBNEROVA Andrea
 w2462	WEE Yeji
 w2463	FATORIC Kristin
 w2464	TRUZSINSZKI Viktoria
-w2465	Kang Dayeon;Кан Да Ён
+w2465	Kang Dayeon;Кан Да Ен
 w2466	NTOULAKI Ekaterina
 w2467	Каролина Ляляк;Lalak Karolina
 w2468	SWARNA Jayakumar
@@ -2701,7 +2696,7 @@ w2703	GLOVER Andrea
 w2704	SUI Yi
 w2705	DEDERKO Zhenhua
 w2706	Labosova Ema;Эма Лабосова
-w2707	Karasiova Lizaveta;Елизавета Карасёва
+w2707	Karasiova Lizaveta;Елизавета Карасева
 w2708	PETRIC Ivona
 w2709	PENG Xue
 w2710	KHORY Malak
@@ -2724,7 +2719,7 @@ w2726	HUANG Yu-Chiao
 w2727	LIU Kailun
 w2728	SINITSINA Yulia (1981)
 w2729	ROHLIKOVA Michaela
-w2730	Ри Ми Гёнь;Ri Mi Gyong
+w2730	Ри Ми Гень;Ri Mi Gyong
 w2731	Филиппа Берганд;Bergand Filippa
 w2732	PHAI PANG Laurie
 w2733	LI Yijin
@@ -2913,7 +2908,7 @@ w2915	Che Xiaoxi;Че Сяоси
 w2916	SHOJI Yuki
 w2917	BOILEAU Anne
 w2918	Анастасия Мыдвецкая
-w2919	Яна Какунина
+w2919	Яна Кокунина
 w2920	Ольга Шрамко
 w2921	Мария Войтехова
 w2922	Анита Лиссовенко

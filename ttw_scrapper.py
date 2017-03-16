@@ -106,7 +106,7 @@ def main():
         for line in fin:
             tokens = line.rstrip().split('\t')
             playersInfo[tokens[0]] = tokens[1:]
-    for e in range(0, 501, 500):
+    for e in range(0, 1001, 500):
         url = 'http://ttw.ru/ttw-rs/index.php?litera=rating&page=' + str(e)
         scrappPage(url, playersInfo)
 

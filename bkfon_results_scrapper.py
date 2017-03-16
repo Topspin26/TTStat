@@ -46,7 +46,7 @@ def main():
         print(len(active_days))
         if year == '2017':
             for i in range(nd - flLast):
-                if month != 2:
+                if month != 2 and month != 3:
                     continue
                 curDate = year + '-' + str(month).zfill(2) + '-' + str(i + 1).zfill(2)
                 print(curDate)

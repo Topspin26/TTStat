@@ -23,10 +23,13 @@ def main():
     corrections = readCorrections('D:/Programming/SportPrognoseSystem/BetsWinner/data/local/kchr_corrections.txt')
 #    print(corrections)
 
-    filenameGlobalPlayersMen = r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_men.txt'
-    (mIdG, mId2G) = readPlayersInv(filenameGlobalPlayersMen)
-    filenameGlobalPlayersWomen = r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_women.txt'
-    (wIdG, wId2G) = readPlayersInv(filenameGlobalPlayersWomen)
+
+    playersDict = GlobalPlayersDict()
+
+#    filenameGlobalPlayersMen = r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_men.txt'
+#    (mIdG, mId2G) = readPlayersInv(filenameGlobalPlayersMen)
+#    filenameGlobalPlayersWomen = r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_women.txt'
+#    (wIdG, wId2G) = readPlayersInv(filenameGlobalPlayersWomen)
 
     compInfo = dict()
     with open('D:/Programming/SportPrognoseSystem/BetsWinner/data/local/kchr_dates.txt', encoding='utf-8') as fin:
@@ -53,6 +56,9 @@ def main():
                  'ГРИШЕНИЕ Денис':'ГРИШЕНИН Денис',
                  'КРЕГЕЛЬ Дитрий':'КРЕГЕЛЬ Дмитрий',
                  'ВЕРЕВКИА Алла': 'ВЕРЕВКИНА Алла'}
+
+    multiple = dict()
+    unknown = dict()
 
     for f in walk(dir):
         for ff in f[2]:
@@ -128,50 +134,40 @@ def main():
 
                             name1 = [namesCorr.get(e.replace(',', ''), e) for e in name1]
                             name2 = [namesCorr.get(e.replace(',', ''), e) for e in name2]
-                            flName = 1
-                            id1 = []
-                            for name in name1:
-                                id = getPlayerId(''.join([i for i in name if not i.isdigit()]).strip().title().replace('ё','е').replace(',', ''), mId2G, wId2G)
-                                if type(id) == list:
+                            flError = 0
+                            ids = [[], []]
+                            names = [name1, name2]
+                            for i in range(2):
+                                for name in names[i]:
+                                    player = ''.join([i for i in name if not i.isdigit()])
+                                    id = playersDict.getId(player)
+
                                     if len(id) == 1:
-                                        id1.append(id[0])
-                                    else:
-                                        print([name, id])
-                                        flName = 0
-                                else:
-                                    flName = 0
-                                    if (id == -2):
-                                        print(name)
-                                    else:
-                                        if not (name in unknown):
-                                            unknown[name] = 0
-                                        if name == '0':
+                                        ids[i].append(id[0])
+                                    elif len(id) == 0:
+                                        flError = 1
+                                        if not (player in unknown):
+                                            unknown[player] = 0
+                                        unknown[player] += 1
+                                        print('UNKNOWN ' + player)
+                                        if player == '':
                                             print('-------------------' + line0)
-                                        unknown[name] += 1
-                            id2 = []
-                            for name in name2:
-                                id = getPlayerId(''.join([i for i in name if not i.isdigit()]).strip().title().replace('ё','е').replace(',', ''), mId2G, wId2G)
-                                if type(id) == list:
-                                    if len(id) == 1:
-                                        id2.append(id[0])
                                     else:
-                                        print([name, id])
-                                        flName = 0
-                                else:
-                                    flName = 0
-                                    if (id == -2):
-                                        print(name)
-                                    else:
-                                        if not (name in unknown):
-                                            unknown[name] = 0
-                                        if name == '0':
-                                            print('-------------------' + line0)
-                                        unknown[name] += 1
+                                        flError = 1
+                                        print('MULTIPLE ' + player)
+                                        fl_mw = ''
+                                        for e in id:
+                                            fl_mw += e[0]
+                                        fl_mw = ''.join(sorted(set(list(fl_mw))))
+                                        if not (fl_mw + ' ' + player in multiple):
+                                            multiple[fl_mw + ' ' + player] = 0
+                                        multiple[fl_mw + ' ' + player] += 1
+
                             name1 = [''.join([i for i in name if not i.isdigit()]).strip().title().replace('ё','е').replace(',', '') for name in name1]
                             name2 = [''.join([i for i in name if not i.isdigit()]).strip().title().replace('ё','е').replace(',', '') for name in name2]
-                            if flName == 1:
+                            if flError == 0:
                                 matches.append(Match(compDate,
-                                                     [id1, id2],
+                                                     ids,
                                                      setsScore=setsScore,
                                                      time='',
                                                      compName=compName + ', ' + compPlace))
@@ -207,7 +203,12 @@ def main():
     #filename = r'\КЧР\2015-2016\men\Премьер-лига\4 тур\tabula-m-kchr-premer.-4-tur.4.tsv'
     #with open(dir + filename, encoding='utf-8') as fin:
     fout.close()
-    for k,v in sorted(unknown.items(), key = lambda x: x[1]):
+
+    print('\nMULTIPLE')
+    for k, v in sorted(multiple.items(), key=lambda x: -x[1]):
+        print([k, v])
+    print('\nUNKNOWN')
+    for k, v in sorted(unknown.items(), key=lambda x: -x[1]):
         print([k, v])
 
 if __name__ == "__main__":

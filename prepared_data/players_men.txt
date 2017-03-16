@@ -7,7 +7,7 @@ m6	Александр Бельский
 m7	Александр Боровик
 m8	Александр Дидух;Didukh Oleksandr
 m9	Александр Каракашевич;Karakasevic Aleksandar
-m10	Александр Ковалёв
+m10	Александр Ковалев
 m11	Александр Комов;KOMOV Alexander
 m12	Александр Косенок
 m13	Александр Курас
@@ -34,7 +34,7 @@ m33	Анвар Иманкадыров
 m34	Андрей Байбулдин;Baibuldin Andrei
 m35	Андрей Бондарев
 m36	Андрей Букин;BUKIN Andrey
-m37	Андрей Грачёв
+m37	Андрей Грачев
 m38	Андрей Карпов;KARPOV Andrei
 m39	Андрей Мазунов
 m40	Андрей Ситак;Sitak Andriy
@@ -66,7 +66,6 @@ m65	Влади Фурман
 m66	Владимир Бриль;BRIL Vladimir
 m67	Владислав Паламарчук
 m68	Владислав Сорбало
-m69	Владислав Стрешнёв
 m70	Вячеслав Буров;BUROV Viacheslav
 m71	Вячеслав Кривошеев;Krivosheev Viacheslav
 m72	Гай Еленский
@@ -122,7 +121,7 @@ m122	Йонатан Шустерман
 m123	Йони Байзаров
 m124	Карен Мовсисян
 m125	Кирилл Барабанов;Barabanov Kiryl
-m126	Кирилл Воробьев;Кирилл Воробьёв;Vorobev Kirill
+m126	Кирилл Воробьев;Кирилл Воробьев;Vorobev Kirill
 m127	Кирилл Самокиш;Samokysh Kyrylo
 m128	Константин Парапанов
 m129	Коу Лей;Kou Lei;Лей Коу
@@ -134,21 +133,20 @@ m134	Максим Ефройкин
 m135	Максим Лебедев
 m136	Максим Русаков
 m137	Максим Стулий;STULII Maksim
-m138	Максим Шмырев;Максим Шмырёв;Shmyrev Maxim
+m138	Максим Шмырев;Максим Шмырев;Shmyrev Maxim
 m139	Матан Ман
-m140	Матан Оли
+m140	Матан Оли;Оли Матан
 m141	Михаил Бардон;Bardon Michal
 m142	Михаил Гладышев;GLADYSHEV Mikhail
 m143	Михаил Зенкин
 m144	Михаил Пайков;Paikov Mikhail
-m145	Михаил Синев;Михаил Синёв
+m145	Михаил Синев;Михаил Синев
 m146	Михаил Хомутов;KHOMUTOV Mikhail
 m147	Мустафа Дениз;Дениз Мустафа
 m148	Надав Рехамим
 m149	Никита Иванов
 m150	Никита Котляров
 m151	Николай Тельной
-m152	Оли Матан
 m153	Омри Таль
 m154	Ор Башан
 m155	Ошер Ашкенази
@@ -157,8 +155,8 @@ m157	Павел Пульный;PULNYI Pavel
 m158	Павел Темногород
 m159	Петр Кауцки;Kaucky Petr
 m160	Петьо Крстев
-m161	Пётр Ким;Kim Petro
-m162	Пётр Федотов;Петр Федотов;Fedotov Petr
+m161	Петр Ким;Kim Petro
+m162	Петр Федотов;Петр Федотов;Fedotov Petr
 m163	Радослав Камберов;Kamberov Radoslav
 m164	Рамиль Мутыгуллин;MUTYGULLIN Ramil
 m165	Рафаэль Утыльский
@@ -167,7 +165,6 @@ m167	Рон Давидович
 m168	Рон Даймонд
 m169	Ронель Давидов
 m170	Руслан Гарифов
-m171	Семён Мелкуев
 m172	Сени Ионуц Стефан
 m173	Сергей Андрианов;ANDRIANOV Sergei
 m174	Сергей Афанасенко;Afanasenka Siarhei
@@ -217,7 +214,7 @@ m217	Кирилл Швец;SHVETC Kirill
 m218	Виталий Бродянский
 m219	Сергей Мокрополов
 m220	Никита Артеменко
-m221	Алексей Хмелёв
+m221	Алексей Хмелев
 m222	Циги Дикштейн
 m223	Вадим Кубов
 m224	Гай Кохли
@@ -402,7 +399,6 @@ m404	Роман Бортников
 m405	Игорь Курило
 m406	Худайберди Йулдашев
 m407	Юрий Повальчук
-m408	Алексей Хмелев
 m409	Александр Либацкий
 m410	Сергей Оларь
 m411	Сергей Гребнев
@@ -716,7 +712,7 @@ m719	Лауренс Тромер;Tromer Laurens
 m720	SHAO Yu
 m721	KLEPRLIK Michal
 m722	Патрик Баум;Baum Patrick
-m723	Юн Чжэ Ён;Yoon Jaeyoung
+m723	Юн Чжэ ен;Yoon Jaeyoung
 m724	SMITH Jared
 m725	RAPP Stefan
 m726	BINDAC Miroslav
@@ -759,7 +755,6 @@ m762	Ким Хек Бон;Kim Hyok Bong
 m763	TSE Ka Chun
 m764	LUGINGER Christian
 m765	LEE Sangjoon
-m766	WANG Xi
 m767	DOSZ Adam
 m768	SONBOL Islam
 m769	BHURTUN Ravi
@@ -888,7 +883,7 @@ m891	SOINE Samuli
 m892	JALAL Ameen
 m893	LAWSON-GAIZER Fessou
 m894	KIM Taeksoo
-m895	Андреа Ландрьё;Андреа Ландрю;Landrieu Andrea
+m895	Андреа Ландрье;Андреа Ландрю;Landrieu Andrea
 m896	SAKAMOTO Ryusuke
 m897	GAMBRA Jorge
 m898	Andersson Harald;Харальд Андерссон
@@ -964,7 +959,7 @@ m967	REILAND Herve
 m968	Krastev Petyo
 m969	TEMPERLEY Diego
 m970	BATORFI Zoltan
-m971	Ён Сан Ын;Jeong Sangeun
+m971	Ен Сан Ын;Jeong Sangeun
 m972	GAO Wei
 m973	PETE Zoltan
 m974	SARBAKHSHIAN Shahram
@@ -1000,7 +995,7 @@ m1003	PASSARA Pattaratorn
 m1004	Александр Ханин;Khanin Aliaksandr
 m1005	Drinkhall Paul;Пол Дринкхолл
 m1006	BERTIN Christophe
-m1007	WANG Yang;Янг Ванг
+m1007	WANG Yang;Янг Ванг;Ван Ян
 m1008	CHEN Chun-Hsiang
 m1009	Хуан Карлос Луперди;Luperdi Juan
 m1010	ABDULLAHI Abdulrahman
@@ -1350,7 +1345,7 @@ m1353	HACI Halil
 m1354	YUZAWA Ryo
 m1355	KASSAM Faazil
 m1356	EL-ZAROUNY Nabil
-m1357	Рётаро Огата;Ogata Ryotaro
+m1357	Ретаро Огата;Ogata Ryotaro
 m1358	Шади Магди;Magdy Shady
 m1359	PETROVCIC Janez
 m1360	Ли Янг;Li Yang
@@ -1519,7 +1514,6 @@ m1522	VNUKOV Artem;Артем Внуков
 m1523	HEIN Thibault
 m1524	BAHUAUD Jerome
 m1525	Ричард Выборны;Vyborny Richard
-m1526	Wang Zhixu;Ван Чжисюй
 m1527	Валентин Минин
 m1528	Kizukuri Yuto;Юто Кизукури
 m1529	XU Ruifeng
@@ -1573,7 +1567,7 @@ m1576	Филип Желько;Zeljko Filip;Филип Зелько
 m1577	YOKOYAMA Yuichi
 m1578	NILSSON Martin
 m1579	Oh Sangeun;О Сан Ын
-m1580	Kim Junghoon;Ким Ён Хун
+m1580	Kim Junghoon;Ким Ен Хун
 m1581	QIAN Haisong
 m1582	SUBRAMANYAM Raman
 m1583	SORENSEN Mads
@@ -1659,7 +1653,6 @@ m1662	CHOO Sim Guan
 m1663	CROTTI Mattia
 m1664	Патрик Затовка;Zatowka Patryk
 m1665	Кристоф Лего;Legout Christophe
-m1666	AHMED Saleh
 m1667	KIM Hyunmin
 m1668	Филипп Шиманский;Szymanski Filip
 m1669	Кристиан Карлссон;Karlsson Kristian
@@ -1678,7 +1671,6 @@ m1681	ASAMOAH Cyprian
 m1682	YANG Ying
 m1683	KESSOV Kostandin
 m1684	NAVAS Marco
-m1685	ZONENKO Valeriy;Zonenko Valeriy;Валерий Зоненко
 m1686	Рональд Реджеп;Redjep Ronald
 m1687	SLIEPEN Daan
 m1688	Чуан Чи-Юань;Chuang Chih-Yuan;Чуанг Ч-Ю
@@ -1715,7 +1707,7 @@ m1718	MORIN Robin
 m1719	Лоренцио Лупулеску;Lupulesku Lorencio
 m1720	Kang Dongsoo;Кан Дон Су
 m1721	GIANNINI Antonio
-m1722	Хунор Сёч;Szocs Hunor
+m1722	Хунор Сеч;Szocs Hunor
 m1723	RAISON Jerome
 m1724	GENG Shupeng
 m1725	BISRETH Pierre-Richard
@@ -2072,7 +2064,7 @@ m2075	AL-MAGAHWI Nabeel S
 m2076	Robles Alvaro;Альваро Роблес
 m2077	Алекссандр Валух;Valuch Alexander
 m2078	PITAKGULSIRI Suchat
-m2079	Park Ganghyeon;Ган Хён Пак
+m2079	Park Ganghyeon;Ган Хен Пак
 m2080	Юки Морита;Morita Yuki
 m2081	LEI Zhenhua
 m2082	VAKHTA Dmitry
@@ -2099,7 +2091,6 @@ m2102	YEH Chih-Wei
 m2103	Антуан Ашар;Hachard Antoine
 m2104	NILSSON Robert
 m2105	SORBALO Vladislav
-m2106	Wang Yang;Ван Ян
 m2107	SANYAOLOU Niyi
 m2108	BAEK Kwangil
 m2109	RI Chol Guk
@@ -2128,7 +2119,7 @@ m2131	CHMIEL Pawel
 m2132	FETH Stefan
 m2133	SEYAMA Tatsuo
 m2134	Абхишек Ядав;Yadav Abhishek
-m2135	Pak Sin Hyok;Пак Син Хёк
+m2135	Pak Sin Hyok;Пак Син Хек
 m2136	OLEJNIK Martin
 m2137	SEIBERT Jakub
 m2138	BAROUDI Saad
@@ -2142,7 +2133,6 @@ m2145	Доминик Хабесон;Habesohn Dominik
 m2146	TANG Kwok Kei
 m2147	OWEN Ryan
 m2148	Янош Якаб;Jakab Janos
-m2149	LI Ping
 m2150	Мохаммадреза Ахлагпасанд;Akhlaghpasand Mohammadreza
 m2151	WU Hao
 m2152	HAGERAATS Koen
@@ -2261,7 +2251,7 @@ m2264	Мирослав Горжейший;Horejsi Miroslav;Мирослав Хо
 m2265	VARIN Eric
 m2266	Yoshida Masaki;Масаки Йошида
 m2267	Янош Бенце Майорош;Majoros Bence;Бенце Майорош
-m2268	Ким Мин Хёк;Ким Минхеок;Kim Minhyeok
+m2268	Ким Мин Хек;Ким Минхеок;Kim Minhyeok
 m2269	DAVIDOVITZ Ron
 m2270	HAKANSSON Fredrik
 m2271	YANG Ce
@@ -2337,7 +2327,7 @@ m2340	MIHHEJEV Dmitri
 m2341	Томо Миядзаки;Miyazaki Tomo
 m2342	TACHALOV Anton;Антон Тачалов
 m2343	QIAN Cheng
-m2344	Park Chan-Hyeok;Пак Чан Хёк
+m2344	Park Chan-Hyeok;Пак Чан Хек
 m2345	Хьюго Кальдерано;Calderano Hugo
 m2346	SUAREZ Dino
 m2347	HU Bingtao
@@ -2411,7 +2401,7 @@ m2414	FANG Li
 m2415	KAYODE Bode
 m2416	Джу Се Хьюк;Joo Saehyuk
 m2417	Гроздан Грозданов;Grozdanov Grozdan
-m2418	Ким Дон Хён;Kim Donghyun
+m2418	Ким Дон Хен;Kim Donghyun
 m2419	Карлос Франко;Franco Carlos
 m2420	DORAN Christopher
 m2421	OZAWA Yoshihiro
@@ -2620,7 +2610,7 @@ m2623	SKOVSEN Mads
 m2624	LIU Miao
 m2625	Baggaley Andrew;Эндрю Бэггали
 m2626	KNOX Keith
-m2627	Маттиас Оверсё;Oversjo Mattias
+m2627	Маттиас Оверсе;Oversjo Mattias
 m2628	Robinot Quentin;Квентин Робино
 m2629	Томаш Конечны;Konecny Tomas
 m2630	Сюй Ин Бинь;Xu Yingbin

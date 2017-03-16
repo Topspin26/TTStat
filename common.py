@@ -1,53 +1,64 @@
+from selenium import webdriver
+import time
 
-def readPlayers(filename, flAll = 0):
-    players = dict()
-    with open(filename, 'r', encoding = 'utf-8') as fin:
-        for line in fin:
-            tokens = line.split('\t')
-            id = tokens[0].strip()
-            name = tokens[1].strip()
-            players[id] = name.split(';')
-            if flAll == 0:
-                players[id] = players[id][0]
-    return players
+def initDriver(url, sleepTime = 0, port = 5938):
+    driver = webdriver.Chrome('chromedriver_win32/chromedriver', port = port)
+    driver.get(url)
+    time.sleep(sleepTime)
+    return driver
 
-def readPlayersInv(filename):
-    players = dict()
-    players2 = dict()
-    with open(filename, 'r', encoding = 'utf-8') as fin:
-        for line in fin:
-            tokens = line.split('\t')
-            id = tokens[0].strip()
-            names = tokens[1].strip().split(';')
-            for name in names:
-                players[name] = id
-                players[name.title()] = id
-                tn = name.split(' ')
-                if len(tn) > 1:
-                    if name[0] >= 'A' and name[0] <= 'Z':
-                        arr = [name, name.title(), tn[0], tn[0] + ' ' + ' '.join([(e[0] + '.') for e in tn[1:]]), tn[0] + ' ' + ' '.join([(e[0]) for e in tn[1:]])]
-                    else:
-                        arr = [name, name.title(), tn[1], tn[1] + ' ' + ' '.join([(e[0] + '.') for e in [tn[0]] + tn[2:]]), tn[1] + ' ' + ' '.join([(e[0]) for e in [tn[0]] + tn[2:]])]
-                    if len(tn) == 2:
-                        arr.append(tn[1] + ' ' + tn[0])
-                else:
-                    arr = [name]
-                for short_player in arr:
-                    if not (short_player in players2):
-                        players2[short_player] = [id]
-                    else:
-                        players2[short_player].append(id)
-                        players2[short_player] = list(set(players2[short_player]))
-    return (players, players2)
+class GlobalPlayersDict():
+    def __init__(self):
+        self.name2id = dict()
+        self.name2id2 = dict()
+        self.id2names = dict()
+        filenames = {'m': r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_men.txt',
+                     'w': r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_women.txt'}
+        for mw in ['m', 'w']:
+            with open(filenames[mw], 'r', encoding='utf-8') as fin:
+                for line in fin:
+                    tokens = line.split('\t')
+                    id = tokens[0].strip()
+                    names = tokens[1].strip().split(';')
+                    if id in self.id2names:
+                        print(id)
+                        raise
+                    self.id2names[id] = names
+                    for name in names:
+                        name = name.replace('ё', 'е').lower()
+                        if self.name2id.get(name, id) != id:
+                            print('Bad name ' + name)
+                            if not (name in {'yang ying', 'li xiang'}):
+                                raise
+                        self.name2id[name] = id
+                        tn = name.split(' ')
+                        if len(tn) > 1:
+                            if name[0] >= 'a' and name[0] <= 'z':
+                                arr = [name, name.title(), tn[0],
+                                       tn[0] + ' ' + ' '.join([(e[0] + '.') for e in tn[1:]]),
+                                       tn[0] + ' ' + ' '.join([(e[0]) for e in tn[1:]])]
+                            else:
+                                arr = [name, name.title(), tn[1], tn[1] + ' ' + ' '.join([(e[0] + '.') for e in [tn[0]] + tn[2:]]),
+                                       tn[1] + ' ' + ' '.join([(e[0]) for e in [tn[0]] + tn[2:]])]
+                            if len(tn) == 2:
+                                arr.append(tn[1] + ' ' + tn[0])
+                        else:
+                            arr = [name]
+                        for short_player in arr:
+                            short_player = short_player.lower()
+                            if not (short_player in self.name2id2):
+                                self.name2id2[short_player] = [id]
+                            else:
+                                self.name2id2[short_player].append(id)
+                                self.name2id2[short_player] = list(set(self.name2id2[short_player]))
 
-def getPlayerId(player, men2_players, women2_players):
-    if (player in men2_players) and not (player in women2_players):
-        return men2_players[player]
-    if not (player in men2_players) and (player in women2_players):
-        return women2_players[player]
-    if not (player in men2_players) and not (player in women2_players):
-        return -1
-    return -2
+    def getId(self, name):
+        name = name.lower().replace('ё', 'е').replace('^', '').replace(',', '').strip()
+        return self.name2id2.get(name, [])
+    def getName(self, id):
+        return self.id2names[id][0]
+    def getNames(self, id):
+        return self.id2names[id]
 
 def readCorrections(filename):
     corrections = dict()
