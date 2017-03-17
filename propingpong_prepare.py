@@ -11,84 +11,58 @@ def readPlayersRankings(dirname):
                 playersRankings[f[:7] + '\t' + tokens[0]] = tokens[1:]
     return playersRankings
 
-def main():
+def updateGlobalPlayersDict(newId2names):
+    playersDict = GlobalPlayersDict()
 
-    filenameGlobalPlayersMen = r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_men.txt'
-    (mIdG, mId2G) = readPlayersInv(filenameGlobalPlayersMen)
-    filenameGlobalPlayersWomen = r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_women.txt'
-    (wIdG, wId2G) = readPlayersInv(filenameGlobalPlayersWomen)
+    maxV = {'men': playersDict.getMaxId('m') + 1,
+            'women': playersDict.getMaxId('w') + 1,}
 
-    mId = readPlayers(filenameGlobalPlayersMen, flAll = 1)
-    wId = readPlayers(filenameGlobalPlayersWomen, flAll = 1)
-
-    maxV = {'men': max([int(e[1:]) for e in mIdG.values()]) + 1,
-            'women': max([int(e[1:]) for e in wIdG.values()]) + 1}
-    print(maxV)
-    newPlayers = {'men': dict(), 'women': dict()}
-    id2Name = {'men': dict(), 'women': dict()}
-    idRus2Name = {'men': dict(), 'women': dict()}
-    idIttf2Name = {'men': dict(), 'women': dict()}
     for mw in ['men', 'women']:
-        with open('data/propingpong/propingpong_players_' + mw + '.txt', encoding = 'utf-8') as fin:
-            for line in fin:
-                tokens = line.split('\t')
-                tokens[2] = tokens[2].strip()
-                key = tokens[1] + '\t' + tokens[2]
-                if key in id2Name[mw]:
-                    id2Name[mw][key].append(tokens[0])
-                else:
-                    id2Name[mw][key] = [tokens[0]]
-                if tokens[1] != '':
-                    if tokens[1] in idRus2Name[mw]:
-                        idRus2Name[mw][tokens[1]].append(tokens[0])
-                    else:
-                        idRus2Name[mw][tokens[1]] = [tokens[0]]
-                if tokens[2] != '':
-                    if tokens[2] in idIttf2Name[mw]:
-                        idIttf2Name[mw][tokens[2]].append(tokens[0])
-                    else:
-                        idIttf2Name[mw][tokens[2]] = [tokens[0]]
-
-            dd = mIdG
-            d = mId
-            if mw == 'women':
-                dd = wIdG
-                d = wId
-            for k,v in id2Name[mw].items():
+            for k, v in newId2names[mw].items():
                 name = None
+                id = None
                 for e in v:
-                    if e in dd:
+                    id = playersDict.getId(e, 0)
+                    if not (id is None):
                         name = e
                         break
                 if (name is None):
-                    newPlayers[mw][';'.join(v)] = mw[0] + str(maxV[mw])
+                    playersDict.setId2Names(mw[0] + str(maxV[mw]), v)
                     maxV[mw] += 1
                 else:
-                    #print((k, v, name, d[dd[name]]))
+                    #print(v)
                     for e in v:
-                        if not (e in d[dd[name]]):
-                            d[dd[name]].append(e)
-                    #print(d[dd[name]])
+                        playersDict.updateId2names(id, e)
+
+    for mw in ['m', 'w']:
+        with open(playersDict.filenames[mw], 'w', encoding='utf-8') as fout:
+            for k, v in sorted(playersDict.id2names.items(), key=lambda x: int(x[0][1:])):
+                if k[0] == mw:
+                    fout.write(k + '\t' + ';'.join(v) + '\n')
 
 
-    with open(filenameGlobalPlayersMen, 'w', encoding='utf-8') as fout:
-        for k,v in sorted(mId.items(), key = lambda x: int(x[0][1:])):
-            fout.write(k + '\t' + ';'.join(v) + '\n')
+def main():
 
-        for k,v in sorted(newPlayers['men'].items(), key = lambda x: int(x[1][1:])):
-            fout.write(v + '\t' + k + '\n')
+    rusId2names = {}
+    ittfId2names = {}
+    for mw in ['men', 'women']:
+        ittfId2names[mw] = dict()
+        with open('data/propingpong/propingpong_ittfId2names_' + mw + '.txt', 'r', encoding='utf-8') as fin:
+            for line in fin:
+                tokens = line.split('\t')
+                ittfId2names[mw][tokens[0]] = tokens[1].strip().split(';')
+        rusId2names[mw] = dict()
+        with open('data/propingpong/propingpong_rusId2names_' + mw + '.txt', 'r', encoding='utf-8') as fin:
+            for line in fin:
+                tokens = line.split('\t')
+                rusId2names[mw][tokens[0]] = tokens[1].strip().split(';')
 
-    with open(filenameGlobalPlayersWomen, 'w', encoding='utf-8') as fout:
-        for k, v in sorted(wId.items(), key=lambda x: int(x[0][1:])):
-            fout.write(k + '\t' + ';'.join(v) + '\n')
+    updateGlobalPlayersDict(rusId2names)
+    updateGlobalPlayersDict(ittfId2names)
 
-        for k, v in sorted(newPlayers['women'].items(), key=lambda x: int(x[1][1:])):
-            fout.write(v + '\t' + k + '\n')
+#    playersDict = GlobalPlayersDict()
 
-
-    (mIdG, mId2G) = readPlayersInv(filenameGlobalPlayersMen)
-    (wIdG, wId2G) = readPlayersInv(filenameGlobalPlayersWomen)
-
+    '''
     rusRankings = readPlayersRankings('data/propingpong/ranking_rus')
     print(idRus2Name)
     id2G = dict()
@@ -148,6 +122,7 @@ def main():
             else:
                 badIds.add(arr[1])
     print("badIttfPlayers: " + str(badIds))
+    '''
 
 if __name__ == "__main__":
     main()

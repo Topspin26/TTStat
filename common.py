@@ -12,10 +12,10 @@ class GlobalPlayersDict():
         self.name2id = dict()
         self.name2id2 = dict()
         self.id2names = dict()
-        filenames = {'m': r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_men.txt',
-                     'w': r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_women.txt'}
+        self.filenames = {'m': r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_men.txt',
+                          'w': r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_women.txt'}
         for mw in ['m', 'w']:
-            with open(filenames[mw], 'r', encoding='utf-8') as fin:
+            with open(self.filenames[mw], 'r', encoding='utf-8') as fin:
                 for line in fin:
                     tokens = line.split('\t')
                     id = tokens[0].strip()
@@ -23,42 +23,66 @@ class GlobalPlayersDict():
                     if id in self.id2names:
                         print(id)
                         raise
-                    self.id2names[id] = names
-                    for name in names:
-                        name = name.replace('ё', 'е').lower()
-                        if self.name2id.get(name, id) != id:
-                            print('Bad name ' + name)
-                            if not (name in {'yang ying', 'li xiang'}):
-                                raise
-                        self.name2id[name] = id
-                        tn = name.split(' ')
-                        if len(tn) > 1:
-                            if name[0] >= 'a' and name[0] <= 'z':
-                                arr = [name, name.title(), tn[0],
-                                       tn[0] + ' ' + ' '.join([(e[0] + '.') for e in tn[1:]]),
-                                       tn[0] + ' ' + ' '.join([(e[0]) for e in tn[1:]])]
-                            else:
-                                arr = [name, name.title(), tn[1], tn[1] + ' ' + ' '.join([(e[0] + '.') for e in [tn[0]] + tn[2:]]),
-                                       tn[1] + ' ' + ' '.join([(e[0]) for e in [tn[0]] + tn[2:]])]
-                            if len(tn) == 2:
-                                arr.append(tn[1] + ' ' + tn[0])
-                        else:
-                            arr = [name]
-                        for short_player in arr:
-                            short_player = short_player.lower()
-                            if not (short_player in self.name2id2):
-                                self.name2id2[short_player] = [id]
-                            else:
-                                self.name2id2[short_player].append(id)
-                                self.name2id2[short_player] = list(set(self.name2id2[short_player]))
+                    self.setId2Names(id, names)
 
-    def getId(self, name):
+    def setId2Names(self, id, names):
+        self.id2names[id] = names
+        self.updateInv(id)
+
+    def updateInv(self, id):
+        names = self.id2names[id]
+        for name in names:
+            name = name.lower().replace('ё', 'е')
+            if self.name2id.get(name, id) != id:
+                print('Bad name ' + name)
+                if not (name in {'yang ying', 'li xiang'}):
+                    raise
+            self.name2id[name] = id
+            tn = name.split(' ')
+            if len(tn) > 1:
+                if name[0] >= 'a' and name[0] <= 'z':
+                    arr = [name, name.title(), tn[0],
+                           tn[0] + ' ' + ' '.join([(e[0] + '.') for e in tn[1:]]),
+                           tn[0] + ' ' + ' '.join([(e[0]) for e in tn[1:]])]
+                else:
+                    arr = [name, name.title(), tn[1], tn[1] + ' ' + ' '.join([(e[0] + '.') for e in [tn[0]] + tn[2:]]),
+                           tn[1] + ' ' + ' '.join([(e[0]) for e in [tn[0]] + tn[2:]])]
+                if len(tn) == 2:
+                    arr.append(tn[1] + ' ' + tn[0])
+            else:
+                arr = [name]
+            for short_player in arr:
+                short_player = short_player.lower()
+                if not (short_player in self.name2id2):
+                    self.name2id2[short_player] = [id]
+                else:
+                    self.name2id2[short_player].append(id)
+                    self.name2id2[short_player] = list(set(self.name2id2[short_player]))
+
+    def getId(self, name, fl = 1):
         name = name.lower().replace('ё', 'е').replace('^', '').replace(',', '').strip()
-        return self.name2id2.get(name, [])
+        if fl == 1:
+            return self.name2id2.get(name, [])
+        return self.name2id.get(name, None)
+
     def getName(self, id):
         return self.id2names[id][0]
+
     def getNames(self, id):
         return self.id2names[id]
+
+    def getMaxId(self, mw):
+        res = 0
+        for e in self.id2names:
+            if e[0] == mw:
+                res = max(res, int(e[1:]))
+        return res
+
+    def updateId2names(self, id, name):
+        name = name.replace('ё', 'е').replace('Ё', 'Е')
+        if self.getId(name, 0) is None:
+            self.setId2Names(id, self.id2names[id] + [name])
+
 
 def readCorrections(filename):
     corrections = dict()

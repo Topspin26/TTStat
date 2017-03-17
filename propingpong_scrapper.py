@@ -7,13 +7,8 @@ import random
 import re
 import os
 from os import walk
+from common import *
 
-
-def initDriver(url):
-    driver = webdriver.Chrome('chromedriver_win32/chromedriver', port = 5938)
-    driver.get(url)
-    #time.sleep(2) # Let the user actually see something!
-    return driver
 
 '''
 def scrappTournament(curDate, url):
@@ -184,9 +179,7 @@ def updateRusRankings(mw, driver, playersRankings):
             driver.get(url)
             table = driver.find_elements_by_xpath('//*//table[@class = "main"]')
 
-        tr = table[1].find_element_by_xpath('//tr')
-#        for tr in trs:
-        tds = tr.find_elements_by_xpath('//td[@class = "main"]') + tr.find_elements_by_xpath('//td[@class = "mainempty"]') 
+        tds = table[1].find_element_by_xpath('//tr//td')
         for i in range(0, len(tds), 4):
             print(i)
             idate = tds[i].text + '-' + str(months[tds[i + 1].text]).zfill(2)
@@ -212,87 +205,254 @@ def updateRusRanking():
         updateRusRankings(mw, driver, playersRankings)
         driver.quit()
 
-def getIttfRankings(mw, driver, year, month):
-    tds = driver.find_elements_by_xpath('//*//table[@class = "main"][@width="98%"]//tr//td')
-    playerId = None
-    playerRating = None
-    res = dict()
-    ths = driver.find_elements_by_xpath('//*//table[@class = "main"][@width="98%"]//tr//th')
-    numCols = 8
-    indName = 4
-    indR = 7
-    if len(ths) == 7:
-        numCols = 10
-        indName = 5
-        indR = 8
-    for i,td in enumerate(tds[4:]):
-#        print(i, td.get_attribute('innerHTML')[:100].replace('\n', ' '))
-        if i % numCols == indName:
+def getIttfRankings(mw, year, month):
+    url = 'http://propingpong.ru/rating_ittf.php?gender=' + str(int(mw == 'men')) + '&&page=1&sortby=undefined&year=' + str(year) + '&month=' + str(month)
+    try:
+        driver = initDriver(url)
+        pagesCnt = int(driver.find_elements_by_xpath('//*[@class = "pagination"]')[0].find_elements(By.TAG_NAME, 'a')[-2].get_attribute('innerHTML'))
+    except:
+        driver = initDriver(url)
+        pagesCnt = int(driver.find_elements_by_xpath('//*[@class = "pagination"]')[0].find_elements(By.TAG_NAME, 'a')[-2].get_attribute('innerHTML'))
+
+    rankings = dict()
+    ittfid2names = dict()
+    if driver.find_element_by_xpath('//*//select[@id = "date"]//option[@selected = ""]').get_attribute('innerHTML')[-7:] != str(month).zfill(2) + '.' + str(year):
+        print('bad date ' + str(month).zfill(2) + '.' + str(year))
+    else:
+        ids = [set(), set()]
+        for page in range(1, pagesCnt + 1):
             try:
-                playerId = td.get_attribute('innerHTML').split('ittfid=')[1].split('">')[0]
+                driver.get(url + '&page=' + str(page))
+                driver.find_element_by_xpath('//*//a[@class = "setruslang"]').click()
             except:
-                playerId = None
-        if i % numCols == indR:
-            if not (playerId is None):
-                playerRating = int(td.get_attribute('innerHTML'))
-                res[playerId] = playerRating
-#            print((playerId, playerRating))
-    return res
+                driver = initDriver(url + '&page=' + str(page))
+                driver.find_element_by_xpath('//*//a[@class = "setruslang"]').click()
+
+            for ii in range(2):
+                rows = driver.find_elements_by_xpath('//*[@class = "table"]')[1].find_elements_by_xpath('//*[@class = "row"]')
+                for i,row in enumerate(rows[1:]):
+                    s = row.get_attribute('innerHTML')
+                    #print(s)
+                    playerId = s.split('ittfid=')[1].split('">')[0]
+                    playerName = s.split('ittfid=')[1].split('>')[1].split('<')[0]
+                    playerRating = int(s.split('country=')[1].split('</div>')[1].split('>')[-1])
+                    #print([playerId, playerName, playerRating])
+                    rankings[playerId] = playerRating
+                    if not (playerId in ittfid2names):
+                        ittfid2names[playerId] = []
+                    if not (playerName in ittfid2names[playerId]):
+                        ittfid2names[playerId].append(playerName)
+                    if playerId in ids[ii]:
+                        print([page, playerName])
+                    ids[ii].add(playerId)
+                if ii == 0:
+                    driver.find_element_by_xpath('//*//a[@class = "setenglang"]').click()
+            print([page, len(rankings)])
+    driver.quit()
+
+    return [rankings, ittfid2names]
 
 def updateIttfRanking():
     curDate = datetime.datetime.now().date().strftime("%Y-%m-%d")
     for mw in ['men', 'women']:
-#    for mw in ['men']:
-        #    for mw in ['women']:
+        ittfId2names = dict()
+        with open('data/propingpong/propingpong_ittfId2names_' + mw + '.txt', 'r', encoding='utf-8') as fin:
+            for line in fin:
+                tokens = line.split('\t')
+                ittfId2names[tokens[0]] = tokens[1].strip().split(';')
+
         for year in range(2001,2018):
             for month in range(1, 13):
-                if str(year) + '-' + str(month).zfill(2) >= curDate:
+                if str(year) + '-' + str(month).zfill(2) > curDate:
                     break
                 filename = 'data/propingpong/ranking_ittf/' + str(year) + '-' + str(month).zfill(2) + '_' + mw + '.txt'
                 if not os.path.exists(filename):
-                    url = 'http://propingpong.ru/rating_ittf.php?gender=' + str(int(mw == 'men')) + '&&page=1&sortby=undefined&year=' + str(year - 1) + '&month=' + str(month)
-                    driver = initDriver(url)
-                    playersDict = updateIttfPlayers(mw, driver)
-                    r = getIttfRankings(mw, driver, year, month)
-                    with open(filename, 'w', encoding='utf-8') as fout:
-                        lastR = -1
-                        rank = 0
-                        i = 0
-                        for k,v in sorted(r.items(), key = lambda x: -x[1]):
-                            i += 1
-                            if lastR != v:
-                                rank = i
-                                lastR = v
-                            fout.write('\t'.join([k, str(v), str(rank)]) + '\n')
-                    driver.quit()
-                '''
-                else:
-                    r = dict()
-                    with open(filename, 'r', encoding='utf-8') as fin:
-                        for line in fin:
-                            tokens = line.strip().split('\t')
-                            r[tokens[0]] = int(tokens[1])
+                    rankings, year_month_ittfid2names = getIttfRankings(mw, year, month)
+
+                    for id,names in year_month_ittfid2names.items():
+                        if not (id in ittfId2names):
+                            print('NEW ID ' + id + '\t' + ';'.join(names))
+                            ittfId2names[id] = names
+                        elif ';'.join(sorted(ittfId2names[id])) != ';'.join(sorted(names)):
+                            for name in names:
+                                if not (name in ittfId2names[id]):
+                                    ittfId2names[id].append(name)
+                                    print('CHANGED ID ' + id + '\t' + ';'.join(ittfId2names[id]) + '\t' + ';'.join(names))
+
+                    with open('data/propingpong/propingpong_ittfId2names_' + mw + '.txt', 'w', encoding='utf-8') as fout:
+                        for e in sorted(ittfId2names.items(), key=lambda x: x[0]):
+                            fout.write(e[0] + '\t' + ';'.join(e[1]) + '\n')
 
                     with open(filename, 'w', encoding='utf-8') as fout:
                         lastR = -1
                         rank = 0
                         i = 0
-                        for k,v in sorted(r.items(), key = lambda x: -x[1]):
+                        for k,v in sorted(rankings.items(), key = lambda x: -x[1]):
                             i += 1
                             if lastR != v:
                                 rank = i
                                 lastR = v
                             fout.write('\t'.join([k, str(v), str(rank)]) + '\n')
-                '''
+
+def changeScript():
+    for mw in ['men', 'women']:
+        rusId2names = dict()
+        ittfId2names = dict()
+        with open('data/propingpong/propingpong_players_' + mw + '.txt', 'r', encoding='utf-8') as fin:
+            for line in fin:
+                tokens = line.split('\t')
+                tokens = [e.strip() for e in tokens]
+                if len(tokens[1]) > 0:
+                    if not tokens[1] in rusId2names:
+                        rusId2names[tokens[1]] = []
+                    rusId2names[tokens[1]].append(tokens[0])
+                if len(tokens[2]) > 0:
+                    if not tokens[2] in ittfId2names:
+                        ittfId2names[tokens[2]] = []
+                    ittfId2names[tokens[2]].append(tokens[0])
+        #print(ittfId2names['25040772'])
+        with open('data/propingpong/propingpong_ittfId2names_' + mw + '.txt', 'w', encoding='utf-8') as fout:
+            for e in sorted(ittfId2names.items(), key = lambda x: x[0]):
+                fout.write(e[0] + '\t' + ';'.join(e[1]) + '\n')
+        with open('data/propingpong/propingpong_rusId2names_' + mw + '.txt', 'w', encoding='utf-8') as fout:
+            for e in sorted(rusId2names.items(), key=lambda x: x[0]):
+                fout.write(e[0] + '\t' + ';'.join(e[1]) + '\n')
+
+def parseAllRusPlayers(left = 1, right = 1000):
+    '''
+    rusId2names = dict()
+    for mw in ['men', 'women']:
+        with open('data/propingpong/propingpong_ittfId2names_' + mw + '.txt', 'r', encoding='utf-8') as fin:
+            for line in fin:
+                tokens = line.split('\t')
+                rusId2names[tokens[0]] = tokens[1].strip().split(';')
+    '''
+
+    driver = initDriver('http://propingpong.ru')
+    for id in range(left, right + 1):
+        try:
+            url = 'http://propingpong.ru/profile.php?id=' + str(id)
+            try:
+                driver.get(url)
+                rows = driver.find_elements_by_xpath('//*[@class = "table"]')[0].find_elements_by_xpath('//*[@class = "row"]')
+            except:
+                try:
+                    driver.quit()
+                except:
+                    pass
+                driver = initDriver(url)
+                rows = driver.find_elements_by_xpath('//*[@class = "table"]')[0].find_elements_by_xpath('//*[@class = "row"]')
+
+            playerName = driver.find_elements(By.TAG_NAME, 'h3')[0].text
+            countryInd = -1
+            for ir, row in enumerate(rows):
+                arr = row.get_attribute('innerHTML').split('country=')
+                if len(arr) == 2:
+                    countryInd = ir
+                    break
+            if countryInd == -1:
+                print([id, playerName, 'bad'])
+                continue
+            mw = 'men'
+            if rows[countryInd].get_attribute('innerHTML').find('gender=1') == -1:
+                mw = 'women'
+            country = rows[countryInd].get_attribute('innerHTML').split('country=')[1].split('">')[0]
+
+            town = region = district = year = ''
+            for row in rows[(countryInd + 1):(countryInd + 6)]:
+                s = row.get_attribute('innerHTML')
+                if s.find('Населённый пункт') != -1:
+                    town = s.split('settlement=')[1].split('">')[0]
+                elif s.find('Регион') != -1:
+                    region = s.split('area=')[1].split('">')[0]
+                elif s.find('Федеральный округ') != -1:
+                    district = s.split('district=')[1].split('">')[0]
+                elif s.find('Год рождения') != -1:
+                    year = s.split('">')[2].split('<')[0]
+            print([id, playerName, mw, country, district, region, town, year])
+
+            url = 'http://propingpong.ru/alldata.php?player=' + str(id)
+            try:
+                driver.get(url)
+                table = driver.find_elements_by_xpath('//*//table[@class = "main"]')[1]
+            except:
+                try:
+                    driver.quit()
+                except:
+                    pass
+                driver = initDriver(url)
+                table = driver.find_elements_by_xpath('//*//table[@class = "main"]')[1]
+
+            try:
+                tds = table.find_elements_by_xpath('//tr//td')
+                rankings = dict()
+                for i in range(5, len(tds), 4):
+                    idate = tds[i].get_attribute('innerHTML') + '-' + str(months[tds[i + 1].get_attribute('innerHTML')]).zfill(2)
+                    rt = tds[i + 2].get_attribute('innerHTML')
+                    rg = tds[i + 3].get_attribute('innerHTML')
+                    rankings[idate] = [str(id), rt, rg]
+
+                for idate, values in rankings.items():
+                    with open('data/propingpong/ranking_rus/' + idate + '_' + mw + '.txt', 'a', encoding='utf-8') as fout:
+                        fout.write('\t'.join(values) + '\n')
+                with open('data/propingpong/propingpong_rusId2names_' + mw + '.txt', 'a', encoding='utf-8') as fout:
+                    fout.write('\t'.join([str(id), playerName]) + '\n')
+                with open('data/propingpong/propingpong_rusId2info_' + mw + '.txt', 'a', encoding='utf-8') as fout:
+                    fout.write('\t'.join([str(id), country, district, region, town, year]) + '\n')
+            except:
+                print('bad ranking')
+        except:
+            pass
+        #break
+    driver.quit()
+
+def findMWErrors():
+    mw = 'men'
+    ids = set()
+    id2name = dict()
+    with open('data/propingpong/propingpong_rusId2names_' + mw + '.txt', encoding='utf-8') as fin:
+        for line in fin:
+            tokens = line.strip('\n').split('\t')
+            ids.add(tokens[0])
+            id2name[tokens[0]] = tokens[1]
+
+    with open('data/propingpong/propingpong_rusId2info_' + mw + '.txt', encoding='utf-8') as fin:
+        for line in fin:
+            tokens = line.strip('\n').split('\t')
+            if tokens[5] == '':
+                print([line, id2name[tokens[0]]])
+
+    for f in os.listdir('data/propingpong/ranking_rus'):
+        if f.find('_' + mw) != -1:
+            with open('data/propingpong/ranking_rus/' + f, 'r', encoding='utf-8') as fin:
+                lines = []
+                linesSet = set()
+                for line in fin:
+                    tokens = line.split('\t')
+                    tokens = [e.strip() for e in tokens]
+                    if not (tokens[0] in ids):
+                        print(line)
+                        continue
+                    if line in linesSet:
+                        print(line)
+                        continue
+                    lines.append(line)
+                    linesSet.add(line)
+            #with open('data/propingpong/ranking_rus/' + f, 'w', encoding='utf-8') as fout:
+            #    for line in lines:
+            #        fout.write(line)
 
 
 def main():
+    findMWErrors()
+    #parseAllRusPlayers(18801, 19800)
+#    getIttfRankings('men', 2005, 5)
 
-    updateIttfRanking()
-    updateRusRanking()
+    #updateIttfRanking()
+#    updateRusRanking()
 
 
-    '''
+'''
     for f in walk('data/propingpong/ranking_rus'):
         for ff in f[2]:
             print(ff)
