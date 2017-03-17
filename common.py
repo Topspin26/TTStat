@@ -33,11 +33,15 @@ class GlobalPlayersDict():
         names = self.id2names[id]
         for name in names:
             name = name.lower().replace('ё', 'е')
-            if self.name2id.get(name, id) != id:
-                print('Bad name ' + name)
-                if not (name in {'yang ying', 'li xiang'}):
-                    raise
-            self.name2id[name] = id
+            name_tokens = name.split(' ')
+            name1 = ' '.join(name_tokens[1:]) + ' ' + name_tokens[0]
+            for tname in [name, name1]:
+                if self.name2id.get(tname, id) != id:
+                    print('Bad name ' + tname + ' '  + self.name2id.get(tname, id) + ' ' + id)
+                    if not (tname in {'yang ying', 'ying yang', 'li xiang', 'xiang li', 'yang min', 'min yang'}):
+                        raise
+                self.name2id[tname] = id
+
             tn = name.split(' ')
             if len(tn) > 1:
                 if name[0] >= 'a' and name[0] <= 'z':

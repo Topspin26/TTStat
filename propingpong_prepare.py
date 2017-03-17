@@ -27,6 +27,7 @@ def updateGlobalPlayersDict(newId2names):
                         name = e
                         break
                 if (name is None):
+                    print(v, playersDict.getId(e, 0))
                     playersDict.setId2Names(mw[0] + str(maxV[mw]), v)
                     maxV[mw] += 1
                 else:
@@ -49,11 +50,13 @@ def main():
         ittfId2names[mw] = dict()
         with open('data/propingpong/propingpong_ittfId2names_' + mw + '.txt', 'r', encoding='utf-8') as fin:
             for line in fin:
+                line = line.replace('&nbsp;', ' ')
                 tokens = line.split('\t')
                 ittfId2names[mw][tokens[0]] = tokens[1].strip().split(';')
         rusId2names[mw] = dict()
         with open('data/propingpong/propingpong_rusId2names_' + mw + '.txt', 'r', encoding='utf-8') as fin:
             for line in fin:
+                line = line.replace('&nbsp;', ' ')
                 tokens = line.split('\t')
                 rusId2names[mw][tokens[0]] = tokens[1].strip().split(';')
 
