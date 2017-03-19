@@ -1,14 +1,37 @@
+import hashlib
+import numpy as np
+from common import *
 
 class MatchBet:
-    def __init__(self, eventId, rows, dt, compName, players, score, bet_win):
+    def __init__(self, eventId, rows, dt, compName, players, ts, score, bet_win):
         self.eventId = eventId
         self.rows = rows
         self.dt = dt
         self.compName = compName
         self.players = players
+        self.ts = ts
         self.score = score
         self.bet_win = bet_win
- 
+
+    def merge(self, matchBet):
+        if self.compName != matchBet.compName:
+            print(self.compName, matchBet.compName)
+#            raise
+        if ';'.join(self.players[0]) != ';'.join(matchBet.players[0]):
+            raise
+        if ';'.join(self.players[1]) != ';'.join(matchBet.players[1]):
+            raise
+        if self.dt < matchBet.dt:
+            self.ts = self.ts + matchBet.ts
+            self.score = self.score + matchBet.score
+            self.bet_win = self.bet_win + matchBet.bet_win
+        else:
+            self.dt = matchBet.dt
+            self.ts = matchBet.ts + self.ts
+            self.score = matchBet.score + self.score
+            self.bet_win = matchBet.bet_win + self.bet_win
+
+
 class Player:
     def __init__(self, id, names, mw):
         self.id = id
@@ -86,8 +109,8 @@ class Match:
         if not (source in self.sources):
             self.sources.append(source)
 
-    def getKey(self):
-        return ';'.join([self.date, ' '.join(self.players[0]), ' '.join(self.players[1]), str(self.setsScore).strip(';'), str(self.pointsScore).strip(';')])
+    def getHash(self):
+        return calcHash([self.date] + self.players[0] + self.players[1] + self.sets + [e * i for i,e in enumerate(Match.getSetSumPoints(self.points))])
 
     def reverse(self):
         matchReversed = Match(self.date, [self.players[1].copy(), self.players[0].copy()])
@@ -100,6 +123,7 @@ class Match:
 
     def toStr(self):
         return '\t'.join([self.date, self.time, self.compName, ';'.join(self.players[0]), ';'.join(self.players[1]), self.setsScore, self.pointsScore])
+
     def toArr(self):
         return [self.date, self.time, self.compName, ';'.join(self.players[0]), ';'.join(self.players[1]), self.setsScore, self.pointsScore]
 
@@ -174,7 +198,15 @@ class Match:
                         '4:0', '4:1', '4:2', '4:3', '3:4', '2:4', '1:4', '0:4'}
         return res
 
+    @staticmethod
+    def getSetSumPoints(points):
+        if (points is None):
+            return [0, 0]
+        return np.array(points[0]) + np.array(points[1])
+
     def getSumPoints(self):
+        if (self.points is None):
+            return [0, 0]
         return [sum(self.points[0]), sum(self.points[1])]
 
     def getTotalPoints(self):

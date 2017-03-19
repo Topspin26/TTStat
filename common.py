@@ -1,11 +1,20 @@
 from selenium import webdriver
 import time
+import hashlib
 
 def initDriver(url, sleepTime = 0, port = 5938):
     driver = webdriver.Chrome('chromedriver_win32/chromedriver', port = port)
     driver.get(url)
     time.sleep(sleepTime)
     return driver
+
+def calcHash(arr):
+    res = 0
+    for e in arr:
+        res ^= int(hashlib.md5(str(e).encode()).hexdigest(), 16)
+    res = (res // (1 << 32)) ^ (res % (1 << 32))
+    return res
+
 
 class GlobalPlayersDict():
     def __init__(self):
