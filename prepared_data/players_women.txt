@@ -103,7 +103,7 @@ w102	Ольга Куп
 w103	Ольга Лососовская;Lososovskaya Olga
 w104	Ольга Михайлова
 w106	Ольга Овчинникова;Ольга Коренькова;OVCHINNIKOVA Olga
-w107	Ольга Шишмарева;Ольга Шишмарева;SHISHMAREVA Olga
+w107	Ольга Шишмарева;SHISHMAREVA Olga
 w108	Петра Ловаш;Петра Ловас;Lovas Petra
 w109	Полина Гусар;Gusar Polina
 w110	Полина Куниченко
