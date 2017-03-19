@@ -24,8 +24,8 @@ def readPlayersRankings(filename):
 
 class TTModel:
     def __init__(self):
-        self.matches_columns = ['Дата', 'Время', 'Турнир', 'id1', 'Участник1', 'id2', 'Участник2', 'Счет', 'Очки']
-        self.matches_dtypes = ['string'] * 9
+        self.matches_columns = ['Дата', 'Время', 'Турнир', 'id1', 'Участник1', 'id2', 'Участник2', 'Счет', 'Очки', 'Источники']
+        self.matches_dtypes = ['string'] * 10
 
         self.players_columns = ['id', 'Игрок', 'Матчи']
         self.players_dtypes = ['string'] * 2 + ['number']
@@ -33,11 +33,7 @@ class TTModel:
         self.player_rankings_columns = ['Дата', 'Источник', 'Рейтинг', 'Ранг']
         self.player_rankings_dtypes = ['string'] * 2 + ['number'] * 2
 
-        filenamePlayersMen = r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_men.txt'
-        self.mId = readPlayers(filenamePlayersMen)
-        filenamePlayersWomen = r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_women.txt'
-        self.wId = readPlayers(filenamePlayersWomen)
-        self.mwId = dict(list(self.mId.items()) + list(self.wId.items()))
+        self.playersDict = GlobalPlayersDict()
 
         self.rusRankings = readPlayersRankings('prepared_data/propingpong/ranking_rus.txt')
         self.ittfRankings = readPlayersRankings('prepared_data/propingpong/ranking_ittf.txt')
@@ -46,24 +42,23 @@ class TTModel:
         self.rankings_columns = ['#', 'id', 'Игрок', 'TTFR', 'ITTF', 'MY']
         self.rankings_dtypes = ['number'] + ['string'] * 2 + ['number'] * 3
 
-        self.players = []
-        self.playersDict = dict()
-        for k,v in sorted(self.mId.items(), key = lambda x: x[0]):
-            self.playersDict[k] = len(self.players)
-            self.players.append(Player(k, v, 'm'))
-        for k,v in sorted(self.wId.items(), key = lambda x: x[0]):
-            self.playersDict[k] = len(self.players)
-            self.players.append(Player(k, v, 'w'))
+        self.players = dict()
+        #self.playersDict = dict()
+        for k,v in sorted(self.playersDict.id2names.items(), key = lambda x: x[0]):
+            #self.playersDict[k] = len(self.players)
+            self.players[k] = Player(k, v, k[0])
 
-        filenames = []
-        filenames.append(r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\master_tour\all_results.txt')
-        filenames.append(r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\bkfon\all_results.txt')
-        filenames.append(r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\local\kchr_results.txt')
-        filenames.append(r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\ittf\all_results.txt')
+        sources = []
+        sources.append(['master_tour', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\master_tour\all_results.txt'])
+        sources.append(['bkfon', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\bkfon\all_results.txt'])
+        sources.append(['local', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\local\kchr_results.txt'])
+        sources.append(['ittf', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\ittf\all_results.txt'])
+        sources.append(['rttf', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\rttf\all_results.txt'])
         self.matches = []
 
-        matchesSet = set()
-        for filename in filenames:
+        matchesDict = dict()
+        compNamesPairs = set()
+        for source, filename in sources:
             print(filename)
             with open(filename, encoding='utf-8') as fin:
                 headerTokens = next(fin).strip().split('\t')
@@ -78,17 +73,33 @@ class TTModel:
                                   setsScore=tokens[headerDict['setsScore']],
                                   pointsScore=tokens[headerDict['pointsScore']],
                                   time=tokens[headerDict['time']],
-                                  compName=tokens[headerDict['compName']])
-                    matchStr = ';'.join([match.date[:7], ' '.join(match.players[0]), ' '.join(match.players[1]), match.setsScore.strip(';'), match.pointsScore.strip(';')])
+                                  compName=tokens[headerDict['compName']],
+                                  source=source)
+                    matchStr = match.getKey()
+                    matchReversedStr = match.reverse().getKey()
 #                    matchStr = ';'.join([' '.join(match.players[0]), ' '.join(match.players[1]), match.setsScore, match.pointsScore])
-                    if not (matchStr in matchesSet) and match.date >= '2014':
-                        matchesSet.add(matchStr)
+                    if not (matchStr in matchesDict) and not (matchReversedStr in matchesDict) and match.date >= '2014':
+                        if not matchStr in matchesDict:
+                            matchesDict[matchStr] = []
+                        matchesDict[matchStr].append(match)
                         self.matches.append(match)
     #                    print(line)
                         for e in tokens[headerDict['id1']].split(';'):
-                            self.players[self.playersDict[e]].matches.append(match)
+                            self.players[e].matches.append(match)
                         for e in tokens[headerDict['id2']].split(';'):
-                            self.players[self.playersDict[e]].matches.append(match)
+                            self.players[e].matches.append(match)
+                    elif matchStr in matchesDict:
+                        if len(matchesDict[matchStr]) == 1:
+                            matchesDict[matchStr][0].addSource(source)
+                        if matchesDict[matchStr][0].compName != match.compName:
+                            compNamesPairs.add(matchesDict[matchStr][0].compName + ' === ' + match.compName)
+                    elif matchReversedStr in matchesDict:
+                        if len(matchesDict[matchReversedStr]) == 1:
+                            matchesDict[matchReversedStr][0].addSource(source)
+                        if matchesDict[matchReversedStr][0].compName != match.compName:
+                            compNamesPairs.add(matchesDict[matchReversedStr][0].compName + ' === ' + match.compName)
+        for e in compNamesPairs:
+            print(e)
         self.n = len(self.matches)
         with open(r'D:\Programming\SportPrognoseSystem\BetsWinner\test\dataset.txt', 'w', encoding = 'utf-8') as fout:
             fout.write('\t'.join(['date', 'time', 'compName', 'players1', 'players2', 'setsScore', 'pointsScore', 'rus1', 'ittf1', 'my1', 'rus2', 'ittf2', 'my2', 'y']) + '\n')
@@ -107,21 +118,25 @@ class TTModel:
     def getHref(self, id, name):
         return '<a href=/players/' + id + '>' + name + '</a>'
 
-    def getNames(self, players):
-        return [self.mwId.get(e, e) for e in players]
+    def getPlayerNames(self, id):
+        return self.playersDict.getNames(id)
+    def getPlayerName(self, id):
+        return self.playersDict.getName(id)
+    def getMatchPlayersNames(self, ids):
+        return [self.playersDict.getName(id) for id in ids]
 
     def getMatchesTable(self, matches, sortInd = 0, sortAsc = 1):
         data = []
         for match in matches:
             id1 = ' - '.join(match.players[0])
-            names1 = ' - '.join(self.getNames(match.players[0]))
+            names1 = ' - '.join(self.getMatchPlayersNames(match.players[0]))
             id2 = ' - '.join(match.players[1])
-            names2 = ' - '.join(self.getNames(match.players[1]))
-            data.append([match.date, match.time, match.compName, id1, names1, id2, names2, match.setsScore, match.pointsScore])
+            names2 = ' - '.join(self.getMatchPlayersNames(match.players[1]))
+            data.append([match.date, match.time, match.compName, id1, names1, id2, names2, match.setsScore, match.pointsScore, '; '.join(match.sources)])
         data = sorted(data, key = lambda x: x[sortInd], reverse = (sortAsc == 0))
         for i,row in enumerate(data):
-            names1 = ' - '.join([self.getHref(e, self.mwId.get(e, e)) for e in row[3].split(' - ')])
-            names2 = ' - '.join([self.getHref(e, self.mwId.get(e, e)) for e in row[5].split(' - ')])
+            names1 = ' - '.join([self.getHref(e, self.playersDict.getName(e)) for e in row[3].split(' - ')])
+            names2 = ' - '.join([self.getHref(e, self.playersDict.getName(e)) for e in row[5].split(' - ')])
             data[i][4] = names1
             data[i][6] = names2
 

@@ -10,11 +10,18 @@ class MatchBet:
         self.bet_win = bet_win
  
 class Player:
-    def __init__(self, id, name, mw):
+    def __init__(self, id, names, mw):
         self.id = id
-        self.name = name
+        self.names = names
+        self.name = names[0]
         self.mw = mw
         self.matches = []
+
+    def findString(self, s):
+        for name in self.names:
+            if name.lower().find(s.lower()) != -1:
+                return True
+        return False
 
 class Match:
     '''
@@ -31,10 +38,12 @@ class Match:
     '''
 
     def __init__(self, date, players, winsScore = None, setsScore = None, pointsScore=None,
-                 time=None, isPair = None, compName = None):
+                 time=None, isPair = None, compName = None, source = None):
         self.date = date
         self.players = players
         self.flError = 0
+
+        self.sources = []
 
         self.winsScore = winsScore
         self.wins = None
@@ -66,11 +75,28 @@ class Match:
             self.wins = [int(e) for e in self.winsScore.split(':')]
 
         self.compName = compName
+        self.sources.append(source)
         self.time = time
         self.isPair = isPair
         if (self.isPair is None):
             if len(self.players[0]) == 2:
                 self.isPair = 1
+
+    def addSource(self, source):
+        if not (source in self.sources):
+            self.sources.append(source)
+
+    def getKey(self):
+        return ';'.join([self.date, ' '.join(self.players[0]), ' '.join(self.players[1]), str(self.setsScore).strip(';'), str(self.pointsScore).strip(';')])
+
+    def reverse(self):
+        matchReversed = Match(self.date, [self.players[1].copy(), self.players[0].copy()])
+        matchReversed.time = self.time
+        matchReversed.compName = self.compName
+        matchReversed.sources = self.sources
+        matchReversed.setsScore = Match.reverseSetsScore(self.setsScore)
+        matchReversed.pointsScore = Match.reversePointsScore(self.pointsScore)
+        return matchReversed
 
     def toStr(self):
         return '\t'.join([self.date, self.time, self.compName, ';'.join(self.players[0]), ';'.join(self.players[1]), self.setsScore, self.pointsScore])
@@ -93,9 +119,25 @@ class Match:
                 sets[0] += int(p1 > p2)
                 sets[1] += int(p2 > p1)
             except Exception as ex:
-                print(pointsScore)
+                #print(pointsScore)
                 raise
         return [sets, points]
+
+    @staticmethod
+    def reversePointsScore(pointsScore):
+        pointsScoreReversed = []
+        for e in pointsScore.replace(':;', '').strip().strip(';').split(';'):
+            if e == ':':
+                pointsScoreReversed.append(':')
+                continue
+            try:
+                tt = e.split(':')
+                p1 = int(tt[0])
+                p2 = int(tt[1])
+                pointsScoreReversed.append(str(p2) + ':' + str(p1))
+            except Exception as ex:
+                pointsScoreReversed.append(e)
+        return ';'.join(pointsScoreReversed)
 
     @staticmethod
     def checkSetScore(score):
@@ -115,6 +157,16 @@ class Match:
         except:
             res = False
         return res
+
+    @staticmethod
+    def reverseSetsScore(score):
+        tt = score.split(':')
+        try:
+            set1 = int(tt[0])
+            set2 = int(tt[1])
+        except:
+            return score
+        return str(set2) + ':' + str(set1)
 
     @staticmethod
     def checkSetsScore(score):

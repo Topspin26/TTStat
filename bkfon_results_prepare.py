@@ -37,10 +37,35 @@ def getMatches(corrections, wrongLines):
                         else:
                             if flTT == 1:
                                 tcorr = corrections.copy()
-                                if compName == 'Наст. теннис. Лига Про. Москва':
+                                if compName.replace('Жен. ', '') == 'Наст. теннис. Лига Про. Москва':
                                     tcorr.append(['Бурдин А', 'Алексей Бурдин'])
+                                    tcorr.append(['Заикин А', 'Алан Заикин'])
+                                    tcorr.append(['Карпенко В', 'Вячеслав Карпенко'])
+                                    tcorr.append(['Попов Д', 'Дмитрий Попов'])
+                                    tcorr.append(['Терехов А', 'Антон Терехов'])
+                                    tcorr.append(['Егоров Н', 'Николай Егоров'])
+                                    tcorr.append(['Анохин И', 'Илья Анохин'])
+                                    tcorr.append(['Королев С', 'Семен Королев'])
+                                    tcorr.append(['Анисимов А', 'Антон Анисимов'])
+                                    tcorr.append(['Семин А', 'Артем Семин'])
+                                    tcorr.append(['Виноградов А', 'Алексей Виноградов'])
+                                    tcorr.append(['Макаров А', 'Александр Макаров'])
+                                    tcorr.append(['Меркушев С', 'Станислав Меркушев'])
+                                    tcorr.append(['Морозов А', 'Александр Морозов'])
+                                    tcorr.append(['Ануфриев В', 'Владимир Ануфриев'])
+                                    tcorr.append(['Маслов Д', 'Даниил Маслов'])
+                                    tcorr.append(['Федоров Д', 'Дмитрий Федоров'])
+                                    tcorr.append(['Голубева А', 'Анастасия Голубева'])
+                                    tcorr.append(['Лебедева В', 'Виктория Лебедева'])
+                                    tcorr.append(['Свиридов А', 'Алексей Свиридов'])
+                                    tcorr.append(['Крылов А', 'Александр Крылов'])
+                                    tcorr.append(['Морозова В', 'Валерия Морозова'])
+                                    tcorr.append(['Резниченко А', 'Александр Резниченко'])
+                                    tcorr.append(['Беспалова Е', 'Екатерина Беспалова'])
+                                    tcorr.append(['Булхак А', 'Антон Булхак'])
+                                    tcorr.append(['Фомина А', 'Анастасия Фомина'])
+                                    tcorr.append(['Кутузова А', 'Алина Кутузова'])
                                 arr = [re.sub(' +', ' ', e.replace(u'\xa0', ' ')) for e in tr.xpath('.//text()')]
-
 
                                 timeArr = arr[1].split(' ')
                                 if len(timeArr) == 2:
@@ -57,6 +82,7 @@ def getMatches(corrections, wrongLines):
                                 else:
                                     dt = ff[:10]
 
+                                arr = [e.replace('(ж)', '') for e in arr]
                                 s0 = '\t'.join(arr)
                                 for k,v in tcorr:
                                     if k.find(';') != -1:
@@ -97,40 +123,47 @@ def getMatchesPlayers(matches):
                 updateDict(res, player)
     return res
 
-def updateDict(d, k):
-    if k in d:
-        d[k] += 1
-    else:
-        d[k] = 1
-
 def main():
-    filenameGlobalPlayersMen = r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_men.txt'
-    (mIdG, mId2G) = readPlayersInv(filenameGlobalPlayersMen)
-    filenameGlobalPlayersWomen = r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_women.txt'
-    (wIdG, wId2G) = readPlayersInv(filenameGlobalPlayersWomen)
+    playersDict = GlobalPlayersDict()
 
     corrections = readCorrectionsList(r'D:\Programming\SportPrognoseSystem\BetsWinner\data\bkfon\corrections.txt')
     wrongLines = []
     matches = getMatches(corrections, wrongLines)
     print(len(matches))
     players = getMatchesPlayers(matches)
-    empty = dict()
+
     m = dict()
     w = dict()
     mw = dict()
-    for e in players:
-        if e in mId2G and e in wId2G:
-            updateDict(mw, e)
-            print('MW ' + e)
-        if e in mId2G and not (e in wId2G):
-            print('M ' + e)
-            updateDict(m, e)
-        if not (e in mId2G) and (e in wId2G):
-            print('W ' + e)
-            updateDict(w, e)
-        if not (e in mId2G) and not (e in wId2G):
-            print('? ' + e)
-            updateDict(empty, e)
+
+    multiple = dict()
+    unknown = dict()
+
+    for player in players:
+
+        id = playersDict.getId(player)
+        if len(id) == 1:
+            if id[0][0] == 'm':
+                updateDict(m, player)
+            else:
+                updateDict(w, player)
+        elif len(id) == 0:
+            updateDict(unknown, player)
+        else:
+            fl_mw = ''
+            for e in id:
+                fl_mw += e[0]
+            fl_mw = ''.join(sorted(set(list(fl_mw))))
+            if fl_mw == 'm':
+                updateDict(m, player)
+            elif fl_mw == 'w':
+                updateDict(w, player)
+            else:
+                updateDict(mw, player)
+            if not (fl_mw + ' ' + player in multiple):
+                multiple[fl_mw + ' ' + player] = 0
+            multiple[fl_mw + ' ' + player] += 1
+
     playersMW = dict()
     playersMatches = dict()
     for player in players:
@@ -159,55 +192,55 @@ def main():
     with open(r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\bkfon\bkfon_players_x_mw.txt', 'w', encoding = 'utf-8') as fout:
         for e in sorted(playersMW.items(), key = lambda x: -x[1][2]):
 #        for e in sorted(playersMW.items(), key = lambda x: (x[1][0] + 1) / (x[1][2] + 2)):
-            if (e[0] in empty) and e[1][2] > 0:
+            if (e[0] in unknown) and e[1][2] > 0:
                 print(e)
                 fout.write(e[0] + '\t' + str(e[1]) + '\t' + '\t'.join(playersMatches[e[0]]) + '\n')
 
     prefix = r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\bkfon\\'
     with open(prefix + 'bkfon_players_men.txt', 'w', encoding = 'utf-8') as fout:
         for e in sorted(m.keys()):
-            fout.write(e + '\t' + ';'.join(mId2G[e]) + '\n')
+            fout.write(e + '\t' + ';'.join(playersDict.getId(e)) + '\n')
     with open(prefix + 'bkfon_players_women.txt', 'w', encoding = 'utf-8') as fout:
         for e in sorted(w.keys()):
-            fout.write(e + '\t' + ';'.join(wId2G[e]) + '\n')
+            fout.write(e + '\t' + ';'.join(playersDict.getId(e)) + '\n')
     with open(prefix + 'bkfon_players_mw.txt', 'w', encoding = 'utf-8') as fout:
         for e in sorted(mw.keys()):
-            fout.write(e + '\t' + ';'.join(mId2G[e]) + '\t' + ';'.join(wId2G[e]) + '\n')
-    with open(prefix + 'bkfon_players_x.txt', 'w', encoding = 'utf-8') as fout:
-        for e in sorted(empty.keys()):
-            fout.write(e + '\t' + '?' + '\n')
+            fout.write(e + '\t' + ';'.join(playersDict.getId(e)) + '\n')
+
+    multiple = dict()
+    unknown = dict()
 
     with open(prefix + 'all_results.txt', 'w', encoding='utf-8') as fout, open(prefix + 'players_collisions.txt', 'w', encoding='utf-8') as fout1:
         fout.write('\t'.join(['date', 'time', 'compName', 'id1', 'id2', 'setsScore', 'pointsScore', 'name1', 'name2']) + '\n')
         for match in matches:
+            flError = 0
             if match.flError == 0:
 #                print(match.toStr())
-                flError = 0
                 ids = [[], []]
                 for i in range(2):
                     for player in match.players[i]:
-                        if player in mw:
-                            flError = 1
-                        elif (player in m):
-                            if len(mId2G[player]) == 1:
-                                ids[i].append(mId2G[player][0])
-                            else:
-                                if player.find('Желуб') != -1:
-                                    print(match.toStr())
-                                if len(mId2G[player]) > 1:
-                                    fout1.write('MANY ' + player + ' ' + str(mId2G[player]) + ' ' + match.toStr() + '\n')
-                                    print('MANY ' + player + ' ' + str(mId2G[player]) + ' ' + match.toStr())
-                                flError = 1
-                        elif (player in w):
-                            if len(wId2G[player]) == 1:
-                                ids[i].append(wId2G[player][0])
-                            else:
-                                flError = 1
-                                if len(wId2G[player]) > 1:
-                                    fout1.write('MANY ' + player + ' ' + str(wId2G[player]) + ' ' + match.toStr() + '\n')
-                                    print('MANY ' + player + ' ' + str(wId2G[player]) + ' ' + match.toStr())
+
+                        id = playersDict.getId(player)
+
+                        if len(id) == 1:
+                            ids[i].append(id[0])
+                        elif len(id) == 0:
+                            flError = 'unknown ' + player
+                            if not (player in unknown):
+                                unknown[player] = 0
+                            unknown[player] += 1
                         else:
-                            flError = 1
+                            flError = 'multiple ' + player
+                            fl_mw = ''
+                            for e in id:
+                                fl_mw += e[0]
+                            fl_mw = ''.join(sorted(set(list(fl_mw))))
+                            if not (fl_mw + ' ' + player in multiple):
+                                multiple[fl_mw + ' ' + player] = 0
+                            multiple[fl_mw + ' ' + player] += 1
+                            fout1.write('MANY ' + player + ' ' + str(id) + ' ' + match.toStr() + '\n')
+                            #print('MANY ' + player + ' ' + str(id) + ' ' + match.toStr())
+
                 if flError == 0:
                     resTokens = match.toArr()
                     resTokens.append(resTokens[3])
@@ -215,6 +248,16 @@ def main():
                     resTokens[3] = ';'.join(ids[0])
                     resTokens[4] = ';'.join(ids[1])
                     fout.write('\t'.join(resTokens) + '\n')
+            if (match.flError != 0 or flError != 0) and match.compName.lower().replace('-', '').find('лига про') != -1:
+                print('LIGA PRO error ' + str(match.flError) + ' ' + str(flError) + ' ' + match.toStr())
+
+
+    with open(prefix + 'bkfon_players_multiple.txt', 'w', encoding='utf-8') as fout:
+        for e in sorted(multiple.items(), key = lambda x: -x[1]):
+            fout.write(e[0] + '\t' + str(e[1]) + '\n')
+    with open(prefix + 'bkfon_players_unknown.txt', 'w', encoding='utf-8') as fout:
+        for e in sorted(unknown.items(), key = lambda x: -x[1]):
+            fout.write(e[0] + '\t' + str(e[1]) + '\n')
 
 if __name__ == "__main__":
     main()

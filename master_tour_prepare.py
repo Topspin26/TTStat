@@ -87,6 +87,7 @@ def main():
                                 if e in idsAll:
                                     idGood.append(e)
                             if len(idGood) == 1:
+                                ids[i].append(idGood[0])
                                 if not (player in solved):
                                     solved[player] = 0
                                 solved[player] += 1

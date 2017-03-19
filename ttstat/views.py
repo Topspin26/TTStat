@@ -19,7 +19,7 @@ def players():
 
 @ttstat.route('/players/<id>')
 def player_info(id):
-    return render_template('player_info.html', id = id, name = ttModel.players[ttModel.playersDict[id]].name,
+    return render_template('player_info.html', id = id, name = ttModel.getPlayerNames(id),
                            matches_columns = ttModel.matches_columns, rankings_columns = ttModel.player_rankings_columns)
 
 @ttstat.route('/rankings')
@@ -41,7 +41,7 @@ def selectPlayer():
     res = dict()
     res['status'] = 'OK'
     res['playerId'] = playerId
-    res['playerName'] = ttModel.players[ttModel.playersDict[playerId]].name
+    res['playerName'] = ttModel.getPlayerName(playerId)
     res['playerR'] = str(ttModel.getFeatures(playerId, '2017-01-30'))
     return json.dumps(res)
 
@@ -83,10 +83,16 @@ def get_matches_data():
     matches = []
     matchesList = ttModel.matches
     if not (playerIdFilter is None):
-        matchesList = ttModel.players[ttModel.playersDict[playerIdFilter]].matches
+        matchesList = ttModel.players[playerIdFilter].matches
     output['iTotalRecords'] = str(len(matchesList))
     for match in matchesList:
-        if (' - '.join(ttModel.getNames(match.players[0]))).lower().find(text) != -1 or (' - '.join(ttModel.getNames(match.players[1]))).lower().find(text) != -1:
+        flMatch = 0
+        for i in range(2):
+            for player in match.players[i]:
+                if ttModel.players[player].findString(text) == True:
+                    flMatch = 1
+#        if (' - '.join(ttModel.getNames(match.players[0]))).lower().find(text) != -1 or (' - '.join(ttModel.getNames(match.players[1]))).lower().find(text) != -1:
+        if flMatch == 1:
             matches.append(match)
             c += 1
     sortInd = int(request.values['iSortCol_0'])
@@ -176,10 +182,9 @@ def get_rankings_data():
     c = 0
     total = 0
     aaData_rows = []
-    for i in range(len(ttModel.players)):
-        player = ttModel.players[i]
+    for k,player in ttModel.players.items():
         if player.mw == mw:
-            if player.name.lower().find(text) != -1:
+            if player.findString(text) == True:
                 r = ttModel.getRankings(player.id, dt, 100)
                 aaData_rows.append(['0', player.id, player.name, r['rus'], r['ittf'], r['my']])
                 c += 1
@@ -220,9 +225,8 @@ def get_players_data():
     print(text)
 
     players = []
-    for i in range(len(ttModel.players)):
-        player = ttModel.players[i]
-        if player.name.lower().find(text) != -1:
+    for k,player in ttModel.players.items():
+        if player.findString(text) == True:
             players.append(player)
         c += 1
     aaData_rows = ttModel.getPlayersTable(players)

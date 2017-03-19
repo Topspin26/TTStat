@@ -26,11 +26,6 @@ def main():
 
     playersDict = GlobalPlayersDict()
 
-#    filenameGlobalPlayersMen = r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_men.txt'
-#    (mIdG, mId2G) = readPlayersInv(filenameGlobalPlayersMen)
-#    filenameGlobalPlayersWomen = r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_women.txt'
-#    (wIdG, wId2G) = readPlayersInv(filenameGlobalPlayersWomen)
-
     compInfo = dict()
     with open('D:/Programming/SportPrognoseSystem/BetsWinner/data/local/kchr_dates.txt', encoding='utf-8') as fin:
         for line in fin:
