@@ -43,16 +43,20 @@ class GlobalPlayersDict():
                 self.name2id[tname] = id
 
             tn = name.split(' ')
+            tn1 = name1.split(' ')
             if len(tn) > 1:
                 if name[0] >= 'a' and name[0] <= 'z':
-                    arr = [name, name.title(), tn[0],
+                    arr = [name, name1, tn[0], tn1[0],
                            tn[0] + ' ' + ' '.join([(e[0] + '.') for e in tn[1:]]),
-                           tn[0] + ' ' + ' '.join([(e[0]) for e in tn[1:]])]
+                           tn[0] + ' ' + ' '.join([(e[0]) for e in tn[1:]]),
+                           tn1[0] + ' ' + ' '.join([(e[0] + '.') for e in tn1[1:]]),
+                           tn1[0] + ' ' + ' '.join([(e[0]) for e in tn1[1:]])]
                 else:
-                    arr = [name, name.title(), tn[1], tn[1] + ' ' + ' '.join([(e[0] + '.') for e in [tn[0]] + tn[2:]]),
-                           tn[1] + ' ' + ' '.join([(e[0]) for e in [tn[0]] + tn[2:]])]
-                if len(tn) == 2:
-                    arr.append(tn[1] + ' ' + tn[0])
+                    arr = [name, name1, tn[1], tn1[1],
+                           tn[1] + ' ' + ' '.join([(e[0] + '.') for e in [tn[0]] + tn[2:]]),
+                           tn[1] + ' ' + ' '.join([(e[0]) for e in [tn[0]] + tn[2:]]),
+                           tn1[1] + ' ' + ' '.join([(e[0] + '.') for e in [tn1[0]] + tn1[2:]]),
+                           tn1[1] + ' ' + ' '.join([(e[0]) for e in [tn1[0]] + tn1[2:]])]
             else:
                 arr = [name]
             for short_player in arr:
@@ -87,6 +91,12 @@ class GlobalPlayersDict():
         if self.getId(name, 0) is None:
             self.setId2Names(id, self.id2names[id] + [name])
 
+
+def updateDict(d, k, val = 1):
+    if k in d:
+        d[k] += val
+    else:
+        d[k] = val
 
 def readCorrections(filename):
     corrections = dict()
