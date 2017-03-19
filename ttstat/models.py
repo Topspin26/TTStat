@@ -5,6 +5,7 @@ import pandas as pd
 import xgboost as xgb
 import pickle
 import datetime
+import json
 
 from Entity import *
 from common import *
@@ -63,11 +64,8 @@ class TTModel:
             with open(filename, encoding='utf-8') as fin:
                 headerTokens = next(fin).strip().split('\t')
                 headerDict = dict(zip(headerTokens, range(len(headerTokens))))
-                lastId = None
                 for line in fin:
                     tokens = line.split('\t')
-                    #id1 = [self.mwId[e] for e in tokens[headerDict['id1']].split(';')]
-                    #id2 = [self.mwId[e] for e in tokens[headerDict['id2']].split(';')]
                     match = Match(tokens[headerDict['date']],
                                   [tokens[headerDict['id1']].split(';'), tokens[headerDict['id2']].split(';')],
                                   setsScore=tokens[headerDict['setsScore']],
@@ -75,31 +73,35 @@ class TTModel:
                                   time=tokens[headerDict['time']],
                                   compName=tokens[headerDict['compName']],
                                   source=source)
-                    matchStr = match.getKey()
-                    matchReversedStr = match.reverse().getKey()
-#                    matchStr = ';'.join([' '.join(match.players[0]), ' '.join(match.players[1]), match.setsScore, match.pointsScore])
-                    if not (matchStr in matchesDict) and not (matchReversedStr in matchesDict) and match.date >= '2014':
-                        if not matchStr in matchesDict:
-                            matchesDict[matchStr] = []
-                        matchesDict[matchStr].append(match)
+                    matchHash = match.getHash()
+                    #matchReversedStr = match.reverse().getKey()
+                    #matchStr = ';'.join([' '.join(match.players[0]), ' '.join(match.players[1]), match.setsScore, match.pointsScore])
+                    if not (matchHash in matchesDict) and match.date >= '2014':
+                        if not matchHash in matchesDict:
+                            matchesDict[matchHash] = []
+                        matchesDict[matchHash].append(match)
                         self.matches.append(match)
     #                    print(line)
                         for e in tokens[headerDict['id1']].split(';'):
                             self.players[e].matches.append(match)
                         for e in tokens[headerDict['id2']].split(';'):
                             self.players[e].matches.append(match)
-                    elif matchStr in matchesDict:
-                        if len(matchesDict[matchStr]) == 1:
-                            matchesDict[matchStr][0].addSource(source)
-                        if matchesDict[matchStr][0].compName != match.compName:
-                            compNamesPairs.add(matchesDict[matchStr][0].compName + ' === ' + match.compName)
-                    elif matchReversedStr in matchesDict:
-                        if len(matchesDict[matchReversedStr]) == 1:
-                            matchesDict[matchReversedStr][0].addSource(source)
-                        if matchesDict[matchReversedStr][0].compName != match.compName:
-                            compNamesPairs.add(matchesDict[matchReversedStr][0].compName + ' === ' + match.compName)
+                    elif matchHash in matchesDict:
+                        matchesDict[matchHash][0].addSource(source)
+                        if matchesDict[matchHash][0].compName != match.compName:
+                            compNamesPairs.add(matchesDict[matchHash][0].compName + ' === ' + match.compName)
         for e in compNamesPairs:
             print(e)
+
+        with open('prepared_data/bkfon/live/all_bets_prepared.txt', encoding='utf-8') as fin:
+            for line in fin:
+                tokens = line.rstrip('\n').split('\t')
+                eventId = tokens[1]
+                dt = tokens[2]
+                compName = tokens[3]
+                players = [tokens[4].split(';'), tokens[5].split(';')]
+                info = json.loads(tokens[6])
+
         self.n = len(self.matches)
         with open(r'D:\Programming\SportPrognoseSystem\BetsWinner\test\dataset.txt', 'w', encoding = 'utf-8') as fout:
             fout.write('\t'.join(['date', 'time', 'compName', 'players1', 'players2', 'setsScore', 'pointsScore', 'rus1', 'ittf1', 'my1', 'rus2', 'ittf2', 'my2', 'y']) + '\n')

@@ -26,8 +26,14 @@ def main():
                         for j in range(len(arr)):
                             if j % 2 == 0:
                                 name = arr[j]
-                                if name == 'Полякoв Василий': #английская буква о
-                                    name = 'Поляков Василий'
+                                name = name.replace('o', 'о')
+                                name = name.replace('O', 'О')
+                                name = name.replace('p', 'р')
+                                name = name.replace('P', 'Р')
+                                name = name.replace('a', 'а')
+                                name = name.replace('A', 'А')
+                                if name == 'Заярная Наталья':
+                                    name = 'Заярная Наталия'
                                 id = arr[j + 1]
                                 ids[ii].append(id)
                                 if id in id2player and id2player[id] != name:
