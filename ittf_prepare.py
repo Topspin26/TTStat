@@ -85,6 +85,8 @@ def main():
 
     playersDict = GlobalPlayersDict()
 
+    readPlayer2Id(filename)
+
     player2id = dict()
     id2player = dict()
     with open('data/ittf/player2id.txt', encoding = 'utf-8') as fin:

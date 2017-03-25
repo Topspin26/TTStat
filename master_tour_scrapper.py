@@ -6,13 +6,7 @@ import datetime as datetime
 import random
 import re
 from os import walk
-
-
-def initDriver(url):
-    driver = webdriver.Chrome('chromedriver_win32/chromedriver')#, port = 5938)
-    driver.get(url)
-    time.sleep(1 + random.random()) # Let the user actually see something!
-    return driver
+from common import *
 
 def scrappTournament(curDate, url):
     lines = []

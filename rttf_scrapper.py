@@ -4,12 +4,7 @@ import time
 import datetime as datetime
 import random
 import os
-
-def initDriver(url):
-    driver = webdriver.Chrome('chromedriver_win32/chromedriver')#, port = 5938)
-    driver.get(url)
-    time.sleep(1 + random.random()) # Let the user actually see something!
-    return driver
+from common import *
 
 def scrappMonth(month):
     url = 'http://or.rttf.ru/tournaments/' + month

@@ -28,8 +28,13 @@ def readIttfPlayers():
 def getIttfMatches(driver, url, pages):
 #    playersDict = readIttfPlayers()
 
+    unchanged = 0
+
     for page in pages:
-        print(page)
+        print([page, unchanged])
+        flPage = 0
+        if unchanged == 20:
+            break
         driver.get(url + str(page))
 
         tds = driver.find_elements_by_xpath('//*//table[@bordercolor = "#000080"]//tr//td')
@@ -91,11 +96,17 @@ def getIttfMatches(driver, url, pages):
                     flChange = 1
                     rows = e[1]
                 if flChange == 1:
+                    flPage = 1
                     with open('data/ittf/results/' + e[0] + '.txt', 'w', encoding='utf-8') as fout:
                         for s in rows:
                             fout.write('\t'.join(s) + '\n')
             except Exception as ex:
                 print(str(ex))
+        if flPage == 1:
+            unchanged = 0
+        else:
+            unchanged += 1
+
 def main():
 
     url = 'http://www.old.ittf.com/competitions/matches_per_player_all.asp?P_ID=&Formrnd64_Page='
