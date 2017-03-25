@@ -5,18 +5,13 @@ import datetime as datetime
 import random
 import os
 import datetime
-
-def initDriver(url):
-    driver = webdriver.Chrome('chromedriver_win32/chromedriver')#, port = 5938)
-    driver.get(url)
-    time.sleep(1 + random.random()) # Let the user actually see something!
-    return driver
+from common import *
 
 def scrappTournament(url, id, dts):
     startDate = dts[-4:] + '-' + dts[3:5] + '-' + dts[:2]
     filename = 'data/challenger_series/results/' + startDate + '_' + id + '.txt'
-    if os.path.exists(filename):
-        return
+#    if os.path.exists(filename):
+#        return
 
     driver = initDriver(url)
     table = driver.find_element_by_xpath('//*[@class = "rounds"]')
@@ -63,9 +58,24 @@ def main():
         ids.append([e.get_attribute('value'), e.get_attribute('innerHTML')])
     driver.quit()
 
-    #ids = [['1035', '27.02. - 28.02.2017']]
+    ids.reverse()
+
+    j = 0
     for id,dt in ids:
+        startDate = dt[-4:] + '-' + dt[3:5] + '-' + dt[:2]
+        filename = 'data/challenger_series/results/' + startDate + '_' + id + '.txt'
+        if not os.path.exists(filename):
+            break
+        j += 1
+    j = max(j - 2, 0)
+
+    print(len(ids), j)
+
+    #ids = [['1035', '27.02. - 28.02.2017']]
+    for id,dt in ids[j:]:
         print([id, dt])
+#        if id == '1040':
+#            break
         scrappTournament(url + '?q=node/' + id, id, dt)
         #break
 

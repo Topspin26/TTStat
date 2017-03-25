@@ -128,10 +128,10 @@ class Match:
         return matchReversed
 
     def toStr(self):
-        return '\t'.join([self.date, self.time, self.compName, ';'.join(self.players[0]), ';'.join(self.players[1]), self.setsScore, self.pointsScore])
+        return '\t'.join([self.date, self.time, self.compName, ';'.join(self.players[0]), ';'.join(self.players[1]), str(self.setsScore), str(self.pointsScore)])
 
     def toArr(self):
-        return [self.date, self.time, self.compName, ';'.join(self.players[0]), ';'.join(self.players[1]), self.setsScore, self.pointsScore]
+        return [self.date, self.time, self.compName, ';'.join(self.players[0]), ';'.join(self.players[1]), str(self.setsScore), str(self.pointsScore)]
 
     @staticmethod
     def getPointsScoreInfo(pointsScore):

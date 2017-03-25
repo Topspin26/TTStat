@@ -67,7 +67,7 @@ m66	Владимир Бриль;BRIL Vladimir
 m67	Владислав Паламарчук;PALAMARCHUK Vladislav
 m68	Владислав Сорбало
 m70	Вячеслав Буров;BUROV Viacheslav
-m71	Вячеслав Кривошеев;Krivosheev Viacheslav
+m71	Вячеслав Кривошеев;Krivosheev Viacheslav;Krivosheev Viatcheslav
 m72	Гай Еленский
 m73	Галь Ферфель
 m74	Геннадий Закладный
@@ -1369,7 +1369,7 @@ m1378	Дэвид Макбиф;Mcbeath David
 m1379	Ван Лицинь;Wang Liqin
 m1380	Agbetoglo Mawussi;Мавусси Агбетогло
 m1381	FARGHADANI Mohammad
-m1382	Jang Woojin;Янг Вуджин
+m1382	Jang Woojin;Янг Вуджин;Jang Woo Jin
 m1383	GIARDI Gabriele
 m1384	ROSNER Benjamin
 m1385	Placek Frantisek;Франтишек Плачек
@@ -1547,7 +1547,7 @@ m1557	GHOSH Anirban;Анирбан Гош
 m1558	Merotohun Monday;Мандэй Меротоун
 m1559	Lee Jungwoo;Ли Юн Ву
 m1560	STOJANOVIC Dejan
-m1561	Ким Тоюб;Kim Doyub
+m1561	Ким Тоюб;Kim Doyub;Kim Do Yub
 m1562	URRUTIA Jose
 m1563	Ярослав Жмуденко;ZHMUDENKO Yaroslav
 m1564	WEI Dianren
@@ -1723,7 +1723,7 @@ m1735	CHEN Junji
 m1736	CRUZ Rebo
 m1737	BASHT BAVI Hamed
 m1738	Ирвин Бертран;Ирвин Бертранд;Bertrand Irvin
-m1739	Achanta Sharath Kamal;Шарат Камал Ачанта
+m1739	Achanta Sharath Kamal;Шарат Камал Ачанта;Achanta Sharath
 m1740	ONAOLAPO Ojo
 m1741	HINSE Pierre-Luc
 m1742	Tokic Bojan;Боян Токич
@@ -1831,7 +1831,7 @@ m1843	AL-HARBI Khaled
 m1844	Ryuzaki Tonin;Тонин Рюзаки
 m1845	CHOI Kichan
 m1846	ZHENG Pu
-m1847	Mazunov Dmitry;Дмитрий Мазунов
+m1847	Mazunov Dmitry;Дмитрий Мазунов;Mazunov Dmitrij
 m1848	Лоренс Дево;Devos Laurens
 m1849	Kang Minho;Кан Миньо
 m1850	YANG Xinyang
@@ -1868,7 +1868,7 @@ m1880	BEN KAHIA Mohamed Ghazi
 m1881	DIAA Sherif Mohamed
 m1882	MILICEVIC Srdan
 m1883	Rosskopf Jorg;Йорг Росскопф
-m1884	TORNKVIST Andreas
+m1884	TORNKVIST Andreas;Toernkvist Andreas
 m1885	Bedair Omar;Омар Бедер
 m1886	Pang Xue Jie;Пан Сюэ Цзе
 m1887	FENG Xiaoquan
@@ -2275,7 +2275,7 @@ m2289	Szita Marton;Мартон Сита
 m2290	PETERSEN Kurt
 m2291	KEEN Trinko
 m2292	RYU Hyon Son
-m2293	MUHLBACH Hermann;Херман Мюльбах
+m2293	MUHLBACH Hermann;Херман Мюльбах;Muehlbach Hermann
 m2294	RAMANAMBITANA Harivony
 m2295	WANG Linkun
 m2296	Ласло Мадьяр;Magyar Laszlo
@@ -2367,7 +2367,7 @@ m2381	YUAN Xiaojie
 m2382	MOREGARD Malte
 m2383	KRIEGER Alexander
 m2384	TENTI Fermin
-m2385	Barbolin Illia;Илья Барболин
+m2385	Barbolin Illia;Илья Барболин;Barbolin Ilia
 m2386	AL-MOHANNADI Ahmad
 m2387	CARNEROS Alfredo
 m2388	KIM Song Nam
@@ -2496,7 +2496,7 @@ m2510	KIM Bongchul
 m2511	Павел Цпин
 m2512	Евгений Полонеев
 m2513	HAM Yu Song
-m2514	Ryu Seungmin;Рю Сын Мин
+m2514	Ryu Seungmin;Рю Сын Мин;Ryu Seung Min
 m2515	Xue Fei;Сюэ Фей
 m2516	Levenko Andreas;Андреас Левенко
 m2517	PREAN Carl
@@ -16227,3 +16227,4 @@ m16242	Саркис Моклозян
 m16243	Георгий Прикащенков
 m16244	Денис Макаров
 m16245	Андрей Овчинников
+m16246	Baum Bjorn

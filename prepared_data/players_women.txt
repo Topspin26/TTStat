@@ -723,7 +723,7 @@ w725	HAN Hye Song
 w726	NARKIEWICZ Paulina Joanna
 w727	TICU Angelica
 w728	WU Jiamuwa
-w729	Таня Крамер;Kramer Tanja
+w729	Таня Крамер;Kramer Tanja;Kraemer Tanja
 w730	HAN Yichen
 w731	VERONIK Zala
 w732	SUN Chen
@@ -1107,7 +1107,7 @@ w1110	LISOVA Olga
 w1111	YEH Tung-Yi
 w1112	PERSSON Marie (1986)
 w1113	BAKKER Diana
-w1114	GOBEL Jessica
+w1114	GOBEL Jessica;Goebel Jessica
 w1115	Fan Ying;Фань Ин
 w1116	WU Xianjing
 w1117	Hsing Ariel;Ариель Син
@@ -2262,7 +2262,7 @@ w2268	URBAN Alexandra
 w2269	GULRAJANI Aarti
 w2270	HAYAMA Karina
 w2271	Эма Марн;Marn Ema
-w2272	Trosman Nicole;Николь Тросман
+w2272	Trosman Nicole;Николь Тросман;Trosman Nicoleta
 w2273	TKACHOVA Tetyana
 w2274	MAYRHOFER Andrea
 w2275	Лейла Имре;Imre Leila
@@ -2903,7 +2903,7 @@ w2910	Кандела Молеро;Molero Candela
 w2911	JUSMA Ceria Nilasari
 w2912	Лаура Рамирес;Ramirez Laura
 w2913	LEE Dasom
-w2914	Muhlbach Kathrin;Катрин Мюльбах;Катрин Мюлбах
+w2914	Muhlbach Kathrin;Катрин Мюльбах;Катрин Мюлбах;Muehlbach Kathrin
 w2915	Che Xiaoxi;Че Сяоси
 w2916	SHOJI Yuki
 w2917	BOILEAU Anne
@@ -5474,7 +5474,7 @@ w5482	Кабылина Виктория
 w5483	Васенина Анна
 w5484	Бабаева Вероника
 w5485	Веденина Елизавета
-w5486	Скачкова Ирина
+w5486	Скачкова Ирина;Skachkova Irina
 w5487	Петяшина Кристина
 w5488	Самойлова Полина
 w5489	Мещерякова Юлия

@@ -77,7 +77,7 @@ class GlobalPlayersDict():
                     self.name2id2[short_player] = list(set(self.name2id2[short_player]))
 
     def getId(self, name, fl = 1):
-        name = name.lower().replace('ё', 'е').replace('^', '').replace(',', '').strip()
+        name = name.lower().replace('ё', 'е').replace('ö', 'o').replace('^', '').replace(',', '').strip()
         if fl == 1:
             return self.name2id2.get(name, [])
         return self.name2id.get(name, None)
@@ -96,7 +96,7 @@ class GlobalPlayersDict():
         return res
 
     def updateId2names(self, id, name):
-        name = name.replace('ё', 'е').replace('Ё', 'Е')
+        name = name.replace('ё', 'е').replace('Ё', 'Е').replace('ö', 'o')
         if self.getId(name, 0) is None:
             self.setId2Names(id, self.id2names[id] + [name])
 
