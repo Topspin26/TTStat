@@ -13,7 +13,7 @@ def calcHash(arr):
     for e in arr:
         res ^= int(hashlib.md5(str(e).encode()).hexdigest(), 16)
     res = (res // (1 << 32)) ^ (res % (1 << 32))
-    return res
+    return str(res)
 
 
 class GlobalPlayersDict():
@@ -47,7 +47,7 @@ class GlobalPlayersDict():
             for tname in [name, name1]:
                 if self.name2id.get(tname, id) != id:
                     print('Bad name ' + tname + ' '  + self.name2id.get(tname, id) + ' ' + id)
-                    if not (tname in {'yang ying', 'ying yang', 'li xiang', 'xiang li', 'yang min', 'min yang'}):
+                    if not (tname in {'yang ying', 'ying yang', 'li xiang', 'xiang li', 'yang min', 'min yang', 'денис макаров', 'макаров денис'}):
                         raise
                 self.name2id[tname] = id
 
@@ -126,3 +126,19 @@ def readCorrectionsList(filename):
                 corrections.append([lastLine.strip(), line.strip()])
             lastLine = line
     return corrections
+
+def readPlayer2Id(filename):
+    player2id = dict()
+    id2player = dict()
+    with open(filename, encoding = 'utf-8') as fin:
+        for line in fin:
+            tokens = line.split('\t')
+            if len(tokens[1].strip()) > 0:
+                player2id[tokens[0]] = tokens[1].strip().split(';')
+                id2player[tokens[1].strip()] = tokens[0]
+            else:
+                print('ERROR')
+                print(line)
+                raise
+
+    return [player2id, id2player]
