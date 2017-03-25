@@ -2,15 +2,34 @@
 {% block content %}
     <div id="main">
         <h3>Матчи</h3>
+        <div class="form-group" id="sourceCheckboxes"> <!-- Date input -->
+            <label class="checkbox-inline"><input class="source-checkbox" type="checkbox" value="master_tour" checked>master_tour</label>
+            <label class="checkbox-inline"><input class="source-checkbox" type="checkbox" value="bkfon" checked>bkfon</label>
+            <label class="checkbox-inline"><input class="source-checkbox" type="checkbox" value="local" checked>local</label>
+            <label class="checkbox-inline"><input class="source-checkbox" type="checkbox" value="ittf" checked>ittf</label>
+            <label class="checkbox-inline"><input class="source-checkbox" type="checkbox" value="rttf" checked>rttf</label>
+        </div>
+
+
         <table id="matches_table" class="table table-striped table-bordered">
             <thead>
                 <tr>
-                    {% for column in columns %}
+                    {% for column in matches_columns %}
                         <th data-type="number"> {{column}} </th>
                     {% endfor %}
-<!--                            <th data-type="number"> id </th>
-                    <th data-type="string"> name </th>
-                    <th data-type="string"> freq </th> -->
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div id="right">
+        <table id="match_bets_table" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    {% for column in bets_columns %}
+                        <th data-type="number"> {{column}} </th>
+                    {% endfor %}
                 </tr>
             </thead>
             <tbody>

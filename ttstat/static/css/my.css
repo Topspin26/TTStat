@@ -87,14 +87,16 @@ h2{
     width: auto;
 }
 
-#matches_table tr:hover{
+table.dataTable tr:hover{
     background-color: #f7f7e0;
     cursor: pointer;
 }
 
+
 table.dataTable{
     font-size: 12px;
 }
+
 table.dataTable tr td{
     padding: 4px;
 }

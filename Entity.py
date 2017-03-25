@@ -105,12 +105,18 @@ class Match:
             if len(self.players[0]) == 2:
                 self.isPair = 1
 
+        self.hash = self.getHash()
+
     def addSource(self, source):
         if not (source in self.sources):
             self.sources.append(source)
 
     def getHash(self):
-        return calcHash([self.date] + self.players[0] + self.players[1] + self.sets + [e * i for i,e in enumerate(Match.getSetSumPoints(self.points))])
+        if self.sets is None:
+            sets = []
+        else:
+            sets = self.sets
+        return calcHash([self.date] + self.players[0] + self.players[1] + sets + [e * i for i,e in enumerate(Match.getSetSumPoints(self.points))])
 
     def reverse(self):
         matchReversed = Match(self.date, [self.players[1].copy(), self.players[0].copy()])

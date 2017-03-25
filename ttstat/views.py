@@ -11,7 +11,7 @@ def index():
 
 @ttstat.route('/matches')
 def matches():
-    return render_template('matches.html', columns = ttModel.matches_columns)
+    return render_template('matches.html', matches_columns = ttModel.matches_columns, bets_columns = ttModel.bets_columns)
 
 @ttstat.route('/players')
 def players():
@@ -20,7 +20,9 @@ def players():
 @ttstat.route('/players/<id>')
 def player_info(id):
     return render_template('player_info.html', id = id, name = ttModel.getPlayerNames(id),
-                           matches_columns = ttModel.matches_columns, rankings_columns = ttModel.player_rankings_columns)
+                           matches_columns = ttModel.matches_columns,
+                           rankings_columns = ttModel.player_rankings_columns,
+                           bets_columns=ttModel.bets_columns)
 
 @ttstat.route('/rankings')
 def rankings():
@@ -74,6 +76,11 @@ def get_matches_data():
     output = {}
     output['sEcho'] = str(int(request.values['sEcho']))
 
+    sources = None
+    if 'sources' in request.values:
+        sources = set(request.values['sources'].strip(';').split(';'))
+    print(sources)
+
     text = request.values['sSearch'].lower()
     print(text)
     aaData_rows = []
@@ -86,6 +93,12 @@ def get_matches_data():
         matchesList = ttModel.players[playerIdFilter].matches
     output['iTotalRecords'] = str(len(matchesList))
     for match in matchesList:
+        flMatch = 0
+        for src in match.sources:
+            if (sources is None) or (src in sources):
+                flMatch = 1
+        if flMatch == 0:
+            continue
         flMatch = 0
         for i in range(2):
             for player in match.players[i]:
@@ -111,6 +124,40 @@ def get_matches_data():
 
     results = output
     return json.dumps(results)
+
+@ttstat.route("/_retrieve_match_bets_data")
+def get_match_bets_data():
+    columns = ttModel.bets_columns
+
+    print(request.values)
+    print(request.values['sSortDir_0'])
+    #leftInd = int(request.values['iDisplayStart'])
+    #rightInd = leftInd + int(request.values['iDisplayLength'])
+    output = {}
+    output['sEcho'] = str(int(request.values['sEcho']))
+
+    #text = request.values['sSearch'].lower()
+    #print(text)
+    aaData_rows = []
+    #ys = td.y.sum(axis=1)
+
+    sortInd = int(request.values['iSortCol_0'])
+    sortAsc = request.values['sSortDir_0']
+#    print([sortInd, ttModel.matches_dtypes[sortInd]])
+    matchHash = request.values['matchHash']
+    print(matchHash)
+    aaData_rows = ttModel.getMatchBetsTable(matchHash, sortInd, int(sortAsc == 'asc'))
+
+    c = len(aaData_rows)
+    output['iTotalRecords'] = str(c)
+    output['iTotalDisplayRecords'] = str(c)
+
+    output['aaData'] = aaData_rows#[leftInd:rightInd]
+
+    results = output
+    return json.dumps(results)
+
+
 
 @ttstat.route("/_retrieve_player_rankings_data")
 def get_player_rankings_data():

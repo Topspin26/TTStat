@@ -6,6 +6,7 @@ import xgboost as xgb
 import pickle
 import datetime
 import json
+import re
 
 from Entity import *
 from common import *
@@ -25,8 +26,11 @@ def readPlayersRankings(filename):
 
 class TTModel:
     def __init__(self):
-        self.matches_columns = ['Дата', 'Время', 'Турнир', 'id1', 'Участник1', 'id2', 'Участник2', 'Счет', 'Очки', 'Источники']
-        self.matches_dtypes = ['string'] * 10
+        self.matches_columns = ['Дата', 'Время', 'Турнир', 'id1', 'Участник1', 'id2', 'Участник2', 'Счет', 'Очки', 'Источники', 'БК', 'Хеш']
+        self.matches_dtypes = ['string'] * 12
+
+        self.bets_columns = ['Дата', 'Время', 'Турнир', 'id1', 'id2', 'Счет', 'К1', 'К2']
+        self.bets_dtypes = ['string'] * 8
 
         self.players_columns = ['id', 'Игрок', 'Матчи']
         self.players_dtypes = ['string'] * 2 + ['number']
@@ -54,8 +58,9 @@ class TTModel:
         sources.append(['bkfon', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\bkfon\all_results.txt'])
         sources.append(['local', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\local\kchr_results.txt'])
         sources.append(['ittf', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\ittf\all_results.txt'])
-        sources.append(['rttf', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\rttf\all_results.txt'])
+        #sources.append(['rttf', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\rttf\all_results.txt'])
         self.matches = []
+        self.hash2matchInd = dict()
 
         matchesDict = dict()
         compNamesPairs = set()
@@ -81,6 +86,7 @@ class TTModel:
                             matchesDict[matchHash] = []
                         matchesDict[matchHash].append(match)
                         self.matches.append(match)
+                        self.hash2matchInd[matchHash] = len(self.matches) - 1
     #                    print(line)
                         for e in tokens[headerDict['id1']].split(';'):
                             self.players[e].matches.append(match)
@@ -90,8 +96,10 @@ class TTModel:
                         matchesDict[matchHash][0].addSource(source)
                         if matchesDict[matchHash][0].compName != match.compName:
                             compNamesPairs.add(matchesDict[matchHash][0].compName + ' === ' + match.compName)
-        for e in compNamesPairs:
-            print(e)
+#        for e in compNamesPairs:
+#            print(e)
+
+        self.bets = dict()
 
         with open('prepared_data/bkfon/live/all_bets_prepared.txt', encoding='utf-8') as fin:
             for line in fin:
@@ -99,8 +107,32 @@ class TTModel:
                 eventId = tokens[1]
                 dt = tokens[2]
                 compName = tokens[3]
-                players = [tokens[4].split(';'), tokens[5].split(';')]
-                info = json.loads(tokens[6])
+                ids = [tokens[4].split(';'), tokens[5].split(';')]
+                info = json.loads(tokens[8])
+                pattern = r"\(([A-Za-z0-9- ]+)\)"
+                pointsScore = re.search(pattern, info[-1][1])
+                points = None
+                if not (pointsScore is None):
+                    pointsScore = pointsScore.group(0).replace('(', '').replace(')', '').replace(' ', ';').replace('-', ':') + ';'
+                    _, points = Match.getPointsScoreInfo(pointsScore)
+                setsScore = info[-1][1].split(' ')[0]
+                matchHash = None
+                if setsScore != '':
+                    matchHash = calcHash([dt[:10]] + ids[0] + ids[1] + [int(e) for e in setsScore.split(':')] + [e * i for i, e in enumerate(Match.getSetSumPoints(points))])
+                if matchHash in self.hash2matchInd:
+                    ts = []
+                    score = []
+                    bet_win = [[], []]
+                    for i in range(len(info)):
+                        ts.append(info[i][0])
+                        score.append(info[i][1])
+                        bet_win[0].append(info[i][2][0])
+                        bet_win[1].append(info[i][2][1])
+                    matchBet = MatchBet(eventId, [], dt, compName, ids, ts, score, bet_win)
+                    if not (matchHash in self.bets):
+                        self.bets[matchHash] = matchBet
+                    else:
+                        print('not unique bet match hash')
 
         self.n = len(self.matches)
         with open(r'D:\Programming\SportPrognoseSystem\BetsWinner\test\dataset.txt', 'w', encoding = 'utf-8') as fout:
@@ -129,12 +161,13 @@ class TTModel:
 
     def getMatchesTable(self, matches, sortInd = 0, sortAsc = 1):
         data = []
-        for match in matches:
+        for i,match in enumerate(matches):
             id1 = ' - '.join(match.players[0])
             names1 = ' - '.join(self.getMatchPlayersNames(match.players[0]))
             id2 = ' - '.join(match.players[1])
             names2 = ' - '.join(self.getMatchPlayersNames(match.players[1]))
-            data.append([match.date, match.time, match.compName, id1, names1, id2, names2, match.setsScore, match.pointsScore, '; '.join(match.sources)])
+            flBet = '+' if match.hash in self.bets else ''
+            data.append([match.date, match.time, match.compName, id1, names1, id2, names2, match.setsScore, match.pointsScore, '; '.join(match.sources), flBet, match.hash])
         data = sorted(data, key = lambda x: x[sortInd], reverse = (sortAsc == 0))
         for i,row in enumerate(data):
             names1 = ' - '.join([self.getHref(e, self.playersDict.getName(e)) for e in row[3].split(' - ')])
@@ -143,18 +176,19 @@ class TTModel:
             data[i][6] = names2
 
         return data
-        #self.m = 100
-        #self.id = np.array(list(range(self.n)))
-        #self.name = ['name_' + str(i) for i in range(self.n)]
-        #k = 100000
-        #np.random.seed(777)
-        #data = np.random.randint(2, size = k)
-        #row = np.random.randint(self.n, size = k)
-        #col = np.random.randint(self.m, size = k)
-        #self.y = sps.csc_matrix((data, (row, col)), shape=(self.n, self.m))
-        #print(self.n)
-        #ys = self.y.sum(axis=1)
-        #print(ys[0, 0])
+
+    def getMatchBetsTable(self, matchHash, sortInd = 0, sortAsc = 1):
+        data = []
+        if not (matchHash in self.bets):
+            return data
+        matchBet = self.bets[matchHash]
+        for i in range(len(matchBet.ts)):
+            id1 = ' - '.join(matchBet.players[0])
+            id2 = ' - '.join(matchBet.players[1])
+            data.append([matchBet.ts[i][:10], matchBet.ts[i][11:], matchBet.compName, id1, id2, matchBet.score[i], str(matchBet.bet_win[0][i]), str(matchBet.bet_win[1][i])])
+
+        return data
+
 
 
     def getPlayersTable(self, players):

@@ -1,4 +1,7 @@
 $(document).ready(function(){
+
+    var matchHash = "";
+
     $('#matches_table').DataTable({
         "sScrollY": "300px",
         "bScrollCollapse": true,
@@ -13,14 +16,47 @@ $(document).ready(function(){
         "bjQueryUI": true,
         "sAjaxSource": "/_retrieve_matches_data",
         "fnServerParams": function ( aoData ) {
-            aoData.push( { "name":"mySelect", "value": $('#mySelect').find("option:selected").val()});
+            //aoData.push( { "name":"mySelect", "value": $('#mySelect').find("option:selected").val()});
+            if ($('#sourceCheckboxes')) {
+                var c = $('.source-checkbox:checkbox:checked')
+                var sources = ""
+                for (i = 0; i < c.length; i++) {
+                    sources += c[i].value + ";";
+                }
+                aoData.push({ "name":"sources", "value": sources});
+            }
+        },
+        "aoColumnDefs": [{ "bVisible": false, "aTargets": [11] }],
+        "order": [[ 0, "desc" ]]
+    });
+
+    $('#match_bets_table').DataTable({
+        "sScrollY": "300px",
+        "bScrollCollapse": true,
+        "sScrollX": "100%",
+        "sScrollXInner": "100%",
+        "scrollCollapse": false,
+        "fixedHeader": true,
+        "bProcessing": true,
+        "bServerSide": true,
+        "sPaginationType": "full_numbers",
+        "bjQueryUI": true,
+        "searching": false,
+        "paging": false,
+        "sAjaxSource": "/_retrieve_match_bets_data",
+        "fnServerParams": function ( aoData ) {
+            aoData.push( { "name":"matchHash", "value": matchHash});
         },
         "order": [[ 0, "desc" ]]
     });
-    $('#mySelect').on('change', function(){
-        var selected = $(this).find("option:selected").val();
-//        alert(selected);
-        $('#players').DataTable().ajax.reload();
+
+    $("#matches_table tbody").on('click', 'tr', function(event){
+        matchHash = $('#matches_table').DataTable().row(this).data()[11];
+        $('#match_bets_table').DataTable().ajax.reload();
+    });
+
+    $('.source-checkbox:checkbox').on('change', function(){
+        $('#matches_table').DataTable().ajax.reload();
     });
 
     $('#players_table').DataTable({
@@ -38,7 +74,8 @@ $(document).ready(function(){
         "sAjaxSource": "/_retrieve_players_data",
         "fnServerParams": function ( aoData ) {
             aoData.push( { "name":"mySelect", "value": $('#mySelect').find("option:selected").val()});
-        }
+        },
+        "order": [[ 2, "desc" ]]
     });
 
     $('#player_matches_table').DataTable({
@@ -57,8 +94,26 @@ $(document).ready(function(){
         "fnServerParams": function ( aoData ) {
             if ($('#playerName'))
                 aoData.push( { "name":"playerId", "value": $('#playerName').attr("playerId")});
+            if ($('#sourceCheckboxes')) {
+                var c = $('.source-checkbox:checkbox:checked')
+                var sources = ""
+                for (i = 0; i < c.length; i++) {
+                    sources += c[i].value + ";";
+                }
+                aoData.push({ "name":"sources", "value": sources});
+            }
         },
-        "order": [[ 0, "desc" ]]
+        "order": [[ 0, "desc" ]],
+        "aoColumnDefs": [{ "bVisible": false, "aTargets": [11] }],
+    });
+
+    $("#player_matches_table tbody").on('click', 'tr', function(event){
+        matchHash = $('#player_matches_table').DataTable().row(this).data()[11];
+        $('#match_bets_table').DataTable().ajax.reload();
+    });
+
+    $('.source-checkbox:checkbox').on('change', function(){
+        $('#player_matches_table').DataTable().ajax.reload();
     });
 
     $('#player_rankings_table').DataTable({
