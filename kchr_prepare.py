@@ -60,12 +60,13 @@ def main():
             fp = os.path.abspath(os.path.join(f[0], ff))
             if fp[-3:] == 'pdf':
                 continue
+            #print(fp)
             cm = 0
             cmg = 0
             cp = cpg = 0
             matches = []
             compName = ', '.join(fp.split('\\')[-4:-1]).replace('women', 'Женщины').replace('men', 'Мужчины')
-            with open(fp, encoding='utf-8') as fin:
+            with open(fp, encoding='utf-8') as fin, open('data/local/errors/' + '_'.join(fp.split('\\')[-5:])[:-4] + '_err.txt', 'w', encoding='utf-8') as fout_err:
                 compDate = compInfo['/'.join(fp.split('\\')[-5:])][0]
                 compDate = compDate.split(' ')[2] + '-' + str(monthname2Num[compDate.split(' ')[1]]).zfill(2) + '-' + compDate.split(' ')[0].split('-')[1].zfill(2)
                 compDate = (datetime.datetime.strptime(compDate, "%Y-%m-%d").date() + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
@@ -122,7 +123,8 @@ def main():
                             if fp.split('\\')[-1] == 'tabula-1-3muzh-kchr-premer.1-tur-1-moskva.tsv':
                                 setsScore = tokens[-2].replace(' ', '').replace('-', ':')
                             elif fp.split('\\')[-1] in ['tabula-a-muzhchiny-1t-1-gr.tsv', 'tabula-superliga.zhenshch.-2-1-i-tur.tsv',
-                                                        'tabula-2016-06-05-01-kch-premer-zh-gr-1-2-slavyansk.tsv', 'tabula-2015-11-08-kch-fntr-premer-liga-zhenshchiny-1-gruppa.tsv']:
+                                                        'tabula-2016-06-05-01-kch-premer-zh-gr-1-2-slavyansk.tsv', 'tabula-2015-11-08-kch-fntr-premer-liga-zhenshchiny-1-gruppa.tsv',
+                                                        'tabula-2016-17.-1-t.-m-c.-1-gr.tsv']:
                                 setsScore = tokens[-2]
                             elif tokens[-2].find(' ') != -1:
                                 setsScore = tokens[-2].replace(' ', ':')
@@ -144,12 +146,15 @@ def main():
                                         if not (player in unknown):
                                             unknown[player] = 0
                                         unknown[player] += 1
-                                        print('UNKNOWN ' + player)
+                                        fout_err.write('UNKNOWN ' + player + '\n')
+                                        #print('UNKNOWN ' + player)
                                         if player == '':
-                                            print('-------------------' + line0)
+                                            fout_err.write('-------------------' + line0 + '\n')
+                                            #print('-------------------' + line0)
                                     else:
                                         flError = 1
-                                        print('MULTIPLE ' + player)
+                                        fout_err.write('MULTIPLE ' + player + '\n')
+                                        #print('MULTIPLE ' + player)
                                         fl_mw = ''
                                         for e in id:
                                             fl_mw += e[0]
@@ -177,22 +182,27 @@ def main():
 #                                    [[e.strip() for e in name1],
 #                                     [e.strip() for e in name2]],
                                 else:
-                                    print(line0.replace('\t', ';')[:-1])
-                                    print(matches[-1].toArr())
-                                    print('1 ' + '\t'.join(fp.split('\\')[-5:]) + '\t' + ';'.join(tokens) + '\n')
+                                    fout_err.write(line0.replace('\t', ';')[:-1] + '\n')
+                                    #print(line0.replace('\t', ';')[:-1])
+                                    fout_err.write('\t'.join([str(ee) for ee in matches[-1].toArr()]) + '\n')
+                                    #print(matches[-1].toArr())
+                                    fout_err.write('1 ' + '\t'.join(fp.split('\\')[-5:]) + '\t' + ';'.join(tokens) + '\n')
+                                    #print('1 ' + '\t'.join(fp.split('\\')[-5:]) + '\t' + ';'.join(tokens) + '\n')
 
                                 if tokens[0].lower() == 'па-ра':
                                     cp += 1
                                     cpg += (1 - matches[-1].flError)
                             else:
-                                1 == 1
-                                print('2 ' + ';'.join(tokens))
+                                fout_err.write('2 ' + ';'.join(tokens) + '\n')
+                                #print('2 ' + ';'.join(tokens))
                         else:
-                            print('flName ' + line0)
+                            fout_err.write('flName ' + line0 + '\n')
+                            #print('flName ' + line0)
 
                     #                    else:
 #                        fout.write('\t'.join(fp.split('\\')[-5:]) + '\t' + ';'.join(tokens) + '\n')
-            print(['/'.join(fp.split('\\')[-5:]), cm, cmg, cp, cpg])
+                print(['/'.join(fp.split('\\')[-5:]), cm, cmg, cp, cpg])
+                fout_err.write('\t'.join([str(ee) for ee in ['/'.join(fp.split('\\')[-5:]), cm, cmg, cp, cpg]]) + '\n')
     #filename = 'tabula-2016-17.-1-i-tur-muzhchiny.-super.-1-gr.tsv'
     #filename = '/КЧР/2016-2017/men/tabula-23.12-2-tur.-muzhchiny.-premer.tsv'
     #filename = r'\КЧР\2015-2016\men\Премьер-лига\4 тур\tabula-m-kchr-premer.-4-tur.4.tsv'
