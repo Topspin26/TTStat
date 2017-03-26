@@ -60,6 +60,8 @@
 2016-2017/men/Премьер-лига/1 тур/tabula-2016-2017-muzhchiny.-premer.-1-gr.tsv	17-20 ноября 2016	Верхняя Пышма
 2016-2017/men/Премьер-лига/1 тур/tabula-2016-2017-nov-muzhchiny.-premer.-2-gr-2-.tsv	17-20 ноября 2016	Славянск-на-Кубани
 2016-2017/men/Премьер-лига/2 тур/tabula-23.12-2-tur.-muzhchiny.-premer.tsv	20-23 декабря 2016	Санкт-Петербург
+2016-2017/men/Премьер-лига/3 тур/tabula-v.-pyshma-3-itogi-muzhchiny.-premer.-1-gr.tsv	23-26 марта 2017	Верхняя Пышма
+2016-2017/men/Премьер-лига/3 тур/tabula-v.-pyshma-3-itogi-muzhchiny.-premer.-2-gr.tsv	23-26 марта 2017	Верхняя Пышма
 2016-2017/men/Суперлига/1 тур/tabula-2016-17.-1-i-tur-muzhchiny.-super.-1-gr.tsv	20-23 октября 2016	пос. Большевик Серпуховского района
 2016-2017/men/Суперлига/1 тур/tabula-2016-17.-1-i-tur-muzhchiny.-super.-2-gr.tsv	20-23 октября 2016	пос. Большевик Серпуховского района
 2016-2017/men/Суперлига/2 тур/tabula-2016-17-2-tur.-muzhchiny.-superliga.tsv	15-18 декабря 2016	Оренбург
@@ -73,6 +75,8 @@
 2016-2017/women/Премьер-лига/1 тур/tabula-2016.17-1-tur.-zhpl-1.tsv	17-20 ноября 2016	Кстово
 2016-2017/women/Премьер-лига/1 тур/tabula-2016.17-1-tur.-zhpl-2.tsv	16-19 ноября 2016	Кстово
 2016-2017/women/Премьер-лига/2 тур/tabula-2-tur.-zhenshchiny.-premer-itogi.tsv	19-23 декабря 2016	Оренбург
+2016-2017/women/Премьер-лига/3 тур/tabula-zhenshchiny.-orenburg-3-premer.-1-gr.-itogi.tsv	23-26 марта 2017	Оренбург
+2016-2017/women/Премьер-лига/3 тур/tabula-zhenshchiny.-premer.-2-gr.-itogi.tsv	23-26 марта 2017	Оренбург
 2016-2017/women/Суперлига/1 тур/tabula-2016-17.-zh-.-super.-2-gr.tsv	27-30 октября 2016	Чебоксары
 2016-2017/women/Суперлига/1 тур/tabula-2016-17.-zh.-super.-1-gr.tsv	27-30 октября 2016	Чебоксары
 2016-2017/women/Суперлига/2 тур/tabula-2016-17-2-tur.-zhenshchiny.-super.tsv	15-18 декабря 2016	Магнитогорск

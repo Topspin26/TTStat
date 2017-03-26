@@ -26,7 +26,7 @@ def getMatches(corrections, wrongLines):
                             tokens[i] = tokens[i].replace(e, '').strip()
                     matches.append(Match(tokens[0],
                                          [tokens[2].split(';'),tokens[3].split(';')],
-                                         setsScore=tokens[4].strip().replace('-',':'),
+                                         setsScore=tokens[4].strip().replace('-',':').replace('(','').replace(')',''),
                                          pointsScore=None,
                                          time=tokens[1],
                                          compName='Challenger Series, ' + ff[:10]))

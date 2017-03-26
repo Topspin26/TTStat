@@ -87,6 +87,7 @@ def main():
     idLinks['102'] = 'm577'
     idLinks['148'] = 'w185'
     idLinks['200'] = 'm537'
+    idLinks['187'] = 'm16248'
 
     playersDict = GlobalPlayersDict()
 

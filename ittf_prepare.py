@@ -85,7 +85,7 @@ def main():
 
     playersDict = GlobalPlayersDict()
 
-    readPlayer2Id(filename)
+#    readPlayer2Id(filename)
 
     player2id = dict()
     id2player = dict()

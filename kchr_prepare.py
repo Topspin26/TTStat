@@ -69,7 +69,7 @@ def main():
             with open(fp, encoding='utf-8') as fin, open('data/local/errors/' + '_'.join(fp.split('\\')[-5:])[:-4] + '_err.txt', 'w', encoding='utf-8') as fout_err:
                 compDate = compInfo['/'.join(fp.split('\\')[-5:])][0]
                 compDate = compDate.split(' ')[2] + '-' + str(monthname2Num[compDate.split(' ')[1]]).zfill(2) + '-' + compDate.split(' ')[0].split('-')[1].zfill(2)
-                compDate = (datetime.datetime.strptime(compDate, "%Y-%m-%d").date() + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+                compDate = (datetime.datetime.strptime(compDate, "%Y-%m-%d").date() + datetime.timedelta(days=0)).strftime("%Y-%m-%d")
                 compPlace = compInfo['/'.join(fp.split('\\')[-5:])][1]
                 for line in fin:
                     line0 = line

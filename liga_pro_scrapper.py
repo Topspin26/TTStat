@@ -12,7 +12,7 @@ def scrapp(tid):
     driver = initDriver(url)
     if driver.current_url.find('404.php') != -1:
         driver.quit()
-        return
+        return 1
     compName = driver.find_element_by_tag_name('h1').get_attribute('innerHTML')
     dt = driver.find_elements_by_xpath('//*[@class = "day"]')[0].get_attribute('innerHTML')
     st = driver.find_elements_by_xpath('//*[@class = "day"]')[1].get_attribute('innerHTML')
@@ -61,7 +61,7 @@ def scrapp(tid):
     with open(filename, 'w', encoding = 'utf-8') as fout:
         for line in lines2:
             fout.write(line + '\n')
-
+    return 0
 
 def main():
     curId = 1
@@ -70,10 +70,12 @@ def main():
             curId = max(curId, int(ff.split('_')[1]))
     curId = max(1, curId - 1)
     print(curId)
+    fl = 0
     for tid in range(curId, 200):
         print(tid)
-        scrapp(tid)
-        #break
+        fl += scrapp(tid)
+        if fl == 2:
+            break
 
 if __name__ == "__main__":
     main()

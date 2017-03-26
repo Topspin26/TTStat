@@ -1,23 +1,32 @@
+import liga_pro_prepare
 import master_tour_prepare
+import challenger_series_prepare
 import bkfon_results_prepare
 import ittf_prepare
 import kchr_prepare
 import propingpong_prepare
+import rttf_prepare
 
 from common import *
 from Entity import *
 
 def prepareSources():
     master_tour_prepare.main()
+    liga_pro_prepare.main()
+    challenger_series_prepare.main()
     bkfon_results_prepare.main()
     propingpong_prepare.main()
     ittf_prepare.main()
     kchr_prepare.main()
+    rttf_prepare.main()
 
 def main():
-    #prepareSources()
+    prepareSources()
+
     sources = []
     sources.append(['master_tour', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\master_tour\all_results.txt'])
+    sources.append(['liga_pro', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\liga_pro\all_results.txt'])
+    sources.append(['challenger_series',r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\challenger_series\all_results.txt'])
     sources.append(['bkfon', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\bkfon\all_results.txt'])
     sources.append(['local', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\local\kchr_results.txt'])
     sources.append(['ittf', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\ittf\all_results.txt'])
