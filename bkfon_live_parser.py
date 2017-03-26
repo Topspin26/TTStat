@@ -53,8 +53,10 @@ def main():
 
     segments['liga_pro_men'] = 'segment37716.txt'
     segments['liga_pro_women'] = 'segment37984.txt'
+    segments['challenger_series_men'] = 'segment13574.txt'
+    segments['challenger_series_women'] = 'segment19423.txt'
 
-#    parseDirs(segments)
+    parseDirs(segments)
 
     dirname_parsed = 'D:/Programming/SportPrognoseSystem/BetsWinner/data/bkfon/live_parsed'
 

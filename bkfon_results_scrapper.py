@@ -7,13 +7,8 @@ import random
 import os
 import re
 from subprocess import Popen
+from common import *
 
-
-def initDriver(url, driver):
-    driver = webdriver.Chrome('chromedriver_win32/chromedriver')#, port = 5938)
-    driver.get(url)
-    time.sleep(1 + random.random()) # Let the user actually see something!
-    return driver
 
 def getResults(curDate):
     s = None
@@ -26,8 +21,7 @@ def getResults(curDate):
 
 def main():
     url = 'https://www.bkfon.ru/results'
-    driver = None
-    driver = initDriver(url, driver)
+    driver = initDriver(url, 10)
 
     monthname2Num = {'янв':1,'фев':2,'мар':3,'апр':4,'май':5,'июн':6,'июл':7,'авг':8,'сен':9,'окт':10,'ноя':11,'дек':12}
 
@@ -46,6 +40,8 @@ def main():
         print(len(active_days))
         if year == '2017':
             for i in range(nd - flLast):
+#                if i < 10:
+#                    continue
                 if month != 3:
                     continue
                 curDate = year + '-' + str(month).zfill(2) + '-' + str(i + 1).zfill(2)
@@ -55,7 +51,7 @@ def main():
 
                 print(active_days[i].get_attribute('innerHTML'))
                 active_days[i].click()
-                time.sleep(5 + random.random())
+                time.sleep(10 + random.random())
                 active_days = driver.find_elements(By.XPATH, "//*[@data-handler='selectDay']")
                 s = driver.find_element_by_id('resultDiv').get_attribute('innerHTML')
                 if sLast is None:
@@ -80,7 +76,7 @@ def main():
             flExit = 1
             break
         driver.find_element_by_class_name('ui-datepicker-prev').click()
-        time.sleep(5 + random.random())
+        time.sleep(10 + random.random())
         flLast = 0
         continue
     return

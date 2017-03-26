@@ -6,7 +6,7 @@ from os import walk
 
 from common import *
 from Entity import *
-from ParserBKFon import ParserBKFon
+from Storages import *
 import json
 import re
 
@@ -19,7 +19,11 @@ def main():
 
     sources = []
     sources.append(['master_tour', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\master_tour\all_results.txt'])
+    sources.append(['liga_pro', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\liga_pro\all_results.txt'])
     sources.append(['bkfon', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\bkfon\all_results.txt'])
+
+#    matchesStorage = MatchesStorage(sources) #заменить кусок кода ниже
+
     for source, filename in sources:
         print(filename)
         with open(filename, encoding='utf-8') as fin:
@@ -85,9 +89,12 @@ def main():
                         unknown[player] += 1
                     else:
                         idGood = []
-                        source = 'master_tour'
-                        if segment.find('liga_pro') != -1:
-                            source = 'bkfon'
+                        source = 'bkfon'
+                        if segment.find('master_tour') != -1:
+                            source = 'master_tour'
+                        elif segment.find('liga_pro') != -1:
+                            source = 'liga_pro'
+
                         for e in id:
                             if (source + '\t' + dt[:10] + '\t' + e) in activePlayers:
                                 idGood.append(e)
