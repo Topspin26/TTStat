@@ -2106,7 +2106,7 @@ m2119	Себастьян Роман;Roman Sebastian
 m2120	SIMONER Christoph
 m2121	SMREKAR Robert
 m2122	ROBINSON Ashley
-m2123	Фан Бо;Fang Bo
+m2123	Фан Бо;Fang Bo;Фанг Бо
 m2124	Овидиу Ионеску;Ionescu Ovidiu
 m2125	LAI Kuan-Shen
 m2126	YAN Xin Chris
@@ -16228,3 +16228,5 @@ m16243	Георгий Прикащенков
 m16244	Денис Макаров
 m16245	Андрей Овчинников
 m16246	Baum Bjorn
+m16247	Максим Пищанский
+m16248	Сергей Воробьев

@@ -65,6 +65,10 @@ def main():
 
     playersDict = GlobalPlayersDict()
 
+    idLinks = dict()
+    idLinks['3879'] = 'm16248'
+    idLinks['210'] = 'm16233'
+
     multiple = dict()
     unknown = dict()
 
@@ -80,25 +84,29 @@ def main():
                 players = [[], []]
                 for i in range(2):
                     for player in match.players[i]:
-                        player = id2player[player]
-                        id = player2id[player]
-                        if len(id) == 1:
-                            players[i].append(player)
-                            id = playersDict.getId(player)
+                        playerName = id2player[player]
+                        id = player2id[playerName]
+                        if len(id) == 1 or player in idLinks:
+                            players[i].append(playerName)
+                            if player in idLinks:
+                                id = [idLinks[player]]
+                                #print(player, playerName, id)
+                            else:
+                                id = playersDict.getId(playerName)
                             if len(id) == 1:
                                 ids[i].append(id[0])
                             elif len(id) == 0:
                                 flError = 1
-                                updateDict(unknown, player)
+                                updateDict(unknown, playerName)
                             else:
                                 flError = 1
                                 fl_mw = ''
                                 for e in id:
                                     fl_mw += e[0]
                                 fl_mw = ''.join(sorted(set(list(fl_mw))))
-                                updateDict(multiple, fl_mw + ' ' + player)
+                                updateDict(multiple, fl_mw + ' ' + playerName)
                         else:
-                            updateDict(multiple, player)
+                            updateDict(multiple, playerName)
 
                 if flError == 0 and len(ids[0]) > 0 and len(ids[1]) > 0:
                     resTokens = match.toArr()

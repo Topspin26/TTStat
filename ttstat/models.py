@@ -8,6 +8,7 @@ import datetime
 import json
 import re
 
+from Storages import *
 from Entity import *
 from common import *
 
@@ -53,86 +54,28 @@ class TTModel:
             #self.playersDict[k] = len(self.players)
             self.players[k] = Player(k, v, k[0])
 
+
         sources = []
         sources.append(['master_tour', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\master_tour\all_results.txt'])
+        sources.append(['liga_pro', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\liga_pro\all_results.txt'])
+        sources.append(['challenger_series', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\challenger_series\all_results.txt'])
         sources.append(['bkfon', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\bkfon\all_results.txt'])
         sources.append(['local', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\local\kchr_results.txt'])
         sources.append(['ittf', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\ittf\all_results.txt'])
-        #sources.append(['rttf', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\rttf\all_results.txt'])
-        self.matches = []
-        self.hash2matchInd = dict()
+        sources.append(['rttf', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\rttf\all_results.txt'])
 
-        matchesDict = dict()
-        compNamesPairs = set()
-        for source, filename in sources:
-            print(filename)
-            with open(filename, encoding='utf-8') as fin:
-                headerTokens = next(fin).strip().split('\t')
-                headerDict = dict(zip(headerTokens, range(len(headerTokens))))
-                for line in fin:
-                    tokens = line.split('\t')
-                    match = Match(tokens[headerDict['date']],
-                                  [tokens[headerDict['id1']].split(';'), tokens[headerDict['id2']].split(';')],
-                                  setsScore=tokens[headerDict['setsScore']],
-                                  pointsScore=tokens[headerDict['pointsScore']],
-                                  time=tokens[headerDict['time']],
-                                  compName=tokens[headerDict['compName']],
-                                  source=source)
-                    matchHash = match.getHash()
-                    #matchReversedStr = match.reverse().getKey()
-                    #matchStr = ';'.join([' '.join(match.players[0]), ' '.join(match.players[1]), match.setsScore, match.pointsScore])
-                    if not (matchHash in matchesDict) and match.date >= '2014':
-                        if not matchHash in matchesDict:
-                            matchesDict[matchHash] = []
-                        matchesDict[matchHash].append(match)
-                        self.matches.append(match)
-                        self.hash2matchInd[matchHash] = len(self.matches) - 1
-    #                    print(line)
-                        for e in tokens[headerDict['id1']].split(';'):
-                            self.players[e].matches.append(match)
-                        for e in tokens[headerDict['id2']].split(';'):
-                            self.players[e].matches.append(match)
-                    elif matchHash in matchesDict:
-                        matchesDict[matchHash][0].addSource(source)
-                        if matchesDict[matchHash][0].compName != match.compName:
-                            compNamesPairs.add(matchesDict[matchHash][0].compName + ' === ' + match.compName)
-#        for e in compNamesPairs:
-#            print(e)
+        self.matchesStorage = MatchesStorage(sources)
 
-        self.bets = dict()
+        self.matches = self.matchesStorage.matches
+        self.hash2matchInd = self.matchesStorage.hash2matchInd
+        for match in self.matches:
+            for e in match.players[0]:
+                self.players[e].matches.append(match)
+            for e in match.players[1]:
+                self.players[e].matches.append(match)
 
-        with open('prepared_data/bkfon/live/all_bets_prepared.txt', encoding='utf-8') as fin:
-            for line in fin:
-                tokens = line.rstrip('\n').split('\t')
-                eventId = tokens[1]
-                dt = tokens[2]
-                compName = tokens[3]
-                ids = [tokens[4].split(';'), tokens[5].split(';')]
-                info = json.loads(tokens[8])
-                pattern = r"\(([A-Za-z0-9- ]+)\)"
-                pointsScore = re.search(pattern, info[-1][1])
-                points = None
-                if not (pointsScore is None):
-                    pointsScore = pointsScore.group(0).replace('(', '').replace(')', '').replace(' ', ';').replace('-', ':') + ';'
-                    _, points = Match.getPointsScoreInfo(pointsScore)
-                setsScore = info[-1][1].split(' ')[0]
-                matchHash = None
-                if setsScore != '':
-                    matchHash = calcHash([dt[:10]] + ids[0] + ids[1] + [int(e) for e in setsScore.split(':')] + [e * i for i, e in enumerate(Match.getSetSumPoints(points))])
-                if matchHash in self.hash2matchInd:
-                    ts = []
-                    score = []
-                    bet_win = [[], []]
-                    for i in range(len(info)):
-                        ts.append(info[i][0])
-                        score.append(info[i][1])
-                        bet_win[0].append(info[i][2][0])
-                        bet_win[1].append(info[i][2][1])
-                    matchBet = MatchBet(eventId, [], dt, compName, ids, ts, score, bet_win)
-                    if not (matchHash in self.bets):
-                        self.bets[matchHash] = matchBet
-                    else:
-                        print('not unique bet match hash')
+        self.matchesBetsStorage = MatchesBetsStorage(self.hash2matchInd)
+        self.bets = self.matchesBetsStorage.bets
 
         self.n = len(self.matches)
         with open(r'D:\Programming\SportPrognoseSystem\BetsWinner\test\dataset.txt', 'w', encoding = 'utf-8') as fout:

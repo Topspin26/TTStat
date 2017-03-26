@@ -87,7 +87,7 @@ h2{
     width: auto;
 }
 
-table.dataTable tr:hover{
+table.dataTable tbody tr:hover{
     background-color: #f7f7e0;
     cursor: pointer;
 }

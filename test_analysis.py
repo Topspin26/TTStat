@@ -148,7 +148,6 @@ def foo1():
     print(SE1)
 
 
-
 def foo():
     x = sps.lil_matrix((4, 3))
     y = np.ones(4)
@@ -252,9 +251,9 @@ def foo():
     # the confidence interval
     print((beta - z * c, beta + z * c))
 
-def calcRankings(matches, curDate, mw_players, mw, daysCnt = 730):
+def calcRankings(matches, curDate, playersDict, mw, daysCnt = 730):
     mCnt = len(matches)
-    x = sps.lil_matrix((mCnt, len(mw_players['m']) + len(mw_players['w'])))
+    x = sps.lil_matrix((mCnt, len(playersDict.id2names)))
     y = np.ones(mCnt)
     w = np.ones(mCnt)
 
@@ -270,7 +269,7 @@ def calcRankings(matches, curDate, mw_players, mw, daysCnt = 730):
                 x[k, ind] = [1, -1]
                 #points = match.getSumPoints()
                 #w[k] = (points[0] + 1) * 1.0 / (sum(points) + 2)
-                w[k] = (match.sets[0] + 1) * 1.0 / (match.sets[0] + match.sets[1] + 2)
+                w[k] = (match.sets[0] + 0.1) * 1.0 / (match.sets[0] + match.sets[1] + 0.2)
                 #w[k] = (match.wins[0] + 1) * 1.0 / (match.wins[0] + match.wins[1] + 2)
                 k += 1
     mCnt = k
@@ -309,7 +308,9 @@ def calcRankings(matches, curDate, mw_players, mw, daysCnt = 730):
     r = np.append(model.coef_[0], -model.coef_.sum())
 
     res = []
-    for e in sorted(mw_players[mw]):
+    for e in sorted(playersDict.id2names):
+        if e[0] != mw:
+            continue
         id = int(e[1:]) - 1
         rr = rr0 = rr1 = -100
         if id in indNonZero:
@@ -317,17 +318,11 @@ def calcRankings(matches, curDate, mw_players, mw, daysCnt = 730):
             rr = r[ind]
             # rr0 = r0[ind]
             # rr1 = r1[ind]
-        res.append([e, mw_players[mw][e], rr])  # , rr0, rr1])
+        res.append([e, playersDict.getName(e), rr])  # , rr0, rr1])
     return res
 
 def calcRankingsProcess(mw):
-    men_players = readPlayers('prepared_data/players_men.txt')
-    women_players = readPlayers('prepared_data/players_women.txt')
-    mw_players = {'m': men_players, 'w': women_players}
-    #    men_players = women_players
-
-    print(len(men_players))
-    print(len(women_players))
+    playersDict = GlobalPlayersDict()
 
     filenames = []
     filenames.append(r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\master_tour\all_results.txt')
@@ -335,14 +330,12 @@ def calcRankingsProcess(mw):
     filenames.append(r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\local\kchr_results.txt')
     filenames.append(r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\ittf\all_results.txt')
     matches = []
-
     matchesSet = set()
     for filename in filenames:
         print(filename)
         with open(filename, encoding='utf-8') as fin:
             headerTokens = next(fin).strip().split('\t')
             headerDict = dict(zip(headerTokens, range(len(headerTokens))))
-            lastId = None
             for line in fin:
                 tokens = line.split('\t')
                 if len(tokens[headerDict['id1']].split(';')) == 1 and tokens[headerDict['id1']][0] == mw and \
@@ -353,6 +346,7 @@ def calcRankingsProcess(mw):
                                   pointsScore=tokens[headerDict['pointsScore']],
                                   time=tokens[headerDict['time']],
                                   compName=tokens[headerDict['compName']])
+                    #HASHES HASHES HASHES
                     matchStr = ';'.join([match.date[:7], ' '.join(match.players[0]), ' '.join(match.players[1]),
                                          match.setsScore.strip(';'), match.pointsScore.strip(';')])
                     if not (matchStr in matchesSet) and match.date >= '2014':
@@ -364,12 +358,12 @@ def calcRankingsProcess(mw):
     for year in range(2015, 2018):
         for month in range(1, 13):
             curDate = str(year) + '-' + str(month).zfill(2) + '-01'
-            res = calcRankings(matches, curDate, mw_players, mw, 730)
+            res = calcRankings(matches, curDate, playersDict, mw, 730)
             for i, e in enumerate(sorted(res, key=lambda x: x[2], reverse=True)):
                 rankings.append([curDate[:-3], e[0], str(e[2]), str(i + 1)])
-            if year == 2017 and month == 3:
+            if year == 2017 and month == 4:
                 break
-                #            break
+
     with open('test/all_rankings_' + mw + '.txt', 'w', encoding='utf-8') as fout:
         for e in rankings:
             fout.write('\t'.join(e) + '\n')
