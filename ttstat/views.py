@@ -1,8 +1,6 @@
-
 from flask import render_template, request, flash, redirect
 from ttstat import ttstat, ttModel
 import simplejson as json
-from .models import TTModel
 
 @ttstat.route('/')
 @ttstat.route('/index')
@@ -176,19 +174,19 @@ def get_player_rankings_data():
     c = 0
     output['iTotalRecords'] = 0
     aaData_rows = []
-    if playerIdFilter in ttModel.rusRankings:
-        output['iTotalRecords'] += len(ttModel.rusRankings[playerIdFilter])
-        for e in sorted(ttModel.rusRankings[playerIdFilter].items(), key = lambda x: x[0], reverse=True):
+    if playerIdFilter in ttModel.rankingStorage.rankings['ttfr']:
+        output['iTotalRecords'] += len(ttModel.rankingStorage.rankings['ttfr'][playerIdFilter])
+        for e in sorted(ttModel.rankingStorage.rankings['ttfr'][playerIdFilter].items(), key = lambda x: x[0], reverse=True):
             aaData_rows.append([e[0], 'TTFR', e[1][0], e[1][1]])
             c += 1
-    if playerIdFilter in ttModel.ittfRankings:
-        output['iTotalRecords'] += len(ttModel.ittfRankings[playerIdFilter])
-        for e in sorted(ttModel.ittfRankings[playerIdFilter].items(), key = lambda x: x[0], reverse=True):
+    if playerIdFilter in ttModel.rankingStorage.rankings['ittf']:
+        output['iTotalRecords'] += len(ttModel.rankingStorage.rankings['ittf'][playerIdFilter])
+        for e in sorted(ttModel.rankingStorage.rankings['ittf'][playerIdFilter].items(), key = lambda x: x[0], reverse=True):
             aaData_rows.append([e[0], 'ITTF', e[1][0], e[1][1]])
             c += 1
-    if playerIdFilter in ttModel.myRankings:
-        output['iTotalRecords'] += len(ttModel.myRankings[playerIdFilter])
-        for e in sorted(ttModel.myRankings[playerIdFilter].items(), key = lambda x: x[0], reverse=True):
+    if playerIdFilter in ttModel.rankingStorage.rankings['my']:
+        output['iTotalRecords'] += len(ttModel.rankingStorage.rankings['my'][playerIdFilter])
+        for e in sorted(ttModel.rankingStorage.rankings['my'][playerIdFilter].items(), key = lambda x: x[0], reverse=True):
             aaData_rows.append([e[0], 'MY', e[1][0], e[1][1]])
             c += 1
     output['iTotalRecords'] = str(output['iTotalRecords'])

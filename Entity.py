@@ -102,6 +102,7 @@ class Match:
         self.time = time
         self.isPair = isPair
         if (self.isPair is None):
+            self.isPair = 0
             if len(self.players[0]) == 2:
                 self.isPair = 1
 

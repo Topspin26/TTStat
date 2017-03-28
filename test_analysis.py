@@ -5,6 +5,7 @@ import random
 import re
 
 from Entity import *
+from Storages import *
 from common import *
 import statsmodels.api as sm
 import numpy as np
@@ -12,17 +13,6 @@ import scipy as sp
 import scipy.sparse as sps
 from sklearn import linear_model
 import math
-
-def read_players(filename):
-    players = dict()
-    with open(filename, 'r', encoding = 'utf-8') as fin:
-        for line in fin:
-            tokens = line.split('\t')
-            id = tokens[0].strip()
-            names = tokens[1].strip().split(';')
-            players[id] = names
-    return players 
-
 
 def getPoints(pointsScore):
     res = [0, 0]
@@ -262,16 +252,23 @@ def calcRankings(matches, curDate, playersDict, mw, daysCnt = 730):
         mDate = match.date
         if mDate > (datetime.datetime.strptime(curDate, "%Y-%m-%d").date() - datetime.timedelta(days=daysCnt)).strftime("%Y-%m-%d") and mDate[:-3] < curDate:
             mTime = match.time
-            id = [match.players[0][0], match.players[1][0]]
-#            if not (match.points is None) and not (match.sets is None):
-            if not (match.sets is None):
-                ind = [(int(e[1:]) - 1) for e in id]
-                x[k, ind] = [1, -1]
-                #points = match.getSumPoints()
-                #w[k] = (points[0] + 1) * 1.0 / (sum(points) + 2)
-                w[k] = (match.sets[0] + 0.1) * 1.0 / (match.sets[0] + match.sets[1] + 0.2)
-                #w[k] = (match.wins[0] + 1) * 1.0 / (match.wins[0] + match.wins[1] + 2)
-                k += 1
+
+            fl_mw = ''
+            for e in match.players[0] + match.players[1]:
+                fl_mw += e[0]
+            fl_mw = ''.join(sorted(set(list(fl_mw))))
+
+            if match.isPair == 0 and fl_mw == mw:
+                id = [match.players[0][0], match.players[1][0]]
+    #            if not (match.points is None) and not (match.sets is None):
+                if not (match.sets is None):
+                    ind = [(int(e[1:]) - 1) for e in id]
+                    x[k, ind] = [1, -1]
+                    #points = match.getSumPoints()
+                    #w[k] = (points[0] + 1) * 1.0 / (sum(points) + 2)
+                    w[k] = (match.sets[0] + 0.1) * 1.0 / (match.sets[0] + match.sets[1] + 0.2)
+                    #w[k] = (match.wins[0] + 1) * 1.0 / (match.wins[0] + match.wins[1] + 2)
+                    k += 1
     mCnt = k
     print(mCnt)
 
@@ -324,45 +321,39 @@ def calcRankings(matches, curDate, playersDict, mw, daysCnt = 730):
 def calcRankingsProcess(mw):
     playersDict = GlobalPlayersDict()
 
-    filenames = []
-    filenames.append(r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\master_tour\all_results.txt')
-    filenames.append(r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\bkfon\all_results.txt')
-    filenames.append(r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\local\kchr_results.txt')
-    filenames.append(r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\ittf\all_results.txt')
-    matches = []
-    matchesSet = set()
-    for filename in filenames:
-        print(filename)
-        with open(filename, encoding='utf-8') as fin:
-            headerTokens = next(fin).strip().split('\t')
-            headerDict = dict(zip(headerTokens, range(len(headerTokens))))
-            for line in fin:
-                tokens = line.split('\t')
-                if len(tokens[headerDict['id1']].split(';')) == 1 and tokens[headerDict['id1']][0] == mw and \
-                                tokens[headerDict['id2']][0] == mw:
-                    match = Match(tokens[headerDict['date']],
-                                  [tokens[headerDict['id1']].split(';'), tokens[headerDict['id2']].split(';')],
-                                  setsScore=tokens[headerDict['setsScore']],
-                                  pointsScore=tokens[headerDict['pointsScore']],
-                                  time=tokens[headerDict['time']],
-                                  compName=tokens[headerDict['compName']])
-                    #HASHES HASHES HASHES
-                    matchStr = ';'.join([match.date[:7], ' '.join(match.players[0]), ' '.join(match.players[1]),
-                                         match.setsScore.strip(';'), match.pointsScore.strip(';')])
-                    if not (matchStr in matchesSet) and match.date >= '2014':
-                        matchesSet.add(matchStr)
-                        matches.append(match)
-    print(len(matches))
 
+    sources = []
+    sources.append(['master_tour', 'prepared_data/master_tour/all_results.txt'])
+    sources.append(['liga_pro', 'prepared_data/liga_pro/all_results.txt'])
+#    sources.append(['challenger_series', 'prepared_data/challenger_series/all_results.txt'])
+    sources.append(['bkfon', 'prepared_data/bkfon/all_results.txt'])
+    sources.append(['local', 'prepared_data/local/kchr_results.txt'])
+    sources.append(['ittf', 'prepared_data/ittf/all_results.txt'])
+#    sources.append(['rttf', 'prepared_data/rttf/all_results.txt'])
+
+    matchesStorage = MatchesStorage(sources)
+
+    print(len(matchesStorage.matches))
+
+    '''
     rankings = []
     for year in range(2015, 2018):
         for month in range(1, 13):
             curDate = str(year) + '-' + str(month).zfill(2) + '-01'
-            res = calcRankings(matches, curDate, playersDict, mw, 730)
+            res = calcRankings(matchesStorage.matches, curDate, playersDict, mw, 730)
             for i, e in enumerate(sorted(res, key=lambda x: x[2], reverse=True)):
                 rankings.append([curDate[:-3], e[0], str(e[2]), str(i + 1)])
             if year == 2017 and month == 4:
                 break
+    '''
+
+    rankings = []
+    year = 2017
+    month = 4
+    curDate = str(year) + '-' + str(month).zfill(2) + '-01'
+    res = calcRankings(matchesStorage.matches, curDate, playersDict, mw, 730)
+    for i, e in enumerate(sorted(res, key=lambda x: x[2], reverse=True)):
+        rankings.append([curDate[:-3], e[0], str(e[2]), str(i + 1)])
 
     with open('test/all_rankings_' + mw + '.txt', 'w', encoding='utf-8') as fout:
         for e in rankings:

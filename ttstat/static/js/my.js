@@ -182,7 +182,7 @@ $(document).ready(function(){
         "columnDefs": [{
         "targets": 0,
         "orderable": false
-        }],
+        }, {"orderSequence": [ "desc", "asc"], "targets": [3,4,5] }],
         "order": [[ 5, "desc" ]]
     });
 
