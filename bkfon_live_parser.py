@@ -10,8 +10,8 @@ from ParserBKFon import ParserBKFon
 import json
 
 def parseDirs(segments):
-    dirname = 'D:/Programming/SportPrognoseSystem/BetsWinner/data/bkfon/live'
-    dirname_parsed = 'D:/Programming/SportPrognoseSystem/BetsWinner/data/bkfon/live_parsed'
+    dirname = 'data/bkfon/live'
+    dirname_parsed = 'data/bkfon/live_parsed'
 
     for segment in segments:
         for e in os.walk(dirname):
@@ -58,7 +58,7 @@ def main():
 
     parseDirs(segments)
 
-    dirname_parsed = 'D:/Programming/SportPrognoseSystem/BetsWinner/data/bkfon/live_parsed'
+    dirname_parsed = 'data/bkfon/live_parsed'
 
     matchesBets = dict()
     for segment in segments:

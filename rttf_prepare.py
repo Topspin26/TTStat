@@ -72,7 +72,7 @@ def main():
     multiple = dict()
     unknown = dict()
 
-    prefix = r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\rttf\\'
+    prefix = 'prepared_data/rttf/'
     with open(prefix + 'all_results.txt', 'w', encoding='utf-8') as fout:
         fout.write(
             '\t'.join(['date', 'time', 'compName', 'id1', 'id2', 'setsScore', 'pointsScore', 'name1', 'name2']) + '\n')

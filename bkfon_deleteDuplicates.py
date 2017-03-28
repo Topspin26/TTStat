@@ -4,7 +4,7 @@ from lxml import html
 from lxml import etree
 
 def main():
-    dir = 'D:/Programming/SportPrognoseSystem/BetsWinner/data/bkfon/live'
+    dir = 'data/bkfon/live'
 
     for f in os.listdir(dir):
 #        print(os.path.isfile(os.path.join(dir, f)))

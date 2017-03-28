@@ -18,9 +18,9 @@ def main():
     matchesDict = dict()
 
     sources = []
-    sources.append(['master_tour', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\master_tour\all_results.txt'])
-    sources.append(['liga_pro', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\liga_pro\all_results.txt'])
-    sources.append(['bkfon', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\bkfon\all_results.txt'])
+    sources.append(['master_tour', 'prepared_data/master_tour/all_results.txt'])
+    sources.append(['liga_pro', 'prepared_data/liga_pro/all_results.txt'])
+    sources.append(['bkfon', 'prepared_data/bkfon/all_results.txt'])
 
 #    matchesStorage = MatchesStorage(sources) #заменить кусок кода ниже
 

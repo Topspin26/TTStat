@@ -24,13 +24,13 @@ def main():
     prepareSources()
 
     sources = []
-    sources.append(['master_tour', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\master_tour\all_results.txt'])
-    sources.append(['liga_pro', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\liga_pro\all_results.txt'])
-    sources.append(['challenger_series',r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\challenger_series\all_results.txt'])
-    sources.append(['bkfon', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\bkfon\all_results.txt'])
-    sources.append(['local', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\local\kchr_results.txt'])
-    sources.append(['ittf', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\ittf\all_results.txt'])
-    sources.append(['rttf', r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\rttf\all_results.txt'])
+    sources.append(['master_tour', 'prepared_data/master_tour/all_results.txt'])
+    sources.append(['liga_pro', 'prepared_data/liga_pro/all_results.txt'])
+    sources.append(['challenger_series', 'prepared_data/challenger_series/all_results.txt'])
+    sources.append(['bkfon', 'prepared_data/bkfon/all_results.txt'])
+    sources.append(['local', 'prepared_data/local/kchr_results.txt'])
+    sources.append(['ittf', 'prepared_data/ittf/all_results.txt'])
+    sources.append(['rttf', 'prepared_data/rttf/all_results.txt'])
 
     matchesDict = dict()
 

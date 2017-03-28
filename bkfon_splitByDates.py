@@ -5,7 +5,7 @@ from lxml import etree
 import datetime as datetime
 
 def main():
-    dir = 'D:/Programming/SportPrognoseSystem/BetsWinner/data/bkfon/live'
+    dir = 'data/bkfon/live'
 
     for f in os.listdir(dir + '/old'):
         if f[:7] == 'segment':

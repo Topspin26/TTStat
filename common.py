@@ -21,8 +21,8 @@ class GlobalPlayersDict():
         self.name2id = dict()
         self.name2id2 = dict()
         self.id2names = dict()
-        self.filenames = {'m': r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_men.txt',
-                          'w': r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\players_women.txt'}
+        self.filenames = {'m': 'prepared_data/players_men.txt',
+                          'w': 'prepared_data/players_women.txt'}
         for mw in ['m', 'w']:
             with open(self.filenames[mw], 'r', encoding='utf-8') as fin:
                 for line in fin:

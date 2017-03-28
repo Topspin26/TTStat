@@ -131,7 +131,7 @@ def main():
                          compName=tokens[0].split(';')[0]))
     print(len(player2id))
 
-    prefix = r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\ittf\\'
+    prefix = 'prepared_data/ittf/'
 
     multiple = dict()
     unknown = dict()

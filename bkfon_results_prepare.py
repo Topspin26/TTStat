@@ -126,7 +126,7 @@ def getMatchesPlayers(matches):
 def main():
     playersDict = GlobalPlayersDict()
 
-    corrections = readCorrectionsList(r'D:\Programming\SportPrognoseSystem\BetsWinner\data\bkfon\corrections.txt')
+    corrections = readCorrectionsList('data/bkfon/corrections.txt')
     wrongLines = []
     matches = getMatches(corrections, wrongLines)
     print(len(matches))
@@ -189,14 +189,15 @@ def main():
                 playersMatches[pl2] = []
             playersMatches[pl2].append(match.toStr())
 
-    with open(r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\bkfon\bkfon_players_x_mw.txt', 'w', encoding = 'utf-8') as fout:
+    prefix = 'prepared_data/bkfon/'
+
+    with open(prefix + 'bkfon_players_x_mw.txt', 'w', encoding = 'utf-8') as fout:
         for e in sorted(playersMW.items(), key = lambda x: -x[1][2]):
 #        for e in sorted(playersMW.items(), key = lambda x: (x[1][0] + 1) / (x[1][2] + 2)):
             if (e[0] in unknown) and e[1][2] > 0:
                 print(e)
                 fout.write(e[0] + '\t' + str(e[1]) + '\t' + '\t'.join(playersMatches[e[0]]) + '\n')
 
-    prefix = r'D:\Programming\SportPrognoseSystem\BetsWinner\prepared_data\bkfon\\'
     with open(prefix + 'bkfon_players_men.txt', 'w', encoding = 'utf-8') as fout:
         for e in sorted(m.keys()):
             fout.write(e + '\t' + ';'.join(playersDict.getId(e)) + '\n')

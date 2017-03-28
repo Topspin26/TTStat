@@ -11,7 +11,7 @@ from common import *
 def main():
     dir = 'D:/Programming/SportPrognoseSystem/Результаты/КЧР'
 
-    fout = open('D:/Programming/SportPrognoseSystem/BetsWinner/prepared_data/local/kchr_results.txt', 'w', encoding = 'utf-8')
+    fout = open('prepared_data/local/kchr_results.txt', 'w', encoding = 'utf-8')
     fout.write('\t'.join(['date','time','compName','id1','id2','setsScore','pointsScore','name1','name2']))
 
     monthname2Num = {'января':1,'февраля':2,'марта':3,'апреля':4,'мая':5,'июня':6,'июля':7,'августа':8,'сентября':9,'октября':10,'ноября':11,'декабря':12}
@@ -20,14 +20,14 @@ def main():
           '1/A4', '1/А4', '2/A4', '2/А4', 'X/W', 'Х/W', 'Y/W',
           'X', 'X', 'Y', 'Z', 'B1', 'B2', 'B3', 'В1', 'В2', 'В3', '1/В4', '1/B4', '2/В4', '2/B4', 'В1/В4', 'B1/B4', 'В2/В4', 'B2/B4'}
 
-    corrections = readCorrections('D:/Programming/SportPrognoseSystem/BetsWinner/data/local/kchr_corrections.txt')
+    corrections = readCorrections('data/local/kchr_corrections.txt')
 #    print(corrections)
 
 
     playersDict = GlobalPlayersDict()
 
     compInfo = dict()
-    with open('D:/Programming/SportPrognoseSystem/BetsWinner/data/local/kchr_dates.txt', encoding='utf-8') as fin:
+    with open('data/local/kchr_dates.txt', encoding='utf-8') as fin:
         for line in fin:
             tokens = line.rstrip().split('\t')
             compInfo[tokens[0]] = tokens[1:]

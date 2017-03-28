@@ -1,3 +1,5 @@
 #!flask/bin/python
 from ttstat import ttstat
-ttstat.run(debug=True)
+
+if __name__ == '__main__':
+    ttstat.run(debug=True)
