@@ -1,5 +1,6 @@
 import json
 import re
+import datetime
 
 from Entity import *
 from common import *
@@ -76,3 +77,35 @@ class MatchesBetsStorage:
                     else:
                         print('not unique bet match hash')
 
+class RankingsStorage:
+    def __init__(self, sources):
+        self.rankings = dict()
+        for source, filename in sources:
+            self.rankings[source] = RankingsStorage.readPlayersRankings(filename)
+
+    def getRankings(self, playerId, source, curDate, ws = 1):
+        #[leftDAte = curDate - ws < date <= curDate]
+        leftDate = (datetime.datetime.strptime(curDate, "%Y-%m-%d").date() - datetime.timedelta(days=ws)).strftime("%Y-%m-%d")
+        r = -1
+        if playerId in self.rankings[source]:
+            for e in sorted(self.rankings[source][playerId].items(), key = lambda x: x[0], reverse=True):
+                if e[0] > leftDate and e[0] <= curDate:
+                    r = e[1][0]
+                    break
+            if r == '-100':
+                r = -1
+        r = float(r)
+        return r
+
+    @staticmethod
+    def readPlayersRankings(filename):
+        playersRankings = dict()
+        with open(filename, 'r', encoding='utf-8') as fin:
+            for line in fin:
+                tokens = line.split('\t')
+                tokens = [e.strip() for e in tokens]
+                tokens[0] += '-01'
+                if not(tokens[1] in playersRankings):
+                    playersRankings[tokens[1]] = dict()
+                playersRankings[tokens[1]][tokens[0]] = tokens[2:]
+        return playersRankings
