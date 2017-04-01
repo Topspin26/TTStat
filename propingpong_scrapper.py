@@ -445,6 +445,7 @@ def findMWErrors():
 
 def main():
     findMWErrors()
+    #parseAllRusPlayers(2746, 2746)
     #parseAllRusPlayers(18801, 19800)
     #parseAllRusPlayers(10106, 10106)
 #    getIttfRankings('men', 2005, 5)

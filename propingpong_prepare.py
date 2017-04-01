@@ -93,6 +93,7 @@ def main():
     idLinks['rus'][''] = 'm279'
     idLinks['rus'][''] = 'w185'
     idLinks['rus']['1630'] = 'm2803'
+    idLinks['rus']['1576'] = 'm38'
 
     prefix = 'prepared_data/propingpong/'
     for rt in ['rus', 'ittf']:

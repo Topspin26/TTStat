@@ -28,6 +28,58 @@ def getMatches(corrections, wrongLines):
                                          compName='Лига-Про, ' + tokens[2].split(';')[0]))
     return matches
 
+def getRankings():
+    rankings = set()
+    for f in walk('data/liga_pro/results'):
+        for ff in f[2]:
+            rnew = dict()
+            dt = None
+            with open('data/liga_pro/results/' + ff, 'r', encoding='utf-8') as fin:
+                for line in fin:
+                    tokens = line.split('\t')
+                    tokens = [e.strip() for e in tokens]
+
+                    match = Match(tokens[0],
+                            [[tokens[5]], [tokens[8]]],
+                            setsScore=tokens[-2].strip().replace(' ', ''),
+                            pointsScore=tokens[-1].strip().replace('(', '').replace(')', '').replace(' ', ';').replace('-', ':'),
+                            time=tokens[1],
+                            compName='Лига-Про, ' + tokens[2].split(';')[0])
+
+                    id1 = tokens[5]
+                    id2 = tokens[8]
+                    r1 = tokens[6]
+                    dr1 = float(tokens[7].replace('+', ''))
+                    r2 = tokens[9]
+                    dr2 = float(tokens[10].replace('+', ''))
+
+                    if match.flError == 0:
+                        if tokens[4] == 'Финал':
+                            if match.wins[0]:
+                                dr1 += 0.8
+                                dr2 += 0.6
+                            else:
+                                dr2 += 0.8
+                                dr1 += 0.6
+                        if tokens[4] == 'за 3-е место':
+                            if match.wins[0]:
+                                dr1 += 0.4
+                            else:
+                                dr2 += 0.4
+                    rankings.add('\t'.join([tokens[0], id1, r1]))
+                    rankings.add('\t'.join([tokens[0], id2, r2]))
+                    dt = tokens[0]
+                    if not (id1 in rnew):
+                        rnew[id1] = float(r1)
+                    rnew[id1] += dr1
+                    if not (id2 in rnew):
+                        rnew[id2] = float(r2)
+                    rnew[id2] += dr2
+            for id,r in rnew.items():
+                rankings.add('\t'.join([(datetime.datetime.strptime(dt, "%Y-%m-%d").date() + datetime.timedelta(days=1)).strftime("%Y-%m-%d"), id, format(r, '.1f')]))
+
+    return rankings
+
 def makePlayer2Id():
     corrections = dict()
     wrongLines = list()
@@ -124,7 +176,21 @@ def main():
     matches = getMatches(corrections, wrongLines)
     print(len(matches))
 
-#    multiple = dict()
+    rankings = getRankings()
+    with open('prepared_data/liga_pro/ranking_liga_pro.txt', 'w', encoding = 'utf-8') as fout:
+        for e in sorted(rankings):
+            dt, player, ranking = e.split('\t')
+            playerName, playerId = player.split(';')
+            if playerId in idLinks:
+                id = [idLinks[playerId]]
+            else:
+                id = playersDict.getId(playerName)
+            if len(id) == 1:
+                fout.write(dt + '\t' + id[0] + '\t' + ranking + '\n')
+            else:
+                print('Ranking error ', playerName, playerId, id)
+
+        #    multiple = dict()
 #    solved = dict()
 #    unknown = dict()
 

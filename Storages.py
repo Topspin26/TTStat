@@ -104,7 +104,8 @@ class RankingsStorage:
             for line in fin:
                 tokens = line.split('\t')
                 tokens = [e.strip() for e in tokens]
-                tokens[0] += '-01'
+                if len(tokens[0]) == 7:
+                    tokens[0] += '-01'
                 if not(tokens[1] in playersRankings):
                     playersRankings[tokens[1]] = dict()
                 playersRankings[tokens[1]][tokens[0]] = tokens[2:]

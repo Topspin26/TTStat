@@ -68,6 +68,8 @@ def main():
     idLinks = dict()
     idLinks['3879'] = 'm16248'
     idLinks['210'] = 'm16233'
+    idLinks['6209'] = None
+    idLinks['6708'] = None
 
     multiple = dict()
     unknown = dict()
@@ -86,7 +88,7 @@ def main():
                     for player in match.players[i]:
                         playerName = id2player[player]
                         id = player2id[playerName]
-                        if len(id) == 1 or player in idLinks:
+                        if (len(id) == 1 or player in idLinks) and not (idLinks.get(player, '') is None):
                             players[i].append(playerName)
                             if player in idLinks:
                                 id = [idLinks[player]]
