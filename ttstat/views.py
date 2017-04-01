@@ -26,6 +26,10 @@ def player_info(id):
 def rankings():
     return render_template('rankings.html', columns = ttModel.rankings_columns, sex = 'men')
 
+@ttstat.route('/sources')
+def sources():
+    return render_template('sources.html')
+
 @ttstat.route('/rankings/<sex>')
 def rankings1(sex):
     return render_template('rankings.html', columns = ttModel.rankings_columns, sex = sex)
@@ -187,7 +191,12 @@ def get_player_rankings_data():
     if playerIdFilter in ttModel.rankingStorage.rankings['my']:
         output['iTotalRecords'] += len(ttModel.rankingStorage.rankings['my'][playerIdFilter])
         for e in sorted(ttModel.rankingStorage.rankings['my'][playerIdFilter].items(), key = lambda x: x[0], reverse=True):
-            aaData_rows.append([e[0], 'MY', e[1][0], e[1][1]])
+            aaData_rows.append([e[0], 'MY', format(float(e[1][0]),'.3f'), e[1][1]])
+            c += 1
+    if playerIdFilter in ttModel.rankingStorage.rankings['liga_pro']:
+        output['iTotalRecords'] += len(ttModel.rankingStorage.rankings['liga_pro'][playerIdFilter])
+        for e in sorted(ttModel.rankingStorage.rankings['liga_pro'][playerIdFilter].items(), key = lambda x: x[0], reverse=True):
+            aaData_rows.append([e[0], 'LIGA-PRO', e[1][0], 0])
             c += 1
     output['iTotalRecords'] = str(output['iTotalRecords'])
     sortInd = int(request.values['iSortCol_0'])
@@ -231,7 +240,7 @@ def get_rankings_data():
         if player.mw == mw:
             if player.findString(text) == True:
                 r = ttModel.getRankings(player.id, dt, 100)
-                aaData_rows.append(['0', player.id, player.name, r['rus'], r['ittf'], r['my']])
+                aaData_rows.append(['0', player.id, player.name, r['rus'], r['ittf'], format(float(r['my']),'.3f'), r['liga_pro']])
                 c += 1
             total += 1
     output['iTotalRecords'] = str(total)

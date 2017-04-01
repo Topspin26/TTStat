@@ -22,15 +22,16 @@ class TTModel:
 
         self.playersDict = GlobalPlayersDict()
 
-        rankingSources = []
-        rankingSources.append(['ttfr', dirname + '/prepared_data/propingpong/ranking_rus.txt'])
-        rankingSources.append(['ittf', dirname + '/prepared_data/propingpong/ranking_ittf.txt'])
-        rankingSources.append(['my', dirname + '/test/all_rankings_mw_fresh.txt'])
+        self.rankingSources = []
+        self.rankingSources.append(['ttfr', dirname + '/prepared_data/propingpong/ranking_rus.txt'])
+        self.rankingSources.append(['ittf', dirname + '/prepared_data/propingpong/ranking_ittf.txt'])
+        self.rankingSources.append(['my', dirname + '/test/all_rankings_mw_fresh.txt'])
+        self.rankingSources.append(['liga_pro', dirname + '/prepared_data/liga_pro/ranking_liga_pro.txt'])
 
-        self.rankingStorage = RankingsStorage(rankingSources)
+        self.rankingStorage = RankingsStorage(self.rankingSources)
 
-        self.rankings_columns = ['#', 'id', 'Игрок'] + [e[0] for e in rankingSources]
-        self.rankings_dtypes = ['number'] + ['string'] * 2 + ['number'] * len(rankingSources)
+        self.rankings_columns = ['#', 'id', 'Игрок'] + [e[0] for e in self.rankingSources]
+        self.rankings_dtypes = ['number'] + ['string'] * 2 + ['number'] * len(self.rankingSources)
 
         self.players = dict()
         #self.playersDict = dict()
@@ -144,7 +145,8 @@ class TTModel:
         myR = self.rankingStorage.getRankings(playerId, 'my', curDate, ws)
         rusR = self.rankingStorage.getRankings(playerId, 'ttfr', curDate, ws)
         ittfR = self.rankingStorage.getRankings(playerId, 'ittf', curDate, ws)
-        return {'rus': rusR, 'ittf': ittfR, 'my': myR}
+        ligaproR = self.rankingStorage.getRankings(playerId, 'liga_pro', curDate, ws)
+        return {'rus': rusR, 'ittf': ittfR, 'my': myR, 'liga_pro': ligaproR}
 
     def makePrediction(self, playerId1, playerId2):
         r1 = self.getFeatures(playerId1, '2017-01-30')
