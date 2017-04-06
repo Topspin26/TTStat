@@ -61,12 +61,14 @@ class Match:
     '''
 
     def __init__(self, date, players, winsScore = None, setsScore = None, pointsScore=None,
-                 time=None, isPair = None, compName = None, source = None):
+                 time=None, isPair = None, compName = None, source = None, round = None):
         self.date = date
         self.players = players
         self.flError = 0
 
         self.sources = []
+
+        self.round = round
 
         self.winsScore = winsScore
         self.wins = None
@@ -117,7 +119,7 @@ class Match:
             sets = []
         else:
             sets = self.sets
-        return calcHash([self.date] + self.players[0] + self.players[1] + sets + [e * i for i,e in enumerate(Match.getSetSumPoints(self.points))])
+        return calcHash([self.date, self.round] + self.players[0] + self.players[1] + sets + [e * i for i,e in enumerate(Match.getSetSumPoints(self.points))])
 
     def reverse(self):
         matchReversed = Match(self.date, [self.players[1].copy(), self.players[0].copy()])

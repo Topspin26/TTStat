@@ -97,6 +97,12 @@ class RankingsStorage:
         r = float(r)
         return r
 
+    def getPlayerAllRankings(self, playerId, source):
+        r = dict()
+        if playerId in self.rankings[source]:
+            r = self.rankings[source][playerId]
+        return r
+
     @staticmethod
     def readPlayersRankings(filename):
         playersRankings = dict()

@@ -17,12 +17,16 @@ def calcHash(arr):
 
 
 class GlobalPlayersDict():
-    def __init__(self):
+    def __init__(self, mode = None):
         self.name2id = dict()
         self.name2id2 = dict()
         self.id2names = dict()
-        self.filenames = {'m': 'prepared_data/players_men.txt',
-                          'w': 'prepared_data/players_women.txt'}
+        if mode is None:
+            self.filenames = {'m': 'prepared_data/players_men.txt',
+                              'w': 'prepared_data/players_women.txt'}
+        elif mode == 'filtered':
+            self.filenames = {'m': 'prepared_data/players_men_filtered.txt',
+                              'w': 'prepared_data/players_women_filtered.txt'}
         for mw in ['m', 'w']:
             with open(self.filenames[mw], 'r', encoding='utf-8') as fin:
                 for line in fin:
@@ -47,7 +51,12 @@ class GlobalPlayersDict():
             for tname in [name, name1]:
                 if self.name2id.get(tname, id) != id:
                     print('Bad name ' + tname + ' '  + self.name2id.get(tname, id) + ' ' + id)
-                    if not (tname in {'yang ying', 'ying yang', 'li xiang', 'xiang li', 'yang min', 'min yang', 'денис макаров', 'макаров денис'}):
+                    if not (tname in {'yang ying', 'ying yang',\
+                                      'li xiang', 'xiang li',\
+                                      'yang min', 'min yang',\
+                                      'денис макаров', 'макаров денис',\
+                                      'иван архипов', 'архипов иван',\
+                                      'дмитрий осипов', 'осипов дмитрий'}):
                         raise
                 self.name2id[tname] = id
 

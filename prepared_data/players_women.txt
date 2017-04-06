@@ -711,7 +711,7 @@ w713	AUNGAMUTHU Yuraisha
 w714	Валерия Беловол
 w715	HAAN Simone
 w716	VESKOVSKA Julija
-w717	HUANG Yu-Wen
+w717	HUANG Yu-Wen;Хуан Ю Вэнь
 w718	CHAN Nyong
 w719	MIKHAYLOVA Olga
 w720	LI FuQuan
@@ -866,7 +866,7 @@ w868	DAUNORAVICIUTE Jurgita
 w869	LIAO Ya-Hsuan
 w870	SAGLOVA Miroslava
 w871	YONEKURA Tomoko
-w872	SAHASRABUDHE Pooja
+w872	SAHASRABUDHE Pooja;Пооджа Сахасрабудхе
 w873	ALMENDARIZ Tania
 w874	APONTE Lyanne
 w875	MOLODTSOVA Olesya
@@ -1397,7 +1397,7 @@ w1400	NGUYEN Thi Viet Linh
 w1401	GUMULA Renata
 w1402	IMAMURA Yuko
 w1403	Zhou Yihan;Чжоу Ихань;Чжоу Йихан
-w1404	MUKHERJEE Ayhika
+w1404	MUKHERJEE Ayhika;Айхика Мукхерджи
 w1405	CZAJKOWSKI Desiree
 w1406	Хан Инь;Han Ying
 w1407	YI Sophia Dan Dan
@@ -1479,7 +1479,7 @@ w1482	PARK Shinhae
 w1483	DING Ying
 w1484	KYAKOBYE June
 w1485	PERRONE Barbara
-w1486	YOVKOVA Maria
+w1486	YOVKOVA Maria;Мария Йовкова
 w1487	ANDERSSON Kajsa
 w1488	MOLIK Patricja
 w1489	NYITRAI Anita
@@ -2506,7 +2506,7 @@ w2512	IJAKOVSKAYA Inga
 w2513	TIAN Jing
 w2514	EZZEDDINE Ruaida
 w2515	CHU Isabel
-w2516	ODONO Yui
+w2516	ODONO Yui;Юи Одоно
 w2517	HERNANDEZ Jessica
 w2518	KULAGINA Tatjana
 w2519	TOFANT Ana
@@ -2715,7 +2715,7 @@ w2722	LIU Ming
 w2723	BURGAR Spela
 w2724	LOUSSAIEF Nadia
 w2725	WANG Chen
-w2726	HUANG Yu-Chiao
+w2726	HUANG Yu-Chiao;Хуан Юй-Цзяо
 w2727	LIU Kailun
 w2728	SINITSINA Yulia (1981)
 w2729	ROHLIKOVA Michaela
@@ -2749,7 +2749,7 @@ w2756	Шин Юбин;Shin Yubin
 w2757	ICHIKAWA Azusa
 w2758	Mikulcova Kristyna;Кристина Микулкова
 w2759	ZHU Xiaoyan
-w2760	PEREBEINOS Veronika
+w2760	PEREBEINOS Veronika;Вероника Перебийнис
 w2761	TCHERESTOVA Tatiana
 w2762	WAGGERMAYER Elena
 w2763	Даниэла Ортега;Ortega Daniela
@@ -8900,7 +8900,7 @@ w8908	SANTINO Vanina
 w8909	JOHN Michelle
 w8910	YANEZ Melita
 w8911	SEITON Kristiina
-w8912	NALISNIKOVSKA Olena
+w8912	NALISNIKOVSKA Olena;Елена Налисниковская
 w8913	DONG Sophia
 w8914	HOMICA Aldona
 w8915	LEE Jiyoung
@@ -8956,7 +8956,7 @@ w8964	LUNDH Anette
 w8965	SZCZUKA Agata
 w8966	SOUZA YAMAMOTO Sarah
 w8967	MESCIERI Sofia
-w8968	VAKHLIAYEVA Kastiaryna
+w8968	VAKHLIAYEVA Kastiaryna;Екатерина Вахляева
 w8969	LI Carolyn
 w8970	GETMAN Tatiana
 w8971	GAUMET Vaihiria
@@ -10582,3 +10582,99 @@ w10590	BENSTRONG Anniesa
 w10591	HALITI Ilirjana
 w10592	SEPULVEDA Stephany
 w10593	ADOM AMANKWAA Mareen
+w10594	Тамара Соломонова
+w10595	Мария Ботина
+w10596	Саина Луковцева
+w10597	Валерия Шкуренко
+w10598	Варвара Жабская
+w10599	Татьяна Гребенюкова
+w10600	Варвара Головина
+w10601	Анна Сергеенко
+w10602	Мехрибан Имамкулиева
+w10603	Снежанна Каратаева
+w10604	Валерия Балыкина
+w10605	Карина Желудь
+w10606	Татьяна Попова
+w10607	Екатерина Коваленко
+w10608	Олеся Герасимова
+w10609	Александра Диденко
+w10610	Елена Костенко
+w10611	Диана Даллакян
+w10612	Анастасия Горьковенко
+w10613	Полина Процко
+w10614	Евгения Лукьянцева
+w10615	Аделина Кишева
+w10616	Полина Арзамасова
+w10617	Мадина Давудмагомедова
+w10618	София Кузнецова
+w10619	София Миненко
+w10620	Полина Бацан
+w10621	Александра Виниченко
+w10622	Ксения Медер
+w10623	Мария Бондаренко
+w10624	Анна Стародубцева
+w10625	Полина Леонова
+w10626	Ирина Демчук
+w10627	Кира Гармашова
+w10628	Инезза Мирошниченко
+w10629	Татьяна Шашкова
+w10630	Валерия Бондаренко
+w10631	Дарья Буйских
+w10632	Александра Рогулина
+w10633	Диана Безюра
+w10634	Софья Егорова
+w10635	Мария Богданова
+w10636	Руслана Нагузе
+w10637	Анна Едренкина
+w10638	Виктория Дегтяренко
+w10639	Виктория Ахметзянова
+w10640	Ирина Рунева
+w10641	Олеся Шуваева
+w10642	Алиса Коренева
+w10643	Татьяна Шулева
+w10644	Снежанна Оглы
+w10645	Полина Гладкова
+w10646	София Хилькевич
+w10647	Алина Бадракова
+w10648	Александра Игнатюк
+w10649	Карина Георгиева
+w10650	Мария Николаенко
+w10651	Карина Мурадян
+w10652	Валерия Праздникова
+w10653	Нелли Титеева
+w10654	Кира Лусникова
+w10655	Софья Валеева
+w10656	Арина Андриянова
+w10657	Кристина Казакова
+w10658	Дарья Кривоногова
+w10659	Анастасия Михайлова
+w10660	Диана Дрозд
+w10661	Агнесса Герасименко
+w10662	Светлана Лапина
+w10663	Ксения Липатова
+w10664	Василиса Пястолова
+w10665	Мария Павленко
+w10666	Варвара Чижова
+w10667	Екатерина Дьяконова
+w10668	Дарья Кушвид
+w10669	Алина Имаметдинова
+w10670	Елизавета Табакова
+w10671	Анна Мингалева
+w10672	Полина Нежибецкая
+w10673	Нина Карпычева
+w10674	София Зинченко
+w10675	Елизавета Кустанова
+w10676	Влентина Щербакова
+w10677	Ариана Ацканова
+w10678	Алина Резник
+w10679	Кристина Корниенко
+w10680	Дарья Куцевольская
+w10681	Владислава Еманова
+w10682	Виолетта Крупенникова
+w10683	Марина Цыбденова
+w10684	Мария Зарубина
+w10685	Ульяна Растимешина
+w10686	Камилла Солоухина
+w10687	Людмила Игнатушина
+w10688	Олеся Ломова
+w10689	Ксения Цветкова
