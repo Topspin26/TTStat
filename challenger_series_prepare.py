@@ -34,7 +34,7 @@ def getMatches(corrections, wrongLines):
 
 def main():
 
-    playersDict = GlobalPlayersDict()
+    playersDict = GlobalPlayersDict("filtered")
 
     corrections = dict()
     corrections['Chtchetinine Evgueny'] = 'CHTCHETININE Evgueni'

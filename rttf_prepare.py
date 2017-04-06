@@ -63,7 +63,7 @@ def main():
         for name,ids in sorted(player2id.items(), key = lambda x: -len(x[1])):
             fout.write(name + '\t' + ';'.join(ids) + '\n')
 
-    playersDict = GlobalPlayersDict()
+    playersDict = GlobalPlayersDict("filtered")
 
     idLinks = dict()
     idLinks['3879'] = 'm16248'

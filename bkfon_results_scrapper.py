@@ -42,7 +42,7 @@ def main():
             for i in range(nd - flLast):
 #                if i < 10:
 #                    continue
-                if month != 3:
+                if month != 3 and month != 4:
                     continue
                 curDate = year + '-' + str(month).zfill(2) + '-' + str(i + 1).zfill(2)
                 print(curDate)

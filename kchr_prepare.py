@@ -24,7 +24,7 @@ def main():
 #    print(corrections)
 
 
-    playersDict = GlobalPlayersDict()
+    playersDict = GlobalPlayersDict("filtered")
 
     compInfo = dict()
     with open('data/local/kchr_dates.txt', encoding='utf-8') as fin:

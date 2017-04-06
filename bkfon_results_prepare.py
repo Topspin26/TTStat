@@ -124,7 +124,7 @@ def getMatchesPlayers(matches):
     return res
 
 def main():
-    playersDict = GlobalPlayersDict()
+    playersDict = GlobalPlayersDict("filtered")
 
     corrections = readCorrectionsList('data/bkfon/corrections.txt')
     wrongLines = []

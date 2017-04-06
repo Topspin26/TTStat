@@ -1,5 +1,6 @@
 from common import *
 import os
+import filterPlayersByRusRanking
 
 def readPlayersRankings(dirname):
     playersRankings = dict()
@@ -41,7 +42,6 @@ def updateGlobalPlayersDict(newId2names):
                 if k[0] == mw:
                     fout.write(k + '\t' + ';'.join(v) + '\n')
 
-
 def main():
 
     rusId2names = {}
@@ -76,10 +76,11 @@ def main():
                     if not (playerId in rusName2Id[playerName]):
                         rusName2Id[playerName].append(playerId)
 
-#    updateGlobalPlayersDict(rusId2names)
-#    updateGlobalPlayersDict(ittfId2names)
+    updateGlobalPlayersDict(rusId2names)
+    updateGlobalPlayersDict(ittfId2names)
 
-    playersDict = GlobalPlayersDict()
+    filterPlayersByRusRanking.main()
+    playersDict = GlobalPlayersDict("filtered")
 
     idLinks = {'rus':{}, 'ittf':{}}
     idLinks['rus']['121'] = 'm249'
@@ -94,6 +95,7 @@ def main():
     idLinks['rus'][''] = 'w185'
     idLinks['rus']['1630'] = 'm2803'
     idLinks['rus']['1576'] = 'm38'
+    idLinks['rus']['177'] = None #Архипов Иван
 
     prefix = 'prepared_data/propingpong/'
     for rt in ['rus', 'ittf']:
@@ -123,7 +125,9 @@ def main():
                     id = rusName2Id[playerName]
                 else:
                     id = ittfName2Id[playerName]
-                if len(id) == 1 or playerId in idLinks[rt]:
+                if len(id) == 1 or playerId in idLinks[rt] or (len(id) == 2 and len(id[0]) != len(id[1])):
+                    if playerId in idLinks[rt] and idLinks[rt][playerId] is None:
+                        continue
                     if playerId in idLinks[rt]:
                         id = [idLinks[rt][playerId]]
                     else:

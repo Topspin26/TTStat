@@ -205,6 +205,86 @@ def updateRusRanking():
         updateRusRankings(mw, driver, playersRankings)
         driver.quit()
 
+def getLastRusRankings(mw):
+    url = 'http://propingpong.ru/rating_rf.php?gender=' + str(int(mw == 'men')) + '&settlement=&settlement=&area=&year=0&page=1'
+    try:
+        driver = initDriver(url)
+        pagesCnt = int(driver.find_elements_by_xpath('//*[@class = "pagination"]')[0].find_elements(By.TAG_NAME, 'a')[-2].get_attribute('innerHTML'))
+    except:
+        driver = initDriver(url)
+        pagesCnt = int(driver.find_elements_by_xpath('//*[@class = "pagination"]')[0].find_elements(By.TAG_NAME, 'a')[-2].get_attribute('innerHTML'))
+
+    print(pagesCnt)
+
+    rankings = dict()
+    rusid2names = dict()
+    ids = set()
+    for page in range(1, pagesCnt + 1):
+        try:
+            driver.get(url + '&page=' + str(page))
+        except:
+            driver = initDriver(url + '&page=' + str(page))
+
+        rows = driver.find_elements_by_xpath('//*[@class = "table"]')[1].find_elements_by_xpath('//*[@class = "row"]')
+        for i,row in enumerate(rows[1:]):
+            s = row.find_elements_by_xpath('./div[@class = "cell-val"]')[0].get_attribute('innerHTML')
+            #print(s)
+            playerId = s.split('id=')[1].split('">')[0]
+            playerName = s.split('id=')[1].split('>')[1].split('<')[0]
+            playerRating = int(row.find_elements_by_xpath('./div[@class = "cell"]')[4].get_attribute('innerHTML'))
+            #print([playerId, playerName, playerRating])
+            rankings[playerId] = playerRating
+            if not (playerId in rusid2names):
+                rusid2names[playerId] = []
+            if not (playerName in rusid2names[playerId]):
+                rusid2names[playerId].append(playerName)
+            if playerId in ids:
+                print([page, playerName])
+            ids.add(playerId)
+        print([page, len(rankings)])
+        #break
+    driver.quit()
+
+    return [rankings, rusid2names]
+
+def updateRusRanking(year, month):
+    for mw in ['men', 'women']:
+        rusId2names = dict()
+        with open('data/propingpong/propingpong_rusId2names_' + mw + '.txt', 'r', encoding='utf-8') as fin:
+            for line in fin:
+                tokens = line.split('\t')
+                rusId2names[tokens[0]] = tokens[1].strip().split(';')
+
+        filename = 'data/propingpong/ranking_rus/' + str(year) + '-' + str(month).zfill(2) + '_' + mw + '.txt'
+        if not os.path.exists(filename):
+            rankings, year_month_rusid2names = getLastRusRankings(mw)
+
+            for id,names in year_month_rusid2names.items():
+                if not (id in rusId2names):
+                    print('NEW ID ' + id + '\t' + ';'.join(names))
+                    rusId2names[id] = names
+                elif ';'.join(sorted(rusId2names[id])) != ';'.join(sorted(names)):
+                    for name in names:
+                        if not (name in rusId2names[id]):
+                            rusId2names[id].append(name)
+                            print('CHANGED ID ' + id + '\t' + ';'.join(rusId2names[id]) + '\t' + ';'.join(names))
+
+            with open('data/propingpong/propingpong_rusId2names_' + mw + '.txt', 'w', encoding='utf-8') as fout:
+                for e in sorted(rusId2names.items(), key=lambda x: int(x[0])):
+                    fout.write(e[0] + '\t' + ';'.join(e[1]) + '\n')
+
+            with open(filename, 'w', encoding='utf-8') as fout:
+                lastR = -1
+                rank = 0
+                i = 0
+                for k,v in sorted(rankings.items(), key = lambda x: -x[1]):
+                    i += 1
+                    if lastR != v:
+                        rank = i
+                        lastR = v
+                    fout.write('\t'.join([k, str(v), str(rank)]) + '\n')
+
+
 def getIttfRankings(mw, year, month):
     url = 'http://propingpong.ru/rating_ittf.php?gender=' + str(int(mw == 'men')) + '&&page=1&sortby=undefined&year=' + str(year) + '&month=' + str(month)
     try:
@@ -444,13 +524,17 @@ def findMWErrors():
 
 
 def main():
-    findMWErrors()
+    #getLastRusRankings('men')
+    #updateRusRanking(2017, 4)
+
+    #findMWErrors()
+
     #parseAllRusPlayers(2746, 2746)
     #parseAllRusPlayers(18801, 19800)
     #parseAllRusPlayers(10106, 10106)
 #    getIttfRankings('men', 2005, 5)
 
-    #updateIttfRanking()
+    updateIttfRanking()
 #    updateRusRanking()
 
 

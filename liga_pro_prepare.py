@@ -25,7 +25,8 @@ def getMatches(corrections, wrongLines):
                                          setsScore=tokens[-2].strip().replace(' ', ''),
                                          pointsScore=tokens[-1].strip().replace('(', '').replace(')', '').replace(' ', ';').replace('-', ':'),
                                          time=tokens[1],
-                                         compName='Лига-Про, ' + tokens[2].split(';')[0]))
+                                         compName='Лига-Про, ' + tokens[2].split(';')[0],
+                                         round=tokens[4]))
     return matches
 
 def getRankings():
@@ -44,8 +45,8 @@ def getRankings():
                             setsScore=tokens[-2].strip().replace(' ', ''),
                             pointsScore=tokens[-1].strip().replace('(', '').replace(')', '').replace(' ', ';').replace('-', ':'),
                             time=tokens[1],
-                            compName='Лига-Про, ' + tokens[2].split(';')[0])
-
+                            compName='Лига-Про, ' + tokens[2].split(';')[0],
+                            round=tokens[4])
                     id1 = tokens[5]
                     id2 = tokens[8]
                     r1 = tokens[6]
@@ -140,8 +141,10 @@ def main():
     idLinks['148'] = 'w185'
     idLinks['200'] = 'm537'
     idLinks['187'] = 'm16248'
+    idLinks['221'] = 'm44'
+    idLinks['223'] = 'm16251'
 
-    playersDict = GlobalPlayersDict()
+    playersDict = GlobalPlayersDict("filtered")
 
     if len(set(idLinks.values())) != len(idLinks):
         print('bad links')
@@ -217,7 +220,7 @@ def main():
                             flError =1
                 if flError == 0 and len(ids[0]) > 0 and len(ids[1]) > 0:
                     if match.hash in matchesDict:
-                        print(matchesDict[match.hash], match.toArr())
+                        print('HASHES', matchesDict[match.hash], match.toArr(), match.round)
                     else:
                         resTokens = match.toArr()
                         matchesDict[match.hash] = resTokens

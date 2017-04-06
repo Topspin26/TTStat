@@ -41,7 +41,7 @@ def getMatches(corrections, wrongLines):
 
 def main():
 
-    playersDict = GlobalPlayersDict()
+    playersDict = GlobalPlayersDict('filtered')
 
     corrections = readCorrections('data/master_tour/corrections.txt')
 
