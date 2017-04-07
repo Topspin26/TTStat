@@ -17,16 +17,16 @@ def calcHash(arr):
 
 
 class GlobalPlayersDict():
-    def __init__(self, mode = None):
+    def __init__(self, mode = None, dirname = ''):
         self.name2id = dict()
         self.name2id2 = dict()
         self.id2names = dict()
         if mode is None:
-            self.filenames = {'m': 'prepared_data/players_men.txt',
-                              'w': 'prepared_data/players_women.txt'}
+            self.filenames = {'m': dirname + 'prepared_data/players_men.txt',
+                              'w': dirname + 'prepared_data/players_women.txt'}
         elif mode == 'filtered':
-            self.filenames = {'m': 'prepared_data/players_men_filtered.txt',
-                              'w': 'prepared_data/players_women_filtered.txt'}
+            self.filenames = {'m': dirname + 'prepared_data/players_men_filtered.txt',
+                              'w': dirname + 'prepared_data/players_women_filtered.txt'}
         for mw in ['m', 'w']:
             with open(self.filenames[mw], 'r', encoding='utf-8') as fin:
                 for line in fin:

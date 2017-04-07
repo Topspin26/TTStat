@@ -143,6 +143,7 @@ def main():
     idLinks['187'] = 'm16248'
     idLinks['221'] = 'm44'
     idLinks['223'] = 'm16251'
+    idLinks['220'] = 'm9198'
 
     playersDict = GlobalPlayersDict("filtered")
 

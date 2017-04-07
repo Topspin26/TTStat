@@ -11,7 +11,7 @@ import json
 import re
 
 def main():
-    playersDict = GlobalPlayersDict()
+    playersDict = GlobalPlayersDict("filtered")
 
     activePlayers = set()
 

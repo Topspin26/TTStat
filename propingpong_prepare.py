@@ -96,6 +96,7 @@ def main():
     idLinks['rus']['1630'] = 'm2803'
     idLinks['rus']['1576'] = 'm38'
     idLinks['rus']['177'] = None #Архипов Иван
+    idLinks['rus']['17185'] = None #Морозов Александр
 
     prefix = 'prepared_data/propingpong/'
     for rt in ['rus', 'ittf']:
@@ -132,6 +133,8 @@ def main():
                         id = [idLinks[rt][playerId]]
                     else:
                         id = playersDict.getId(playerName)
+#                    if playerName == 'Морозов Александр' or playerName == 'Александр Морозов':
+#                        print(playerName, id, playerId)
                     if len(id) == 1:
                         fout.write('\t'.join([dt, id[0]] + v) + '\n')
                     elif len(id) == 0:

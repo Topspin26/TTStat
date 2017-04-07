@@ -83,7 +83,7 @@ def getMW(s):
 
 def main():
 
-    playersDict = GlobalPlayersDict()
+    playersDict = GlobalPlayersDict("filtered")
 
 #    readPlayer2Id(filename)
 
@@ -166,7 +166,7 @@ def main():
                                 multiple[fl_mw + ' ' + player] = 0
                             multiple[fl_mw + ' ' + player] += 1
 
-                if flError == 0 and len(ids[0]) > 0 and len(ids[1]) > 0 and match.date < '2018':
+                if flError == 0 and len(ids[0]) > 0 and len(ids[1]) > 0 and match.date >= '2015' and match.date < '2018':
                     resTokens = match.toArr()
                     resTokens.append(';'.join(players[0]))
                     resTokens.append(';'.join(players[1]))

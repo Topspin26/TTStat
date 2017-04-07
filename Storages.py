@@ -41,10 +41,10 @@ class MatchesStorage:
 
 
 class MatchesBetsStorage:
-    def __init__(self, hash2matchInd):
+    def __init__(self, hash2matchInd, dirname = ''):
         self.bets = dict()
 
-        with open('prepared_data/bkfon/live/all_bets_prepared.txt', encoding='utf-8') as fin:
+        with open(dirname + 'prepared_data/bkfon/live/all_bets_prepared.txt', encoding='utf-8') as fin:
             for line in fin:
                 tokens = line.rstrip('\n').split('\t')
                 eventId = tokens[1]
@@ -76,6 +76,7 @@ class MatchesBetsStorage:
                         self.bets[matchHash] = matchBet
                     else:
                         print('not unique bet match hash')
+                        print([dt] + ids[0] + ids[1] + [int(e) for e in setsScore.split(':')])
 
 class RankingsStorage:
     def __init__(self, sources):

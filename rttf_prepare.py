@@ -34,6 +34,8 @@ def main():
                                 name = name.replace('A', 'А')
                                 if name == 'Заярная Наталья':
                                     name = 'Заярная Наталия'
+                                if name == 'Мамасабиров Ильяз':
+                                    name = 'Мамасабиров Илиязбек'
                                 id = arr[j + 1]
                                 ids[ii].append(id)
                                 if id in id2player and id2player[id] != name:

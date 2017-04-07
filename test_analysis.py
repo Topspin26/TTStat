@@ -309,7 +309,7 @@ class BradleyTerryRM(RankingModel):
         return res
 
 
-def calcRankings(matches, curDate, playersDict, mw, daysCnt = 365, matchesCntBorder = 16):
+def calcRankings(matches, curDate, playersDict, mw, daysCnt = 365, matchesCntBorder = 50):
     mCnt = len(matches)
     #x = sps.lil_matrix((mCnt, len(playersDict.id2names)))
     y = np.ones(mCnt)
@@ -339,7 +339,7 @@ def calcRankings(matches, curDate, playersDict, mw, daysCnt = 365, matchesCntBor
                         #x[k, ind] = [1, -1]
                         #points = match.getSumPoints()
                         #w[k] = (points[0] + 1) * 1.0 / (sum(points) + 2)
-                        w[k] = (match.sets[0] + 0.2) * 1.0 / (match.sets[0] + match.sets[1] + 0.4)
+                        w[k] = (match.sets[0] + 0.1) * 1.0 / (match.sets[0] + match.sets[1] + 0.2)
                         #w[k] = (match.wins[0] + 1) * 1.0 / (match.wins[0] + match.wins[1] + 2)
                         k += 1
                         ids.append([[ind[0]], [ind[1]]])
@@ -393,7 +393,7 @@ def calcRankings(matches, curDate, playersDict, mw, daysCnt = 365, matchesCntBor
     return res
 
 def calcRankingsProcess(mw):
-    playersDict = GlobalPlayersDict()
+    playersDict = GlobalPlayersDict("filtered")
 
     sources = []
     sources.append(['master_tour', 'prepared_data/master_tour/all_results.txt'])
@@ -409,14 +409,14 @@ def calcRankingsProcess(mw):
     print(len(matchesStorage.matches))
 
     rankings = []
-    startDate = '2015-12-28'
+    startDate = '2015-12-31'
 #    startDate = '2017-01-02'
     today = datetime.datetime.now().strftime("%Y-%m-%d")
     curDate = startDate
     while curDate <= today:
-        curDate = (datetime.datetime.strptime(curDate, "%Y-%m-%d").date() + datetime.timedelta(days=7)).strftime("%Y-%m-%d")
+        curDate = (datetime.datetime.strptime(curDate, "%Y-%m-%d").date() + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
         print(curDate)
-        res = calcRankings(matchesStorage.matches, curDate, playersDict, mw, 730)
+        res = calcRankings(matchesStorage.matches, curDate, playersDict, mw, 365)
         for i, e in enumerate(sorted(res, key=lambda x: x[2], reverse=True)):
             rankings.append([curDate, e[0], str(e[2]), str(i + 1)])
 
@@ -440,10 +440,18 @@ def main():
 #    foo1()
 #    return
 
+    with open('prepared_data/rankings/all_rankings_mw_fresh.txt', encoding='utf-8') as fin, \
+            open('prepared_data/rankings/all_rankings_mw_fresh_filtered.txt', 'w', encoding='utf-8') as fout:
+        for line in fin:
+            tokens = line.split('\t')
+            if tokens[0][-2:] == '01' or tokens[0] >= '2017-03':
+                fout.write(line)
+    return
+
     rankingsM = calcRankingsProcess('m')
     rankingsW = calcRankingsProcess('w')
 
-    with open('test/all_rankings_mw_fresh.txt', 'w', encoding='utf-8') as fout:
+    with open('prepared_data/rankings/all_rankings_mw_fresh.txt', 'w', encoding='utf-8') as fout:
         for e in rankingsM + rankingsW:
             fout.write('\t'.join(e) + '\n')
 

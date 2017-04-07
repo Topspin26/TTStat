@@ -43,14 +43,24 @@ def scrapp(tid):
 
             r1 = tr.find_elements_by_xpath('./td[@class = "rating"]/b')[0].get_attribute('innerHTML')
             r2 = tr.find_elements_by_xpath('./td[@class = "rating"]/b')[1].get_attribute('innerHTML')
-            dr1 = tr.find_elements_by_xpath('./td[@class = "rating"]/small')[0].get_attribute('innerHTML')
-            dr2 = tr.find_elements_by_xpath('./td[@class = "rating"]/small')[1].get_attribute('innerHTML')
+            try:
+                dr1 = tr.find_elements_by_xpath('./td[@class = "rating"]/small')[0].get_attribute('innerHTML')
+                dr2 = tr.find_elements_by_xpath('./td[@class = "rating"]/small')[1].get_attribute('innerHTML')
+            except:
+                dr1 = '0'
+                dr2 = '0'
+                print('wrong dr')
 
-            score = tr.find_elements_by_xpath('./td[@class = "score"]/table/tbody/tr/td')[1].get_attribute('innerHTML')
-            gameId = score.split('">')[0].split('/')[1]
-            score = score.split('>')[1].split('<')[0]
-
-            pointsScore = tr.find_element_by_xpath('./td[@class = "score"]/small').get_attribute('innerHTML')
+            try:
+                score = tr.find_elements_by_xpath('./td[@class = "score"]/table/tbody/tr/td')[1].get_attribute('innerHTML')
+                gameId = score.split('">')[0].split('/')[1]
+                score = score.split('>')[1].split('<')[0]
+                pointsScore = tr.find_element_by_xpath('./td[@class = "score"]/small').get_attribute('innerHTML')
+            except:
+                score = ''
+                gameId = ''
+                pointsScore = ''
+                print('wrong score')
 
             lines2.append('\t'.join([dt, tt, compInfo, gameId, stage, pl1Name + ';' + pl1Id, r1, dr1, pl2Name + ';' + pl2Id, r2, dr2, score, pointsScore]))
             print([dt, tt, compInfo, gameId, stage, pl1Name + ';' + pl1Id, r1, dr1, pl2Name + ';' + pl2Id, r2, dr2, score, pointsScore])
@@ -68,7 +78,7 @@ def main():
     for f in walk('data/liga_pro/results'):
         for ff in f[2]:
             curId = max(curId, int(ff.split('_')[1]))
-    curId = max(1, curId - 1)
+    curId = max(1, curId - 2)
     print(curId)
     fl = 0
     for tid in range(curId, 200):

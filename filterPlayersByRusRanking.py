@@ -16,7 +16,10 @@ def main():
 
     for id,names in playersDict.id2names.items():
         r = rankingStorage.getPlayerAllRankings(id, 'ttfr')
-        if len(r) == 0 or max([int(e[0]) for e in r.values()]) > 400 or names[0] == 'Бекташ Игорь':
+        if len(r) == 0 or max([int(e[0]) for e in r.values()]) > 400 or \
+                        names[0] == 'Бекташ Игорь' or \
+                        names[0] == 'Николай Егоров' or \
+                        names[0] == 'Меркушев Денис':
             id2names_filtered[id] = names
     with open('prepared_data/players_men_filtered.txt', 'w', encoding='utf-8') as fout_men, \
          open('prepared_data/players_women_filtered.txt', 'w', encoding='utf-8') as fout_women:

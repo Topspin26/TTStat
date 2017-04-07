@@ -119,7 +119,8 @@ class Match:
             sets = []
         else:
             sets = self.sets
-        return calcHash([self.date, self.round] + self.players[0] + self.players[1] + sets + [e * i for i,e in enumerate(Match.getSetSumPoints(self.points))])
+        return calcHash([self.date] + self.players[0] + self.players[1] + sets + [e * i for i,e in enumerate(Match.getSetSumPoints(self.points))])
+        #return calcHash([self.date, self.round] + self.players[0] + self.players[1] + sets + [e * i for i,e in enumerate(Match.getSetSumPoints(self.points))])
 
     def reverse(self):
         matchReversed = Match(self.date, [self.players[1].copy(), self.players[0].copy()])
