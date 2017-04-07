@@ -44,6 +44,11 @@ h2{
     margin-top: 10px;
 }
 
+#prognosis_players {
+    clear: both;
+    height: 150px;
+}
+
 #right1{
     width: 40%;
     margin-right: 50px;

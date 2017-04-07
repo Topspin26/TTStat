@@ -5,6 +5,7 @@ import pickle
 from Storages import *
 from Entity import *
 from common import *
+from sklearn import linear_model
 
 class TTModel:
     def __init__(self, dirname):
@@ -20,12 +21,12 @@ class TTModel:
         self.player_rankings_columns = ['Дата', 'Источник', 'Рейтинг', 'Ранг']
         self.player_rankings_dtypes = ['string'] * 2 + ['number'] * 2
 
-        self.playersDict = GlobalPlayersDict()
+        self.playersDict = GlobalPlayersDict(dirname=dirname + '/')
 
         self.rankingSources = []
         self.rankingSources.append(['ttfr', dirname + '/prepared_data/propingpong/ranking_rus.txt'])
         self.rankingSources.append(['ittf', dirname + '/prepared_data/propingpong/ranking_ittf.txt'])
-        self.rankingSources.append(['my', dirname + '/test/all_rankings_mw_fresh.txt'])
+        self.rankingSources.append(['my', dirname + '/prepared_data/rankings/all_rankings_mw_fresh_filtered.txt'])
         self.rankingSources.append(['liga_pro', dirname + '/prepared_data/liga_pro/ranking_liga_pro.txt'])
 
         self.rankingStorage = RankingsStorage(self.rankingSources)
@@ -58,7 +59,7 @@ class TTModel:
             for e in match.players[1]:
                 self.players[e].matches.append(match)
 
-        self.matchesBetsStorage = MatchesBetsStorage(self.hash2matchInd)
+        self.matchesBetsStorage = MatchesBetsStorage(self.hash2matchInd, dirname=dirname + '/')
         self.bets = self.matchesBetsStorage.bets
 
         self.n = len(self.matches)
@@ -124,21 +125,12 @@ class TTModel:
             data.append([player.id, self.getHref(player.id, player.name), len(player.matches)])
         return data
 
-    def getFeatures(self, playerId, curDate):
-        dt = curDate[:-3]
-        myR = self.rankingStorage.getRankings(playerId, 'ttfr', curDate)
-
-        if playerId in self.myRankings:
-            myR = self.myRankings[playerId].get(dt, [-1])[0]
-            if myR == '-100':
-                myR = -1
-        rusR = -1
-        if playerId in self.rusRankings:
-            rusR = self.rusRankings[playerId].get(dt, [-1])[0]
-        ittfR = -1
-        if playerId in self.ittfRankings:
-            ittfR = self.ittfRankings[playerId].get(dt, [-1])[0]
-        return {'rus': rusR, 'ittf': ittfR, 'my': myR}
+    def getFeatures(self, playerId, curDate=datetime.datetime.now().strftime("%Y-%m-%d")):
+        myR = self.rankingStorage.getRankings(playerId, 'my', curDate, ws=5000)
+        rusR = self.rankingStorage.getRankings(playerId, 'ttfr', curDate, ws=5000)
+        ittfR = self.rankingStorage.getRankings(playerId, 'ittf', curDate, ws=1000)
+        ligaproR = self.rankingStorage.getRankings(playerId, 'liga_pro', curDate, ws=5000)
+        return {'rus': rusR, 'ittf': ittfR, 'my': myR, 'liga_pro': ligaproR}
 
     def getRankings(self, playerId, curDate, ws = 1):
         #[leftDAte = curDate - ws < date <= curDate]
@@ -149,19 +141,30 @@ class TTModel:
         return {'rus': rusR, 'ittf': ittfR, 'my': myR, 'liga_pro': ligaproR}
 
     def makePrediction(self, playerId1, playerId2):
-        r1 = self.getFeatures(playerId1, '2017-01-30')
-        r2 = self.getFeatures(playerId2, '2017-01-30')
-        r1 = [float(e) for e in [r1['rus'], r1['ittf'], r1['my']]]
-        r2 = [float(e) for e in [r2['rus'], r2['ittf'], r2['my']]]
-        ff = [[r1[0] - r2[0], r1[1] - r2[1], r1[2] - r2[2]]]
+        r1 = self.getFeatures(playerId1, datetime.datetime.now().strftime("%Y-%m-%d"))
+        r2 = self.getFeatures(playerId2, datetime.datetime.now().strftime("%Y-%m-%d"))
+        r1 = [float(e) for e in [r1['liga_pro'], r1['my']]]
+        r2 = [float(e) for e in [r2['liga_pro'], r2['my']]]
+        ff = [[r1[0] - r2[0], r1[1] - r2[1]]]
+        if r1[0] == -1 or r2[0] == -1:
+            ff[0][0] = 0
+        if r1[1] == -1 or r2[1] == -1:
+            ff[0][1] = 0
         print(ff)
+        self.model = linear_model.LogisticRegression(fit_intercept=False)
+        self.model.coef_ = np.array([[ 0.00957611, 0.10476427]])
+        self.model.intercept_ = 0
+        '''
         df1 = pd.DataFrame(index=[0], data=ff, columns=['drus', 'dittf', 'dmy'])
         df2 = -df1
-        p1 = self.model.predict_proba(df1)[0, 1]
-        p2 = self.model.predict_proba(df2)[0, 0]
+        '''
+        print(self.model.predict_proba(ff))
+        p1 = self.model.predict_proba(ff)[0, 1]
+        p2 = p1
+        #p2 = self.model.predict_proba(-ff)[0, 0]
         print([p1, p2])
         print(r1)
         print(r2)
-        if (r1[0] != -1) and (r2[0] != -1) and (r1[2] != -1) and (r2[2] != -1):
-            return format((p1 + p2) / 2 * 100, '.1f') + '%'
+        if ff[0] != 0 or ff[1] != 0:
+            return format((p1 + p2) / 2 * 100, '.1f') + '%, <br>' + 'ставка на игрока 1 от кф ' + format(1 / p1, '.2f') + '; <br>' + 'ставка на игрока 2 от кф ' + format(1 / (1 - p1), '.2f') + ';'
         return '?'

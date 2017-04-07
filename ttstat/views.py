@@ -46,7 +46,7 @@ def selectPlayer():
     res['status'] = 'OK'
     res['playerId'] = playerId
     res['playerName'] = ttModel.getPlayerName(playerId)
-    res['playerR'] = str(ttModel.getFeatures(playerId, '2017-01-30'))
+    res['playerR'] = str(ttModel.getFeatures(playerId))
     return json.dumps(res)
 
 @ttstat.route('/makePrognosis', methods = ['POST'])
