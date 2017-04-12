@@ -1,6 +1,7 @@
 from flask import render_template, request, flash, redirect
 from ttstat import ttstat, ttModel
-import simplejson as json
+import json
+
 
 @ttstat.route('/')
 @ttstat.route('/index')
