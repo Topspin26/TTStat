@@ -32,3 +32,5 @@ data/bkfon/live_old/*
 data/bkfon/live_parsed/*
 data/liga_pro/results/*
 data/local/errors/*
+data/ttw/results_old/*
+ttstat/static/dist/*

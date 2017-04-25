@@ -20,12 +20,15 @@ def getMatches(corrections, wrongLines):
                     #if not (tokens[5] in ['0:3', '1:3', '2:3', '3:2', '3:1', '3:0']) or len(tokens[4]) == 0:
                     #    wrongLines.append(line)
                     #    continue
+                    pointsScore = tokens[-1].strip().replace('(', '').replace(')', '').replace(' ', ';').replace('-', ':')
+                    if tokens[0] == '2017-04-20' and tokens[1] == '20:00':
+                        pointsScore = None
                     matches.append(Match(tokens[0],
                                          [[tokens[5]], [tokens[8]]],
                                          setsScore=tokens[-2].strip().replace(' ', ''),
-                                         pointsScore=tokens[-1].strip().replace('(', '').replace(')', '').replace(' ', ';').replace('-', ':'),
+                                         pointsScore=pointsScore,
                                          time=tokens[1],
-                                         compName='Лига-Про, ' + tokens[2].split(';')[0],
+                                         compName='Лига-Про (' + tokens[2].split(';')[0].replace('лига ', '') + '), ' + tokens[0],
                                          round=tokens[4]))
     return matches
 
@@ -40,10 +43,13 @@ def getRankings():
                     tokens = line.split('\t')
                     tokens = [e.strip() for e in tokens]
 
+                    pointsScore = tokens[-1].strip().replace('(', '').replace(')', '').replace(' ', ';').replace('-', ':')
+                    if tokens[0] == '2017-04-20' and tokens[1] == '20:00':
+                        pointsScore = None
                     match = Match(tokens[0],
                             [[tokens[5]], [tokens[8]]],
                             setsScore=tokens[-2].strip().replace(' ', ''),
-                            pointsScore=tokens[-1].strip().replace('(', '').replace(')', '').replace(' ', ';').replace('-', ':'),
+                            pointsScore=pointsScore,
                             time=tokens[1],
                             compName='Лига-Про, ' + tokens[2].split(';')[0],
                             round=tokens[4])
@@ -144,6 +150,7 @@ def main():
     idLinks['221'] = 'm44'
     idLinks['223'] = 'm16251'
     idLinks['220'] = 'm9198'
+    idLinks['210'] = 'm16397'
 
     playersDict = GlobalPlayersDict("filtered")
 

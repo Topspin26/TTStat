@@ -81,7 +81,7 @@ def main():
     curId = max(1, curId - 2)
     print(curId)
     fl = 0
-    for tid in range(curId, 200):
+    for tid in range(curId, 300):
         print(tid)
         fl += scrapp(tid)
         if fl == 2:
