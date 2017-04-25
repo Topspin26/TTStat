@@ -97,6 +97,7 @@ def main():
     idLinks['rus']['1576'] = 'm38'
     idLinks['rus']['177'] = None #Архипов Иван
     idLinks['rus']['17185'] = None #Морозов Александр
+    idLinks['rus']['3853'] = 'm2781'#Федоров Владислав
 
     prefix = 'prepared_data/propingpong/'
     for rt in ['rus', 'ittf']:

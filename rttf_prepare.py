@@ -14,7 +14,7 @@ def main():
     for f in walk(dirname):
         for ff in f[2]:
             fp = os.path.abspath(os.path.join(f[0], ff))
-            if fp.lower().find('artt-про') != -1:
+            if fp.lower().find('artt-про') != -1 or fp.lower().find('ttleader-pro'):
                 print(fp)
                 continue
             with open(fp, encoding='utf-8') as fin:
