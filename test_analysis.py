@@ -255,7 +255,7 @@ class RankingModel:
 
 class BradleyTerryRM(RankingModel):
     @staticmethod
-    def calcRankings(ids, y, w, model=None):
+    def calcRankings(ids, y, w, model=None, matchesCntBorder = 1):
         rows = []
         cols = []
         vals = []
@@ -279,7 +279,7 @@ class BradleyTerryRM(RankingModel):
         x = sps.csr_matrix((vals, (rows, cols)))
         cm = np.absolute(x).sum(axis=0)
 
-        indNonZero = np.nonzero(cm[0] > 0)[1].tolist()
+        indNonZero = np.nonzero(cm[0] >= matchesCntBorder)[1].tolist()
         x = x[:, indNonZero]
         xv = x[:, -1].toarray().flatten()
         x = sps.lil_matrix(x)
@@ -309,7 +309,12 @@ class BradleyTerryRM(RankingModel):
         return res
 
 
-def calcRankings(matches, curDate, playersDict, mw, daysCnt = 365, matchesCntBorder = 50):
+def calcSetWeight(match):
+    return (match.sets[0] + 0.1) * 1.0 / (match.sets[0] + match.sets[1] + 0.2)
+def calcWinWeight(match):
+    return 0.95 * match.wins[0] + 0.05 * match.wins[1]
+
+def calcRankings(matches, curDate, playersDict, mw, params):
     mCnt = len(matches)
     #x = sps.lil_matrix((mCnt, len(playersDict.id2names)))
     y = np.ones(mCnt)
@@ -321,7 +326,7 @@ def calcRankings(matches, curDate, playersDict, mw, daysCnt = 365, matchesCntBor
     playerMatchesCnt = dict()
     for match in matches:
         mDate = match.date
-        if mDate < curDate:
+        if mDate < curDate and len(set(match.sources) & params['sources']) > 0:
             fl_mw = ''
             for e in match.players[0] + match.players[1]:
                 fl_mw += e[0]
@@ -331,15 +336,16 @@ def calcRankings(matches, curDate, playersDict, mw, daysCnt = 365, matchesCntBor
                 id = [match.players[0][0], match.players[1][0]]
     #            if not (match.points is None) and not (match.sets is None):
                 if not (match.sets is None):
-                    if (mDate > (datetime.datetime.strptime(curDate, "%Y-%m-%d").date() - datetime.timedelta(days=daysCnt)).strftime("%Y-%m-%d")) or \
-                            playerMatchesCnt.get(id[0], 0) < matchesCntBorder or playerMatchesCnt.get(id[1], 0) < matchesCntBorder:
+                    if (mDate > (datetime.datetime.strptime(curDate, "%Y-%m-%d").date() - datetime.timedelta(days=params['ws'])).strftime("%Y-%m-%d")) or \
+                            playerMatchesCnt.get(id[0], 0) < params['nmax'] or playerMatchesCnt.get(id[1], 0) < params['nmax']:
                         playerMatchesCnt[id[0]] = playerMatchesCnt.get(id[0], 0) + 1
                         playerMatchesCnt[id[1]] = playerMatchesCnt.get(id[1], 0) + 1
                         ind = [(int(e[1:]) - 1) for e in id]
                         #x[k, ind] = [1, -1]
                         #points = match.getSumPoints()
                         #w[k] = (points[0] + 1) * 1.0 / (sum(points) + 2)
-                        w[k] = (match.sets[0] + 0.1) * 1.0 / (match.sets[0] + match.sets[1] + 0.2)
+                        w[k] = params['wf'](match)
+                        #w[k] = (match.sets[0] + 0.1) * 1.0 / (match.sets[0] + match.sets[1] + 0.2)
                         #w[k] = (match.wins[0] + 1) * 1.0 / (match.wins[0] + match.wins[1] + 2)
                         k += 1
                         ids.append([[ind[0]], [ind[1]]])
@@ -347,7 +353,7 @@ def calcRankings(matches, curDate, playersDict, mw, daysCnt = 365, matchesCntBor
 
     mCnt = k
     print(mCnt)
-    r = BradleyTerryRM.calcRankings(ids, y[:mCnt], w[:mCnt])
+    r = BradleyTerryRM.calcRankings(ids, y[:mCnt], w[:mCnt], matchesCntBorder=params['nmin'])
 
     '''
     cm = np.absolute(x).sum(axis=0)
@@ -398,8 +404,8 @@ def calcRankingsProcess(mw):
     sources = []
     sources.append(['master_tour', 'prepared_data/master_tour/all_results.txt'])
     sources.append(['liga_pro', 'prepared_data/liga_pro/all_results.txt'])
-#    sources.append(['challenger_series', 'prepared_data/challenger_series/all_results.txt'])
-    sources.append(['bkfon', 'prepared_data/bkfon/all_results.txt'])
+    sources.append(['challenger_series', 'prepared_data/challenger_series/all_results.txt'])
+#    sources.append(['bkfon', 'prepared_data/bkfon/all_results.txt'])
     sources.append(['local', 'prepared_data/local/kchr_results.txt'])
     sources.append(['ittf', 'prepared_data/ittf/all_results.txt'])
     sources.append(['rttf', 'prepared_data/rttf/all_results.txt'])
@@ -408,17 +414,27 @@ def calcRankingsProcess(mw):
 
     print(len(matchesStorage.matches))
 
-    rankings = []
-    startDate = '2015-12-31'
-#    startDate = '2017-01-02'
+    rankings = dict()
+#    startDate = '2015-12-31'
+    startDate = '2017-04-20'
     today = datetime.datetime.now().strftime("%Y-%m-%d")
     curDate = startDate
+    rankingsParams = []
+    sourcesSet0 = {e[0] for e in sources}
+    sourcesSet1 = {'master_tour', 'liga_pro', 'challenger_series', 'local', 'ittf'}
+    rankingsParams.append({'name': 'sets_0', 'wf': calcSetWeight, 'ws': 365, 'nmax': 50, 'nmin': 4, 'sources': sourcesSet0})
+    rankingsParams.append({'name': 'wins_0', 'wf': calcWinWeight, 'ws': 365, 'nmax': 50, 'nmin': 4, 'sources': sourcesSet0})
+
+    rankingsParams.append({'name': 'sets_1', 'wf': calcSetWeight, 'ws': 365, 'nmax': 50, 'nmin': 4, 'sources': sourcesSet1})
+    for ind in range(len(rankingsParams)):
+        rankings[rankingsParams[ind]['name']] = []
     while curDate <= today:
         curDate = (datetime.datetime.strptime(curDate, "%Y-%m-%d").date() + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
         print(curDate)
-        res = calcRankings(matchesStorage.matches, curDate, playersDict, mw, 365)
-        for i, e in enumerate(sorted(res, key=lambda x: x[2], reverse=True)):
-            rankings.append([curDate, e[0], str(e[2]), str(i + 1)])
+        for ind in range(len(rankingsParams)):
+            res = calcRankings(matchesStorage.matches, curDate, playersDict, mw, rankingsParams[ind])
+            for i, e in enumerate(sorted(res, key=lambda x: x[2], reverse=True)):
+                rankings[rankingsParams[ind]['name']].append([curDate, e[0], str(e[2]), str(i + 1)])
 
     '''
     rankings = []
@@ -430,9 +446,12 @@ def calcRankingsProcess(mw):
         rankings.append([curDate[:-3], e[0], str(e[2]), str(i + 1)])
     '''
 
-    with open('test/all_rankings_' + mw + '.txt', 'w', encoding='utf-8') as fout:
-        for e in rankings:
-            fout.write('\t'.join(e) + '\n')
+
+    for k,v in rankings.items():
+        with open('test/all_rankings_' + mw + '_' + k + '.txt', 'w', encoding='utf-8') as fout:
+            for e in v:
+                fout.write('\t'.join(e) + '\n')
+
     return rankings
 
 
@@ -440,20 +459,30 @@ def main():
 #    foo1()
 #    return
 
+#    with open('prepared_data/rankings/all_rankings_mw_fresh.txt', encoding='utf-8') as fin, \
+#            open('prepared_data/rankings/all_rankings_mw_fresh_filtered.txt', 'w', encoding='utf-8') as fout:
+#        for line in fin:
+#            tokens = line.split('\t')
+#            if tokens[0][-2:] == '01' or tokens[0] >= '2017-03':
+#                fout.write(line)
+    #return
+
+    rankingsM = calcRankingsProcess('m')
+    rankingsW = calcRankingsProcess('w')
+
+    for rankingName in rankingsM.keys():
+        with open('prepared_data/rankings/all_rankings_mw_fresh_' + rankingName + '.txt', 'w', encoding='utf-8') as fout:
+            for e in rankingsM[rankingName] + rankingsW[rankingName]:
+                fout.write('\t'.join(e) + '\n')
+
+    '''
     with open('prepared_data/rankings/all_rankings_mw_fresh.txt', encoding='utf-8') as fin, \
             open('prepared_data/rankings/all_rankings_mw_fresh_filtered.txt', 'w', encoding='utf-8') as fout:
         for line in fin:
             tokens = line.split('\t')
             if tokens[0][-2:] == '01' or tokens[0] >= '2017-03':
                 fout.write(line)
-    return
-
-    rankingsM = calcRankingsProcess('m')
-    rankingsW = calcRankingsProcess('w')
-
-    with open('prepared_data/rankings/all_rankings_mw_fresh.txt', 'w', encoding='utf-8') as fout:
-        for e in rankingsM + rankingsW:
-            fout.write('\t'.join(e) + '\n')
+    '''
 
     return
 
