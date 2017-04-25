@@ -9,7 +9,7 @@ from common import *
 
 
 def main():
-    dir = 'D:/Programming/SportPrognoseSystem/Результаты/КЧР'
+    dir = 'C:/Programming/SportPrognoseSystem/Результаты/КЧР'
 
     fout = open('prepared_data/local/kchr_results.txt', 'w', encoding = 'utf-8')
     fout.write('\t'.join(['date','time','compName','id1','id2','setsScore','pointsScore','name1','name2']))
@@ -65,7 +65,8 @@ def main():
             cmg = 0
             cp = cpg = 0
             matches = []
-            compName = ', '.join(fp.split('\\')[-4:-1]).replace('women', 'Женщины').replace('men', 'Мужчины')
+            arr = fp.split('\\')[-5:-1]
+            compName = ', '.join(['КЧР, ' + arr[2] + '(' + arr[1] + ')', arr[3], arr[0]]).replace('women', 'ж').replace('men', 'м')
             with open(fp, encoding='utf-8') as fin, open('data/local/errors/' + '_'.join(fp.split('\\')[-5:])[:-4] + '_err.txt', 'w', encoding='utf-8') as fout_err:
                 compDate = compInfo['/'.join(fp.split('\\')[-5:])][0]
                 compDate = compDate.split(' ')[2] + '-' + str(monthname2Num[compDate.split(' ')[1]]).zfill(2) + '-' + compDate.split(' ')[0].split('-')[1].zfill(2)
@@ -105,6 +106,9 @@ def main():
 #                        print('_________________________________' + str(tokens))
 #                    else:
 #                        continue
+
+#                    if line0.replace('\t', ';').find("СИДОРЕНКО Владимир;Х;Х;;X;МУТЫГУЛЛИН Рамиль") != -1:
+#                        print(line0.replace('\t', ';'))
 
                     if tokens[0] in rs and len(tokens) > 6 and len(tokens[1]) > 0:
                         if (len(tokens[-1].replace(' ', '')) < 3 or tokens[-1].find('-') != -1 or tokens[-1].find(':') != -1)  and tokens[-1] != 'V':
@@ -149,7 +153,7 @@ def main():
                                         fout_err.write('UNKNOWN ' + player + '\n')
                                         #print('UNKNOWN ' + player)
                                         if player == '':
-                                            fout_err.write('-------------------' + line0 + '\n')
+                                            fout_err.write('-------------------' + line0 + line + '\n')
                                             #print('-------------------' + line0)
                                     else:
                                         flError = 1
