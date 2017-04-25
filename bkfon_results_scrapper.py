@@ -9,57 +9,63 @@ import re
 from subprocess import Popen
 from common import *
 
-
 def getResults(curDate):
     s = None
     try:
-        with open('data/bkfon/results/' + curDate + '.txt', 'r', encoding = 'utf-8') as fin:
+        with open('data/bkfon/results/' + curDate + '_new.txt', 'r', encoding = 'utf-8') as fin:
             s = next(fin)
     except:
         s = None
     return s
 
 def main():
-    url = 'https://www.bkfon.ru/results'
+    url = 'https://www.fonbet.ru/#!/results'
     driver = initDriver(url, 10)
 
-    monthname2Num = {'янв':1,'фев':2,'мар':3,'апр':4,'май':5,'июн':6,'июл':7,'авг':8,'сен':9,'окт':10,'ноя':11,'дек':12}
+    monthname2Num = {'янв':1,'фев':2,'мар':3,'апр':4,'май':5,'мая':5,'июн':6,'июл':7,'авг':8,'сен':9,'окт':10,'ноя':11,'дек':12}
 
     tDate = datetime.now().strftime("%Y-%m-%d")
 
     flLast = 1
     flExit = 0
     while (flExit == 0):
-        month = driver.find_element_by_class_name('ui-datepicker-month').get_attribute('innerHTML')
-        month = monthname2Num[month.lower()[:3]]
+        if flLast == 1:
+            driver.find_element_by_xpath('//span[@class="events__filter-down icon _icon_arrow-tree-light"]').click()
+        s = driver.find_element_by_class_name('ui-calendar__title').get_attribute('innerHTML')
+        month = monthname2Num[s.lower()[:3]]
         print(month)
-        year = driver.find_element_by_class_name('ui-datepicker-year').get_attribute('innerHTML')
+        year = s.lower()[-4:]
         print(year)
-        active_days = driver.find_elements(By.XPATH, "//*[@data-handler='selectDay']")
+
+        active_days = driver.find_elements_by_xpath('//td[contains(@class, "ui-calendar__col") and not (contains(@class, "_state_off"))]/a')
         nd = len(active_days)
         print(len(active_days))
         if year == '2017':
             for i in range(nd - flLast):
+                if month == 4:
+                    continue
 #                if i < 10:
 #                    continue
-                if month != 3 and month != 4:
-                    continue
+#                if month != 3 and month != 4:
+#                    continue
                 curDate = year + '-' + str(month).zfill(2) + '-' + str(i + 1).zfill(2)
                 print(curDate)
-                filename ='data/bkfon/results/' + curDate + '.txt'
+                filename ='data/bkfon/results/' + curDate + '_new.txt'
                 sLast = getResults(curDate)
 
                 print(active_days[i].get_attribute('innerHTML'))
                 active_days[i].click()
                 time.sleep(10 + random.random())
-                active_days = driver.find_elements(By.XPATH, "//*[@data-handler='selectDay']")
-                s = driver.find_element_by_id('resultDiv').get_attribute('innerHTML')
+                driver.find_element_by_xpath('//span[@class="events__filter-down icon _icon_arrow-tree-light"]').click()
+                active_days = driver.find_elements_by_xpath('//td[contains(@class, "ui-calendar__col") and not (contains(@class, "_state_off"))]/a')
+
+                s = driver.find_element_by_xpath('//div[@class="results_table"]').get_attribute('innerHTML')
                 if sLast is None:
                     with open(filename, 'w', encoding = 'utf-8') as fout:
                         fout.write(s)
                 elif sLast.strip() != s.strip():
-                    arr1 = s.split('class="resultTd"')
-                    arr2 = sLast.split('class="resultTd"')
+                    arr1 = s.split('class="table__row')
+                    arr2 = sLast.split('class="table__row')
                     flNewInfo = 0
                     for e in arr2:
                         if not (e in arr1):
@@ -71,14 +77,15 @@ def main():
                             fout.write(s)
                         with open(filename[:-4] + '_old' + tDate + '.txt', 'w', encoding='utf-8') as fout:
                             fout.write(sLast)
-        #                    return
+#                return
         else:
             flExit = 1
             break
-        driver.find_element_by_class_name('ui-datepicker-prev').click()
+        driver.find_element_by_xpath('//a[@class="ui-calendar__nav _pos_left"]').click()
         time.sleep(10 + random.random())
         flLast = 0
         continue
+    driver.quit()
     return
 
 
