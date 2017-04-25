@@ -10,7 +10,17 @@ def index():
 
 @ttstat.route('/matches')
 def matches():
-    return render_template('matches.html', matches_columns = ttModel.matches_columns, bets_columns = ttModel.bets_columns)
+    filters = dict()
+    filters['compId'] = request.args.get('compId')
+    filters['compName'] = ttModel.competitionsStorage.getCompName(request.args.get('compId'))
+    filters['playerId'] = request.args.get('playerId')
+    filters['sourceId'] = request.args.get('sourceId')
+    filters['sourceName'] = request.args.get('sourceId')
+    if filters['playerId']:
+        filters['playerName'] = ttModel.getPlayerName(request.args.get('playerId'))
+    else:
+        filters['playerName'] = None
+    return render_template('matches.html', matches_columns = ttModel.matches_columns, bets_columns = ttModel.bets_columns, filters = filters)
 
 @ttstat.route('/players')
 def players():
@@ -18,10 +28,38 @@ def players():
 
 @ttstat.route('/players/<id>')
 def player_info(id):
+    filters = dict()
+    filters['compId'] = request.args.get('compId')
+    filters['compName'] = ttModel.competitionsStorage.getCompName(request.args.get('compId'))
+    filters['playerId'] = request.args.get('playerId')
+    filters['sourceId'] = request.args.get('sourceId')
+    filters['sourceName'] = request.args.get('sourceId')
+    if filters['playerId']:
+        filters['playerName'] = ttModel.getPlayerName(request.args.get('playerId'))
+    else:
+        filters['playerName'] = None
     return render_template('player_info.html', id = id, name = ttModel.getPlayerNames(id),
                            matches_columns = ttModel.matches_columns,
                            rankings_columns = ttModel.player_rankings_columns,
-                           bets_columns=ttModel.bets_columns)
+                           bets_columns=ttModel.bets_columns, filters = filters)
+
+@ttstat.route('/competitions')
+def competitions():
+    filters = dict()
+    filters['sourceId'] = request.args.get('sourceId')
+    filters['sourceName'] = request.args.get('sourceId')
+#    if request.args.get('compId'):
+#    filters['compId'] = request.args.get('compId')
+#    filters['compName'] = ttModel.competitionsStorage.getCompName(request.args.get('compId'))
+    return render_template('competitions.html', competitions_columns = ttModel.competitions_columns, filters = filters)
+
+@ttstat.route('/competitions/<id>')
+def competition_info(id):
+    filters = dict()
+    filters['compId'] = id
+    filters['compName'] = ttModel.competitionsStorage.getCompName(filters['compId'])
+    return render_template('competitions.html', matches_columns = ttModel.matches_columns, bets_columns = ttModel.bets_columns, filters = filters)
+
 
 @ttstat.route('/rankings')
 def rankings():
@@ -29,6 +67,10 @@ def rankings():
 
 @ttstat.route('/sources')
 def sources():
+    return render_template('sources.html')
+
+@ttstat.route('/sources/<id>')
+def source_info(id):
     return render_template('sources.html')
 
 @ttstat.route('/rankings/<sex>')
@@ -62,15 +104,37 @@ def makePrognosis():
     print(res['pred'])
     return json.dumps(res)
 
+@ttstat.route("/_retrieve_players_names")
+def get_players_names():
+    s = request.values['name']
+    res = []
+    for k,player in sorted(ttModel.players.items(), key = lambda x: x[1].name):
+        if player.findString(s) == True:
+            res.append('{"name": "' + player.name + '","id": "' + player.id + '"}')
+            if len(res) > 10:
+                break
+    print('[' + ','.join(res) + ']')
+    return '[' + ','.join(res) + ']'
 
 @ttstat.route("/_retrieve_matches_data")
 def get_matches_data():
+
     columns = ttModel.matches_columns
+
+    player0IdFilter = None
+    if 'player0Id' in request.values:
+        player0IdFilter = request.values['player0Id']
+    print(player0IdFilter)
 
     playerIdFilter = None
     if 'playerId' in request.values:
         playerIdFilter = request.values['playerId']
     print(playerIdFilter)
+
+    compIdFilter = None
+    if 'compId' in request.values:
+        compIdFilter = request.values['compId']
+    print('compId', compIdFilter)
 
     print(request.values)
     print(request.values['sSortDir_0'])
@@ -79,10 +143,10 @@ def get_matches_data():
     output = {}
     output['sEcho'] = str(int(request.values['sEcho']))
 
-    sources = None
-    if 'sources' in request.values:
-        sources = set(request.values['sources'].strip(';').split(';'))
-    print(sources)
+    sourceIdFilter = None
+    if 'sourceId' in request.values:
+         sourceIdFilter = request.values['sourceId']
+    #print(sources)
 
     text = request.values['sSearch'].lower()
     print(text)
@@ -92,15 +156,16 @@ def get_matches_data():
 
     matches = []
     matchesList = ttModel.matches
-    if not (playerIdFilter is None):
-        matchesList = ttModel.players[playerIdFilter].matches
+    if not (player0IdFilter is None):
+        matchesList = ttModel.players[player0IdFilter].matches
+    elif not (compIdFilter is None):
+        matchesList = ttModel.competitionsStorage.getComp(compIdFilter).matches
     output['iTotalRecords'] = str(len(matchesList))
     for match in matchesList:
-        flMatch = 0
-        for src in match.sources:
-            if (sources is None) or (src in sources):
-                flMatch = 1
-        if flMatch == 0:
+        if compIdFilter:
+            if str(match.compId) != str(compIdFilter):
+                continue
+        if sourceIdFilter and not sourceIdFilter in match.sources:
             continue
         flMatch = 0
         for i in range(2):
@@ -108,13 +173,21 @@ def get_matches_data():
                 if ttModel.players[player].findString(text) == True:
                     flMatch = 1
 #        if (' - '.join(ttModel.getNames(match.players[0]))).lower().find(text) != -1 or (' - '.join(ttModel.getNames(match.players[1]))).lower().find(text) != -1:
+        if request.values['playerInfo'] == '1' and not (player0IdFilter in match.players[0]):
+            match = match.reverse()
+        if player0IdFilter:
+            if playerIdFilter and not (playerIdFilter in match.players[1]):
+                continue
+        else:
+            if playerIdFilter and not (playerIdFilter in (match.players[0] + match.players[1])):
+                continue
         if flMatch == 1:
             matches.append(match)
             c += 1
     sortInd = int(request.values['iSortCol_0'])
     sortAsc = request.values['sSortDir_0']
     print([sortInd, ttModel.matches_dtypes[sortInd]])
-    aaData_rows = ttModel.getMatchesTable(matches, sortInd, int(sortAsc == 'asc'))
+    aaData_rows = ttModel.getMatchesTable(matches, sortInd, int(sortAsc == 'asc'), filterFlag = True)
 
 #    if ttModel.matches_dtypes[sortInd] == 'string':
 #        aaData_rows = sorted(aaData_rows, key = lambda x: x[sortInd], reverse=(sortAsc!='asc'))
@@ -288,6 +361,51 @@ def get_players_data():
     sortInd = int(request.values['iSortCol_0'])
     sortAsc = request.values['sSortDir_0']
     if ttModel.players_dtypes[sortInd] == 'string':
+        aaData_rows = sorted(aaData_rows, key = lambda x: x[sortInd], reverse=(sortAsc!='asc'))
+    else:
+        aaData_rows = sorted(aaData_rows, key=lambda x: float(x[sortInd]), reverse=(sortAsc != 'asc'))
+
+    output['iTotalDisplayRecords'] = str(c)
+
+    output['aaData'] = aaData_rows[leftInd:rightInd]
+
+    results = output
+
+    # return the results as a string for the datatable
+    return json.dumps(results)
+
+
+@ttstat.route("/_retrieve_competitions_data")
+def get_competitions_data():
+    columns = ttModel.competitions_columns
+
+    sourceIdFilter = None
+    if 'sourceId' in request.values:
+         sourceIdFilter = request.values['sourceId']
+
+    print(request.values)
+    print(request.values['sSortDir_0'])
+    leftInd = int(request.values['iDisplayStart'])
+    rightInd = leftInd + int(request.values['iDisplayLength'])
+    output = {}
+    output['sEcho'] = str(int(request.values['sEcho']))
+    output['iTotalRecords'] = str(len(ttModel.competitionsStorage.competitions))
+    c = 0
+
+    text = request.values['sSearch'].lower()
+    print(text)
+
+    competitions = []
+    for comp in ttModel.competitionsStorage.competitions:
+        if sourceIdFilter and not (sourceIdFilter in comp.sources):
+            continue
+        if comp.name.lower().find(text) != -1:
+            competitions.append(comp)
+        c += 1
+    aaData_rows = ttModel.getCompetitionsTable(competitions)
+    sortInd = int(request.values['iSortCol_0'])
+    sortAsc = request.values['sSortDir_0']
+    if ttModel.competitions_dtypes[sortInd] == 'string':
         aaData_rows = sorted(aaData_rows, key = lambda x: x[sortInd], reverse=(sortAsc!='asc'))
     else:
         aaData_rows = sorted(aaData_rows, key=lambda x: float(x[sortInd]), reverse=(sortAsc != 'asc'))

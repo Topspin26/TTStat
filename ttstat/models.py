@@ -9,8 +9,11 @@ from sklearn import linear_model
 
 class TTModel:
     def __init__(self, dirname):
-        self.matches_columns = ['Дата', 'Время', 'Турнир', 'id1', 'Участник1', 'id2', 'Участник2', 'Счет', 'Очки', 'Источники', 'БК', 'Хеш']
-        self.matches_dtypes = ['string'] * 12
+        self.matches_columns = ['Дата', 'Турнир', 'Игрок1', 'Игрок2', 'Счет', 'Источники', 'БК', 'Хеш']
+        self.matches_dtypes = ['string'] * 8
+
+        self.competitions_columns = ['Дата', 'Название', 'Игроки', 'Матчи', 'Источники']
+        self.competitions_dtypes = ['string'] * 2 + ['number'] * 2 + ['string']
 
         self.bets_columns = ['Дата', 'Время', 'Турнир', 'id1', 'id2', 'Счет', 'К1', 'К2']
         self.bets_dtypes = ['string'] * 8
@@ -26,7 +29,7 @@ class TTModel:
         self.rankingSources = []
         self.rankingSources.append(['ttfr', dirname + '/prepared_data/propingpong/ranking_rus.txt'])
         self.rankingSources.append(['ittf', dirname + '/prepared_data/propingpong/ranking_ittf.txt'])
-        self.rankingSources.append(['my', dirname + '/prepared_data/rankings/all_rankings_mw_fresh_filtered.txt'])
+        self.rankingSources.append(['my', dirname + '/prepared_data/rankings/all_rankings_mw_fresh_sets_1.txt'])
         self.rankingSources.append(['liga_pro', dirname + '/prepared_data/liga_pro/ranking_liga_pro.txt'])
 
         self.rankingStorage = RankingsStorage(self.rankingSources)
@@ -50,9 +53,15 @@ class TTModel:
         sources.append(['rttf', dirname + '/prepared_data/rttf/all_results.txt'])
 
         self.matchesStorage = MatchesStorage(sources)
-
         self.matches = self.matchesStorage.matches
         self.hash2matchInd = self.matchesStorage.hash2matchInd
+
+        self.competitionsStorage = CompetitionsStorage()
+        for match in self.matches:
+            compId = self.competitionsStorage.getCompId(match.compName)
+            match.setCompId(compId)
+            self.competitionsStorage.getComp(compId).addMatch(match)
+
         for match in self.matches:
             for e in match.players[0]:
                 self.players[e].matches.append(match)
@@ -79,8 +88,26 @@ class TTModel:
             self.model = pickle.load(fin)
         '''
 
-    def getHref(self, id, name):
-        return '<a href=/players/' + id + '>' + name + '</a>'
+    def getHref(self, id, name, filterFlag = False):
+        hr = '<a href=/players/' + id + ' target="blank">' + name + '</a>'
+        if filterFlag:
+            return '<a class="matchFilter" playerId="' + id + '"><span class="glyphicon glyphicon-search"></span></a>' + \
+                    hr
+        else:
+            return hr
+
+    def getCompHref0(self, id, name):
+        return '<a href=/competitions/' + str(id) + ' target="blank">' + name + '</a>'
+
+    def getCompHref(self, id, name):
+        return '<a class="matchFilter" compId="' + str(id) + '">' + '<span class="glyphicon glyphicon-search"></span></a>' + \
+               '<a href=/competitions/' + str(id) + ' target="blank">' + name + '</a>'
+
+    def getSourceHref(self, name):
+#        return '<a class="matchFilter" sourceId="' + str(name) + '">' + '<span class="glyphicon glyphicon-search"></span></a>' + \
+#               '<a href=/sources/' + str(name) + ' target="blank">' + name + '</a>'
+        return '<a class="matchFilter" sourceId="' + str(name) + '">' + '<span class="glyphicon glyphicon-search"></span></a>' + \
+               name
 
     def getPlayerNames(self, id):
         return self.playersDict.getNames(id)
@@ -89,7 +116,7 @@ class TTModel:
     def getMatchPlayersNames(self, ids):
         return [self.playersDict.getName(id) for id in ids]
 
-    def getMatchesTable(self, matches, sortInd = 0, sortAsc = 1):
+    def getMatchesTable(self, matches, sortInd = 0, sortAsc = 1, filterFlag = False):
         data = []
         for i,match in enumerate(matches):
             id1 = ' - '.join(match.players[0])
@@ -97,13 +124,16 @@ class TTModel:
             id2 = ' - '.join(match.players[1])
             names2 = ' - '.join(self.getMatchPlayersNames(match.players[1]))
             flBet = '+' if match.hash in self.bets else ''
-            data.append([match.date, match.time, match.compName, id1, names1, id2, names2, match.setsScore, match.pointsScore, '; '.join(match.sources), flBet, match.hash])
+            data.append([match.date + ', ' + (match.time if match.time else '-'), self.getCompHref(match.compId, match.compName),
+                         id1, names1, id2, names2, match.setsScore + ', (' + match.pointsScore + ')',
+                         '; '.join([self.getSourceHref(e) for e in match.sources]), flBet, match.hash])
         data = sorted(data, key = lambda x: x[sortInd], reverse = (sortAsc == 0))
         for i,row in enumerate(data):
-            names1 = ' - '.join([self.getHref(e, self.playersDict.getName(e)) for e in row[3].split(' - ')])
-            names2 = ' - '.join([self.getHref(e, self.playersDict.getName(e)) for e in row[5].split(' - ')])
-            data[i][4] = names1
-            data[i][6] = names2
+            names1 = ' - '.join([self.getHref(e, self.playersDict.getName(e), filterFlag = filterFlag) for e in row[2].split(' - ')])
+            names2 = ' - '.join([self.getHref(e, self.playersDict.getName(e), filterFlag = filterFlag) for e in row[4].split(' - ')])
+            data[i][3] = names1
+            data[i][5] = names2
+            data[i] = data[i][:2] + [data[i][3], data[i][5]] + data[i][6:]
 
         return data
 
@@ -123,6 +153,13 @@ class TTModel:
         data = []
         for player in players:
             data.append([player.id, self.getHref(player.id, player.name), len(player.matches)])
+        return data
+
+    def getCompetitionsTable(self, competitions):
+        data = []
+        for comp in competitions:
+            data.append([comp.finishDate, self.getCompHref0(comp.id, comp.name), str(len(comp.playersSet)), str(len(comp.matches)),
+                         '; '.join([self.getSourceHref(e) for e in comp.sources])])
         return data
 
     def getFeatures(self, playerId, curDate=datetime.datetime.now().strftime("%Y-%m-%d")):

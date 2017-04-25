@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>Турниры</h2>
+    <div id="main">
+
+        <div id="matches_filters">
+            {% if filters['sourceId'] %}
+                <h4 class="kv" key="sourceId" value="{{filters['sourceId']}}">
+                    Источник: {{ filters['sourceName'] }}
+                    <button id="sourceIdfilter_clear" type="button" class="filter_clear btn btn-danger">x</button>
+                </h4>
+            {% endif %}
+        </div>
+        <table id="competitions_table" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    {% for column in competitions_columns %}
+                        <th data-type="number"> {{column}} </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

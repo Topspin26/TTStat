@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
+    <h2>Матчи</h2>
     <div id="main">
+        <!--
         <h3>Матчи</h3>
-        <div class="form-group" id="sourceCheckboxes"> <!-- Date input -->
+        <div class="form-group" id="sourceCheckboxes">
             <label class="checkbox-inline"><input class="source-checkbox" type="checkbox" value="liga_pro" checked>liga_pro</label>
             <label class="checkbox-inline"><input class="source-checkbox" type="checkbox" value="master_tour" checked>master_tour</label>
             <label class="checkbox-inline"><input class="source-checkbox" type="checkbox" value="challenger_series" checked>challenger_series</label>
@@ -11,8 +13,57 @@
             <label class="checkbox-inline"><input class="source-checkbox" type="checkbox" value="ittf" checked>ittf</label>
             <label class="checkbox-inline"><input class="source-checkbox" type="checkbox" value="rttf" checked>rttf</label>
         </div>
+-->
+        <!--
+        <div style="width:800px; margin:auto">
+            <table style="width:100%">
+                <tr>
+                    <td style="width: 50%">
+                        Игрок 1
+                        <select id="selectPlayer1" class="selectPlayer" placeholder="Любой игрок">
+                        </select>
+                    </td>
+                    <td style="width: 50%">
+                        Игрок 2
+                        <select id="selectPlayer2" class="selectPlayer" placeholder="Любой игрок">
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        -->
+<!--
+        <div class="control-group">
+            Игрок 1
+          <select id="selectPlayer1" class="selectPlayer demo-default" placeholder="Любой игрок">
+          </select>
+            Игрок 2
+          <select id="selectPlayer2" class="selectPlayer demo-default" placeholder="Любой игрок">
+          </select>
+        </div>
+        <button id="filter_button" type="button" class="btn btn-success">Применить</button>
+         -->
 
-
+        <div id="matches_filters">
+            {% if filters['sourceId'] %}
+                <h4 class="kv" key="sourceId" value="{{filters['sourceId']}}">
+                    Источник: {{ filters['sourceName'] }}
+                    <button id="sourceIdfilter_clear" type="button" class="filter_clear btn btn-danger">x</button>
+                </h4>
+            {% endif %}
+            {% if filters['compId'] %}
+                <h4 class="kv" key="compId" value="{{filters['compId']}}">
+                    Турнир: {{ filters['compName'] }}
+                    <button id="compIdfilter_clear" type="button" class="filter_clear btn btn-danger">x</button>
+                </h4>
+            {% endif %}
+            {% if filters['playerId'] %}
+                <h4 class="kv" key="playerId" value="{{filters['playerId']}}">
+                    Игрок: {{ filters['playerName'] }}
+                    <button id="playerIdfilter_clear" type="button" class="filter_clear btn btn-danger">x</button>
+                </h4>
+            {% endif %}
+        </div>
         <table id="matches_table" class="table table-striped table-bordered">
             <thead>
                 <tr>
@@ -25,6 +76,7 @@
             </tbody>
         </table>
     </div>
+
     <div id="right">
         <table id="match_bets_table" class="table table-striped table-bordered">
             <thead>
@@ -38,4 +90,5 @@
             </tbody>
         </table>
     </div>
+
 {% endblock %}

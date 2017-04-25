@@ -9,6 +9,7 @@ class MatchesStorage:
     def __init__(self, sources):
         self.matches = []
         self.hash2matchInd = dict()
+        self.oneVSone = dict()
 
         matchesDict = dict()
         compNamesPairs = set()
@@ -33,12 +34,58 @@ class MatchesStorage:
                         matchesDict[matchHash].append(match)
                         self.matches.append(match)
                         self.hash2matchInd[matchHash] = len(self.matches) - 1
+                        if match.isPair == 0:
+                            pp = min(match.players[0][0], match.players[1][0]) + '\t' + max(match.players[0][0], match.players[1][0])
+                            if not (pp in self.oneVSone):
+                                self.oneVSone[pp] = [match]
+                            else:
+                                self.oneVSone[pp].append(match)
 #                    print(line)
                     elif matchHash in matchesDict:
                         matchesDict[matchHash][0].addSource(source)
                         if matchesDict[matchHash][0].compName != match.compName:
                             compNamesPairs.add(matchesDict[matchHash][0].compName + ' === ' + match.compName)
 
+    def getOneVSOneMatches(self, p1, p2, curDate, curTime, ws = 1):
+        if curTime == None:
+            curTime = '00:00'
+        result = []
+        pp = min(p1, p2) + '\t' + max(p1, p2)
+        leftDate = (datetime.datetime.strptime(curDate, "%Y-%m-%d").date() - datetime.timedelta(days=ws)).strftime("%Y-%m-%d")
+        for match in sorted(self.oneVSone.get(pp, []), key = lambda x: x.date + ' ' + (x.time if not (x.time is None) else '99:99')):
+            matchTime = (match.time if not (match.time is None) else '99:99')
+            if match.date >= leftDate and match.date + ' ' + matchTime < curDate + ' ' + curTime:
+                if not (p1 in match.players[0]):
+                    match = match.reverse()
+                result.append(match)
+        return result
+
+class CompetitionsStorage:
+    def __init__(self):
+        self.competitionsDict = dict()
+        self.competitions = []
+
+    def getCompId(self, compName):
+        if not (compName in self.competitionsDict):
+            self.competitions.append(Competition(len(self.competitionsDict), compName))
+            self.competitionsDict[compName] = len(self.competitionsDict)
+        return self.competitionsDict[compName]
+
+    def getCompName(self, compId):
+        try:
+            if int(compId) < len(self.competitions):
+                return self.competitions[int(compId)].name
+        except:
+            pass
+        return None
+
+    def getComp(self, compId):
+        try:
+            if int(compId) < len(self.competitions):
+                return self.competitions[int(compId)]
+        except:
+            pass
+        return None
 
 class MatchesBetsStorage:
     def __init__(self, hash2matchInd, dirname = ''):

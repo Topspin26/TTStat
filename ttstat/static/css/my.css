@@ -2,9 +2,9 @@
     margin-left: 20px;
 }
 #main{
-    width: 55%;
-    margin-left: 50px;
-    float: left;
+    width: 75%;
+    //margin-left: 50px;
+    margin: auto;
 }
 #main h3{
     margin-top: 10px;
@@ -44,6 +44,23 @@ h2{
     margin-top: 10px;
 }
 
+.filter_clear {
+    text-align: center;
+    padding: 2px 6px 2px 6px;
+}
+
+.col-md-center {
+//    float: none;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.glyphicon-search {
+    //padding-left: 5px;
+    padding-right: 5px;
+    //float: right;
+}
+
 #prognosis_players {
     clear: both;
     height: 150px;
@@ -60,10 +77,21 @@ h2{
     float: left;
 }
 
+.selectPlayer{
+    width: 95%;
+}
 
 .selected_player{
     width: 80%;
 //    margin: 50px;
+}
+
+.winScore {
+    background-color: #EFC;
+}
+
+.loseScore {
+    background-color: #FDC;
 }
 
 .pagination{
@@ -97,6 +125,13 @@ table.dataTable tbody tr:hover{
     cursor: pointer;
 }
 
+table.dataTable tbody tr:hover .winScore{
+    background-color: #DEB;
+}
+
+table.dataTable tbody tr:hover .loseScore{
+    background-color: #ECB;
+}
 
 table.dataTable{
     font-size: 12px;

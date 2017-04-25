@@ -32,6 +32,35 @@ class MatchBet:
             self.bet_win = matchBet.bet_win + self.bet_win
 
 
+class Competition:
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
+        self.matches = []
+        self.startDate = None
+        self.finishDate = None
+        self.playersSet = set()
+        self.sources = []
+
+    def addMatch(self, match):
+        self.matches.append(match)
+
+        for i in range(2):
+            for e in match.players[i]:
+                self.playersSet.add(e)
+        for e in match.sources:
+            if not (e in self.sources):
+                self.sources.append(e)
+
+        if self.startDate is None:
+            self.startDate = match.date
+        else:
+            self.startDate = min(self.startDate, match.date)
+        if self.finishDate is None:
+            self.finishDate = match.date
+        else:
+            self.finishDate = min(self.finishDate, match.date)
+
 class Player:
     def __init__(self, id, names, mw):
         self.id = id
@@ -100,6 +129,7 @@ class Match:
             self.wins = [int(e) for e in self.winsScore.split(':')]
 
         self.compName = compName
+        self.compId = None
         self.sources.append(source)
         self.time = time
         self.isPair = isPair
@@ -109,6 +139,9 @@ class Match:
                 self.isPair = 1
 
         self.hash = self.getHash()
+
+    def setCompId(self, compId):
+        self.compId = compId
 
     def addSource(self, source):
         if not (source in self.sources):
@@ -123,12 +156,13 @@ class Match:
         #return calcHash([self.date, self.round] + self.players[0] + self.players[1] + sets + [e * i for i,e in enumerate(Match.getSetSumPoints(self.points))])
 
     def reverse(self):
-        matchReversed = Match(self.date, [self.players[1].copy(), self.players[0].copy()])
+        matchReversed = Match(self.date, [self.players[1].copy(), self.players[0].copy()],
+                              setsScore=Match.reverseSetsScore(self.setsScore),
+                              pointsScore=Match.reversePointsScore(self.pointsScore))
         matchReversed.time = self.time
         matchReversed.compName = self.compName
+        matchReversed.compId = self.compId
         matchReversed.sources = self.sources
-        matchReversed.setsScore = Match.reverseSetsScore(self.setsScore)
-        matchReversed.pointsScore = Match.reversePointsScore(self.pointsScore)
         return matchReversed
 
     def toStr(self):

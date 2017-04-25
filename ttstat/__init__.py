@@ -5,6 +5,6 @@ from .models import TTModel
 ttstat = Flask(__name__)
 #ttstat.config.from_object('config')
 #db = SQLAlchemy(mytable)
-ttModel = TTModel('D:/Programming/SportPrognoseSystem/TTStat')
+ttModel = TTModel('C:/Programming/SportPrognoseSystem/TTStat')
 
 from ttstat import views
