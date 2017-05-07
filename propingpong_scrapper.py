@@ -193,6 +193,7 @@ def updateRusRankings(mw, driver, playersRankings):
                     fout.write(playerId + '\t' + rt + '\t' + rg + '\n')
 #        break
 
+'''
 def updateRusRanking():
     playersRankings = readPlayersRankings()
     for mw in ['men', 'women']:
@@ -204,6 +205,7 @@ def updateRusRanking():
         print('updateRankings')
         updateRusRankings(mw, driver, playersRankings)
         driver.quit()
+'''
 
 def getLastRusRankings(mw):
     url = 'http://propingpong.ru/rating_rf.php?gender=' + str(int(mw == 'men')) + '&settlement=&settlement=&area=&year=0&page=1'
@@ -535,7 +537,7 @@ def main():
 #    getIttfRankings('men', 2005, 5)
 
     updateIttfRanking()
-#    updateRusRanking()
+#    updateRusRanking(2017, 5)
 
 
 '''
