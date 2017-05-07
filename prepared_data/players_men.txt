@@ -813,7 +813,7 @@ m821	Шан Кун;Shang Kun
 m822	SLEVIN Colum
 m823	HONG Jun Il
 m824	SORENSEN Joachim
-m825	Ма Лон;Ma Long
+m825	Ма Лон;Ma Long;Ма Лун
 m826	HANASHIRO Hugo
 m827	Toma Danilo;Данило Тома
 m828	TROKA Mateusz
@@ -856,7 +856,7 @@ m864	TURGAMBAEV Ruslan
 m865	CHIMTCHONAK Pavel
 m866	KORDOUTIS Ioannis
 m867	HEISTER Danny
-m868	GOLEBIOWSKI Mateusz
+m868	GOLEBIOWSKI Mateusz;Матеуш Голебовский
 m869	Kriston Daniel;Даниэль Криштон;Даниэль Кристон
 m870	SIRISENA Rohan
 m871	Криштиан Надь;Nagy Krisztian
@@ -1051,7 +1051,7 @@ m1060	LIU Tengteng
 m1061	JENKINS Ryan
 m1062	VALASTI Pasi
 m1063	ST LOUIS Dexter
-m1064	CHO Daeseong
+m1064	CHO Daeseong;Чхо Дэсон
 m1065	YU Cheng-Feng
 m1066	FARAJI Reza
 m1067	Гэвин Рамгей;Rumgay Gavin
@@ -1233,12 +1233,12 @@ m1242	Вячеслав Обидин
 m1243	ONO Tatsuya
 m1244	HUANG Wei-Chin
 m1245	AFIFA Jabeer Saed
-m1246	GHOSH Arjun
+m1246	GHOSH Arjun;Арьюн Гош
 m1247	Dyjas Jakub;Якуб Дияс
 m1248	TALAVANOV Kiril
 m1249	NGUYEN Nam Hai
 m1250	PALACIOS Daniel
-m1251	CHOJNOWSKI Patryk
+m1251	CHOJNOWSKI Patryk;Патрик Чойновски
 m1252	Toriola Segun;Сегун Ториола
 m1253	LI Zhuangwei
 m1254	Stoyanov Niagol;Ниагол Стоянов
@@ -1325,7 +1325,7 @@ m1334	KAWATA Takayuki
 m1335	KWAK Yu Bin
 m1336	SHEN Chi-Min
 m1337	Лю И;Liu Yi
-m1338	MARTINEZ Guillermo
+m1338	MARTINEZ Guillermo;Гильермо Мартинес
 m1339	SON Gyungbog
 m1340	STEHLE Nico
 m1341	HASSAN Rashed
@@ -1521,7 +1521,7 @@ m1531	KWON Jang Chol
 m1532	CUI Qinglei
 m1533	OXAMENDI Pavel
 m1534	MORITZ Fabian
-m1535	HOHMEIER Nils
+m1535	HOHMEIER Nils;Нильс Хохмайер
 m1536	Groth Jonathan;Джонатан Грот;Дж Грот
 m1537	OYEBODE Michael
 m1538	Дамиано Серетти;Seretti Damiano
@@ -1613,7 +1613,7 @@ m1623	VISSERS Kevin
 m1624	VARY Remi
 m1625	RUSHTON Andrew
 m1626	NAVARRO Pere
-m1627	Юто Мураматцу;Muramatsu Yuto
+m1627	Юто Мураматцу;Muramatsu Yuto;Юто Мурамацу
 m1628	INOUE Yoshiki
 m1629	Grininger Thomas;Томас Гринингер
 m1630	RUBAN Mykyta
@@ -1664,7 +1664,7 @@ m1675	IBRAHIM Muhd Shakirin
 m1676	SANCHEZ Victor
 m1677	Karube Ryusuke;Рюсуке Карубе
 m1678	HELMY Ashraf
-m1679	RADONJIC Vladimir
+m1679	RADONJIC Vladimir;Владимир Радонич
 m1680	MIYAMOTO Yukinori
 m1681	ASAMOAH Cyprian
 m1682	YANG Ying
@@ -13139,7 +13139,7 @@ m13154	CHIRA Paulo
 m13155	ALAA Bassel
 m13156	AULESTIA Ian
 m13157	AGUILAR Jose
-m13158	SANGPAO Komgrit
+m13158	SANGPAO Komgrit;Комгрит Сангпао
 m13159	PHUENGYAEM Siripong
 m13160	VALERIO Anthony
 m13161	BOUBAKA Different
@@ -13900,7 +13900,7 @@ m13915	VERMA Mohit
 m13916	LOSSING Yoan
 m13917	STAMATOUROS Georgios
 m13918	SIROKIJS Viktors
-m13919	BELIK Simon
+m13919	BELIK Simon;Симон Белик
 m13920	BARKER Mitchell
 m13921	SMITH James
 m13922	HUANG Chun-Yi
@@ -14290,7 +14290,7 @@ m14305	SIMON Mark
 m14306	SANDOVAL Hosni
 m14307	DECARY Jeff
 m14308	TSAO Erny
-m14309	LUSHNIKOV Volodymyr
+m14309	LUSHNIKOV Volodymyr;Владимир Лушников
 m14310	MAKOWSKI Kacper
 m14311	SHU Dean
 m14312	ZAKHARIKOV Petr
@@ -14420,7 +14420,7 @@ m14435	SADAQA Rida
 m14436	FJELL Hallvard
 m14437	STANOJKOVSKI Kristijan
 m14438	LOPEZ Pedro
-m14439	KUBIK Maciej
+m14439	KUBIK Maciej;Мацей Кубик
 m14440	KANTOLA Roni
 m14441	MARCHAL Nicolas
 m14442	BORDAS Hugo
@@ -15141,7 +15141,7 @@ m15156	MALEK Auria
 m15157	VAN WAMBEKE Louis
 m15158	MORET Robin
 m15159	SANCHEZ Guillermo
-m15160	PARK Gyeongtae
+m15160	PARK Gyeongtae;Пак Ген Тхэ
 m15161	LIU Jason
 m15162	LEE Pak Ho
 m15163	BASTERFIELD Daniel
@@ -16740,3 +16740,20 @@ m16755	Василий Ермилин
 m16756	Анатолий Нам
 m16757	Сергей Огай
 m16758	Игорь Авдеев
+m16759	Martinez Andres
+m16760	Nunez Miguel
+m16761	Pednekar Shaurya Tushar
+m16762	Rakotoarimanana Fabio
+m16763	Novel Matija
+m16764	Jeho Himnakulhpuingheta
+m16765	Alcayde Guillaume
+m16766	Wang Chun
+m16767	Tsukidate Shunsuke
+m16768	Bognar Bence
+m16769	Ro Kwang Jin
+m16770	Azzam Mohamed
+m16771	Andersson David
+m16772	De Vincenzo Matias
+m16773	Kawakami Naoya
+m16774	Tifoura Islem
+m16775	Mihailovic Nikola

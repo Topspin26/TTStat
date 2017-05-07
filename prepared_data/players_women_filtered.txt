@@ -738,7 +738,7 @@ w872	SAHASRABUDHE Pooja;Пооджа Сахасрабудхе
 w873	ALMENDARIZ Tania
 w874	APONTE Lyanne
 w875	MOLODTSOVA Olesya
-w876	LEE Yujin
+w876	LEE Yujin;Ли Ю Чжин
 w877	Элин Лойен;Loyen Eline
 w878	Рианна Ван Дейн;Van Duin Rianne
 w879	JACOB Seraha
@@ -818,7 +818,7 @@ w953	JOHANNESDOTTIR Lilja
 w954	Doo Hoi Kem;Ду Хой Кем;Доо Х К
 w955	SON Mi Suk
 w956	PARK Chara
-w957	PATKAR Madhurika
+w957	PATKAR Madhurika;Мадхурика Паткар
 w958	LIU Nai Hui
 w959	KIM Hae Ja
 w960	FUJII Seiko
@@ -1731,7 +1731,7 @@ w1871	BASKUTYTE Ugne
 w1872	PARKER Katy
 w1873	STAKHOVA Galina
 w1874	YANG Simone
-w1875	PARK Joohyun
+w1875	PARK Joohyun;Чжу Хен Пак
 w1876	SUN Jin
 w1877	STANIC Stanislava
 w1878	Мари Маэсен;Maesen Marie
@@ -2062,7 +2062,7 @@ w2204	KETSKO Olesja
 w2205	Ана Гарсия;Garcia Ana
 w2206	MOHAMED Aia
 w2207	SAEGER Luisa
-w2208	DURAK Mirela
+w2208	DURAK Mirela;Мирела Дурак
 w2209	Мария Михайлова
 w2210	MOREL Silvia
 w2211	CHAN Alayna
@@ -2263,7 +2263,7 @@ w2406	Lee Ho Ching;Ли Хо Чинг
 w2407	ABE Ayumi
 w2408	LEE Pilrang
 w2409	Jung Yumi;Чжон Ю Ми
-w2410	SU Pei-Ling
+w2410	SU Pei-Ling;Су Пей-Лин
 w2411	DAVYDOVA Ganna
 w2412	SEO Myungeun
 w2413	CHEN I-Ting
@@ -2352,7 +2352,7 @@ w2495	FOLKESON Caroline
 w2496	CHOI Haeeun
 w2497	PYON Song Gyong
 w2498	INDU Nagapattinam R
-w2499	Adamkova Karin;Карин Адамкова
+w2499	Adamkova Karin;Карин Адамкова;Карина Адамкова
 w2500	NAGYPAL Csilla
 w2501	CHUNG Rheann
 w2502	MATA Maria
@@ -2527,7 +2527,7 @@ w2672	JUNG Sooyung
 w2673	SHABAN Zeina
 w2674	MANCIC Tatjana
 w2675	Гуо Ю;Guo Yue
-w2676	LIU Qi
+w2676	LIU Qi;Лю Хи
 w2677	COULIBALY Dieniouma
 w2678	Arlouskaya Alina;Алина Орловская;Алина Арловская
 w2679	KARNTHANG Pakawan
@@ -2727,7 +2727,7 @@ w2873	TAKEDA Akiko
 w2874	MELLSTROM Jenny
 w2875	Арина Сингеорзан;Singeorzan Arina
 w2876	ROY Kritiwika
-w2877	ZAHARIA Elena
+w2877	ZAHARIA Elena;Елена Захария
 w2878	JUNG Haidan
 w2879	PARK Seohee
 w2880	DELGABA Radia
@@ -3222,7 +3222,7 @@ w8933	BAHER Rahma
 w8934	ANDORIN Eva
 w8935	ULUDINTCEVA Elena
 w8936	HAUSHALTER Melissa
-w8937	KHALIKOVA Kamila
+w8937	KHALIKOVA Kamila;Камила Халикова
 w8938	PIBERNAT Laura
 w8939	BRCIC Arijana
 w8940	NASER Meriem
@@ -3261,7 +3261,7 @@ w8972	OGUNDELE Rashidat
 w8973	OZTURK Aylin
 w8974	BENKO Edina
 w8975	PEREZ Candela
-w8976	GODA Hana
+w8976	GODA Hana;Хана Года
 w8977	TAI Yu-Wen
 w8978	BARBA Sofia
 w8979	JOZEF Noy
@@ -3843,7 +3843,7 @@ w9554	FAZLIC Almasa
 w9555	MATARIKI Pareina
 w9556	JONES Susan
 w9557	SAPEK Katja
-w9558	POON Yat
+w9558	POON Yat;Ят Пун
 w9559	MUJICA Natali
 w9560	TALNIKAR Shruti
 w9561	ZHAO Genifer
@@ -4880,3 +4880,22 @@ w10591	HALITI Ilirjana
 w10592	SEPULVEDA Stephany
 w10593	ADOM AMANKWAA Mareen
 w10663	Ксения Липатова
+w10935	Brinza Vitalina
+w10936	Santur Kelly
+w10937	Лью Жюдит;Liu Judith
+w10938	Kimoto Beatriz
+w10939	Wu Michelle
+w10940	Papadimitriou Malamatenia
+w10941	Gerarts Rachel
+w10942	Zaderova Linda
+w10943	Pauly Prost Amelie
+w10944	Vivarelli Evelyn
+w10945	Vishwanath Kushi
+w10946	Pushpak Amrutha
+w10947	Alexandersson Matilda
+w10948	Singeorzan Ioana
+w10949	Ernst Emine
+w10950	Patil Manushree
+w10951	Sung Joanna
+w10952	Chong Weng I
+w10953	Al-Wedian Bara
