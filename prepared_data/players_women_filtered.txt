@@ -975,7 +975,7 @@ w1110	LISOVA Olga
 w1111	YEH Tung-Yi
 w1112	PERSSON Marie (1986)
 w1113	BAKKER Diana
-w1114	GOBEL Jessica;Goebel Jessica
+w1114	GOBEL Jessica;Goebel Jessica;Гобель Джесика
 w1115	Fan Ying;Фань Ин
 w1116	WU Xianjing
 w1117	Hsing Ariel;Ариель Син
@@ -1497,7 +1497,7 @@ w1634	RUVMAN Natali
 w1635	LEE En-Ya
 w1636	CHIVERS Kay
 w1637	Анкита Дас;Das Ankita
-w1638	GALONJA Marija
+w1638	GALONJA Marija;Галония Мария
 w1639	TIAN-ZORNER Jing
 w1640	CHOI Jeonghwa
 w1641	BRODAR Mihaela

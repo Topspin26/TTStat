@@ -151,6 +151,15 @@ def main():
     idLinks['223'] = 'm16251'
     idLinks['220'] = 'm9198'
     idLinks['210'] = 'm16397'
+    idLinks['286'] = 'm292'
+    idLinks['249'] = 'm2781'
+    idLinks['194'] = 'm16400'
+    idLinks['273'] = 'm6638'
+    idLinks['304'] = 'm16758'
+    idLinks['238'] = 'm604'
+    idLinks['309'] = 'm619'
+    idLinks['310'] = 'm2739'
+    idLinks['301'] = 'm9894'
 
     playersDict = GlobalPlayersDict("filtered")
 

@@ -17,7 +17,7 @@ def scrapp(tid):
     dt = driver.find_elements_by_xpath('//*[@class = "day"]')[0].get_attribute('innerHTML')
     st = driver.find_elements_by_xpath('//*[@class = "day"]')[1].get_attribute('innerHTML')
     place = driver.find_elements_by_xpath('//div[@class = "desc"]/div[@class = "desc-item"]/a')[0].get_attribute('text')
-    monthname2Num = {'Янв':1,'Фев':2,'Мар':3,'Апр':4,'Май':5,'Июн':6,'Июл':7,'Авг':8,'Сен':9,'Окт':10,'Ноя':11,'Дек':12}
+    monthname2Num = {'Янв':1,'Фев':2,'Мар':3,'Апр':4,'Май':5,'Мая':5,'Июн':6,'Июл':7,'Авг':8,'Сен':9,'Окт':10,'Ноя':11,'Дек':12}
     dt = dt.split(' ')[2] + '-' + str(monthname2Num[dt.split(' ')[1]]).zfill(2) + '-' + dt.split(' ')[0].zfill(2)
     compInfo = compName + ';' + place + ';' + st
     print([dt, compInfo])

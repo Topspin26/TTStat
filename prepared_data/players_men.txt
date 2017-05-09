@@ -741,7 +741,7 @@ m748	BENTSEN Allan
 m749	TAVUKCUOGLU Irfan
 m750	Сео Хундеок;Seo Hyundeok
 m751	MOLNAR Csaba
-m752	Crepulja Bojan;Боян Крепуля
+m752	Crepulja Bojan;Боян Крепуля;Боян Крепулья
 m753	WALLACE Simon
 m754	HOFFMANN Tamas
 m755	MATSUSHITA Eishi
@@ -2257,7 +2257,7 @@ m2271	YANG Ce
 m2272	NEMETH Karoly
 m2273	Ингемар Петер;Peter Ingemar
 m2274	LIU Jun Hui
-m2275	CHEAIB Dauud
+m2275	CHEAIB Dauud;Шеаиб Дауд
 m2276	Bilas Arthur;Артур Билас
 m2277	SWEERIS Todd
 m2278	OLIVEIRA Ricardo
@@ -2314,7 +2314,7 @@ m2328	YALDIZ Gurhan
 m2329	Chew Zhe Yu Clarence;Чже Ю Кларанс Чу
 m2330	Дмитрий Биушкин
 m2331	DEBRUYERES Clement
-m2332	Folwarski Jakub;Якуб Фольварский
+m2332	Folwarski Jakub;Якуб Фольварский;Якуб Фолварски
 m2333	KRZESZEWSKI Tomasz
 m2334	NIGERUK Sergei
 m2335	Евгений Фадеев
@@ -2607,7 +2607,7 @@ m2621	LEE Seunghyeok
 m2622	AXELQVIST Johan
 m2623	SKOVSEN Mads
 m2624	LIU Miao
-m2625	Baggaley Andrew;Эндрю Бэггали
+m2625	Baggaley Andrew;Эндрю Бэггали;Эндрю Баггалей
 m2626	KNOX Keith
 m2627	Маттиас Оверсе;Oversjo Mattias
 m2628	Robinot Quentin;Квентин Робино
@@ -16165,7 +16165,7 @@ m16180	OLIVEIRA Luan
 m16181	CHRISTOU Charalambos
 m16182	LI Duo
 m16183	GARCIA Danny
-m16184	Карлос Арчила;Arcila Carlos
+m16184	Карлос Арчила;Arcila Carlos;Карлос Арсила
 m16185	RODRIGUEZ Oscar
 m16186	LOZANO Evelio
 m16187	BEZARD Pierre
@@ -16757,3 +16757,6 @@ m16772	De Vincenzo Matias
 m16773	Kawakami Naoya
 m16774	Tifoura Islem
 m16775	Mihailovic Nikola
+m16776	Кует Нгуен
+m16777	Евгений Масокин
+m16778	Владимир Луцкий

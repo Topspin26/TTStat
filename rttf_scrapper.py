@@ -77,10 +77,10 @@ def scrappMonth(month):
 
 
 def main():
-    for year in range(2016, 2018):
+    for year in range(2017, 2018):
         for month in range(1, 13):
             scrappMonth(str(year) + '-' + str(month).zfill(2))
-            if year == 2017 and month == 4:
+            if year == 2017 and month == 5:
                 break
 
 if __name__ == "__main__":

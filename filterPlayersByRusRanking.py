@@ -22,6 +22,7 @@ def main():
                         names[0] == 'Меркушев Денис' or \
                         names[0] == 'Салогуб Дмитрий' or \
                         names[0] == 'Дулатов Марат' or \
+                        names[0] == 'Духов Григорий' or \
                         names[0] == 'Ота Рики' or \
                         id == 'm2781':#Федоров Владислав
             id2names_filtered[id] = names

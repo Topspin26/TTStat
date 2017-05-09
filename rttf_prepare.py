@@ -14,7 +14,9 @@ def main():
     for f in walk(dirname):
         for ff in f[2]:
             fp = os.path.abspath(os.path.join(f[0], ff))
-            if fp.lower().find('artt-про') != -1 or fp.lower().find('ttleader-pro'):
+            if fp.find('_rankings.txt') != -1:
+                continue
+            if fp.lower().find('artt-про') != -1 or fp.lower().find('ttleader-pro') != -1:
                 print(fp)
                 continue
             with open(fp, encoding='utf-8') as fin:
@@ -32,11 +34,15 @@ def main():
                                 name = name.replace('P', 'Р')
                                 name = name.replace('a', 'а')
                                 name = name.replace('A', 'А')
+                                id = arr[j + 1]
                                 if name == 'Заярная Наталья':
                                     name = 'Заярная Наталия'
                                 if name == 'Мамасабиров Ильяз':
                                     name = 'Мамасабиров Илиязбек'
-                                id = arr[j + 1]
+                                if name == 'Корякин Алексей' and id == '10281':
+                                    name = 'Корякин Ярослав'
+                                if name == 'Соколов (МГУ)' and id == '8765':
+                                    name = 'Соколов Никита'
                                 ids[ii].append(id)
                                 if id in id2player and id2player[id] != name:
                                     print([id, id2player[id], name])
@@ -72,6 +78,7 @@ def main():
     idLinks['210'] = 'm16233'
     idLinks['6209'] = None
     idLinks['6708'] = None
+    idLinks['162'] = None
 
     multiple = dict()
     unknown = dict()
