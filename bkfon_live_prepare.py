@@ -17,6 +17,27 @@ def main():
 
     matchesDict = dict()
 
+    bkfonMatchesDict = dict()
+
+    with open('prepared_data/bkfon/all_results.txt', encoding='utf-8') as fin:
+        headerTokens = next(fin).strip().split('\t')
+        headerDict = dict(zip(headerTokens, range(len(headerTokens))))
+        for line in fin:
+            tokens = line.rstrip().split('\t')
+            ids = tokens[headerDict['id1']].split(';') + tokens[headerDict['id2']].split(';')
+            dt = tokens[headerDict['date']]
+
+            match = Match(dt,
+                          [tokens[headerDict['id1']].split(';'), tokens[headerDict['id2']].split(';')],
+                          setsScore=tokens[headerDict['setsScore']],
+                          pointsScore=tokens[headerDict['pointsScore']],
+                          time=tokens[headerDict['time']],
+                          compName=tokens[headerDict['compName']],
+                          source='bkfon',
+                          matchId=tokens[headerDict['matchId']])
+            print(dt + '\t' + tokens[headerDict['compName']] + '\t' + tokens[headerDict['matchId']])
+            bkfonMatchesDict[dt + '\t' + tokens[headerDict['compName']] + '\t' + tokens[headerDict['matchId']]] = match
+
     sources = []
     sources.append(['master_tour', 'prepared_data/master_tour/all_results.txt'])
     sources.append(['liga_pro', 'prepared_data/liga_pro/all_results.txt'])
@@ -69,6 +90,10 @@ def main():
             players = [tokens[4].split(';'), tokens[5].split(';')]
             info = json.loads(tokens[6])
 
+            for i in range(len(info)):
+                for name in info[i][1]:
+                    info[i][1][name]['score'] = info[i][1][name]['score'].split('http')[0].strip()
+
             flError = 0
             ids = [[], []]
             for i in range(2):
@@ -114,16 +139,33 @@ def main():
                                 multiple[fl_mw + ' ' + player] = 0
                             multiple[fl_mw + ' ' + player] += 1
             if flError == 0:
-                fout.write('\t'.join(tokens[:4] + [';'.join(ids[0]), ';'.join(ids[1])] + tokens[4:]) + '\n')
+                finalScore = '\t'
+                mKey = (dt[:10] + '\t' + compName.replace('Наст. теннис.', '').strip() + '\t' + eventId)
+                print(mKey)
+                if mKey in bkfonMatchesDict:
+                    mm = bkfonMatchesDict[mKey]
+                    finalScore = mm.setsScore + '\t' + mm.pointsScore
 
+                fout.write('\t'.join(tokens[:4] + [';'.join(ids[0]), ';'.join(ids[1])] + tokens[4:] + [finalScore]) + '\n')
                 pattern = r"\(([A-Za-z0-9- ]+)\)"
-                pointsScore = re.search(pattern, info[-1][1])
+#                print(info)
+                print(info[-1])
+                lastMatchInd = len(info) - 1
+                while not ('match' in info[lastMatchInd][1]):
+                    lastMatchInd -= 1
+                    if lastMatchInd == -1:
+                        break
+                if lastMatchInd == -1:
+                    print('bad info')
+                    raise
+                    continue
+                pointsScore = re.search(pattern, info[lastMatchInd][1]['match']['score'])
                 points = None
                 if not (pointsScore is None):
                     pointsScore = pointsScore.group(0).replace('(', '').replace(')', '').replace(' ', ';').replace('-', ':') + ';'
                     _, points = Match.getPointsScoreInfo(pointsScore)
-                setsScore = info[-1][1].split(' ')[0]
-                if setsScore != '':
+                setsScore = info[lastMatchInd][1]['match']['score'].split(' ')[0]
+                if setsScore != '' and setsScore.replace('5сетов', '').replace('7сетов', '') != '':
                     matchHash = calcHash([dt[:10]] + ids[0] + ids[1] + [int(e) for e in setsScore.split(':')] + [e * i for i, e in enumerate(Match.getSetSumPoints(points))])
                     if matchHash in matchesDict:
                         mbCnt += 1

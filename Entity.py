@@ -3,15 +3,18 @@ import numpy as np
 from common import *
 
 class MatchBet:
-    def __init__(self, eventId, rows, dt, compName, players, ts, score, bet_win):
+    def __init__(self, eventId, rows, dt, compName, players, ts, eventsInfo):
         self.eventId = eventId
         self.rows = rows
         self.dt = dt
         self.compName = compName
         self.players = players
         self.ts = ts
-        self.score = score
-        self.bet_win = bet_win
+        self.eventsInfo = eventsInfo
+
+    def __str__(self):
+        return '\t'.join([self.eventId, self.dt, self.compName, ';'.join(self.players[0]), ';'.join(self.players[1])] + \
+                         [e[0] + ';' + str(e[1]) for e in zip(self.ts, self.eventsInfo)])
 
     def merge(self, matchBet):
         if self.compName != matchBet.compName:
@@ -23,13 +26,12 @@ class MatchBet:
             raise
         if self.dt < matchBet.dt:
             self.ts = self.ts + matchBet.ts
-            self.score = self.score + matchBet.score
-            self.bet_win = self.bet_win + matchBet.bet_win
+            self.eventsInfo = self.eventsInfo + matchBet.eventsInfo
         else:
             self.dt = matchBet.dt
             self.ts = matchBet.ts + self.ts
-            self.score = matchBet.score + self.score
-            self.bet_win = matchBet.bet_win + self.bet_win
+            self.eventsInfo = matchBet.eventsInfo + self.eventsInfo
+        return self
 
 
 class Competition:
@@ -89,10 +91,11 @@ class Match:
         self.pointsScore = pointsScore
     '''
 
-    def __init__(self, date, players, winsScore = None, setsScore = None, pointsScore=None,
+    def __init__(self, date, players, matchId = None, winsScore = None, setsScore = None, pointsScore=None,
                  time=None, isPair = None, compName = None, source = None, round = None):
         self.date = date
         self.players = players
+        self.matchId = matchId
         self.flError = 0
 
         self.sources = []

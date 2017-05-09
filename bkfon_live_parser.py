@@ -6,10 +6,10 @@ from os import walk
 
 from common import *
 from Entity import *
-from ParserBKFon import ParserBKFon
+from ParserBKFon import *
 import json
 
-def parseDirs(segments):
+def parseDirs(segments, flNew = 0):
     dirname = 'data/bkfon/live'
     dirname_parsed = 'data/bkfon/live_parsed'
 
@@ -18,11 +18,14 @@ def parseDirs(segments):
             ff = e[0].split('\\')[-1]
             if ff == dirname:
                 continue
-            print(e[0], ff)
             if os.path.exists(e[0] + '/' + segments[segment]):
+                print(e[0], ff)
                 if os.path.exists(dirname_parsed + '/' + ff + '/' + segments[segment]):
                     continue
-                parser = ParserBKFon(e[0], segments[segment], maxCnt=-1)
+                if flNew == 0:
+                    parser = ParserBKFon(e[0], segments[segment], maxCnt=-1)
+                else:
+                    parser = ParserBKFonNew(e[0], segments[segment], maxCnt=-1)
                 if not (os.path.exists(dirname_parsed + '/' + ff)):
                     os.mkdir(dirname_parsed + '/' + ff)
                 with open(dirname_parsed + '/' + ff + '/' + segments[segment], 'w', encoding='utf-8') as fout:
@@ -31,18 +34,53 @@ def parseDirs(segments):
                         info = []
                         lastS = None
                         for i in range(len(match.ts)):
-                            s = ';'.join([match.score[i], ';'.join([str(ee) for ee in match.bet_win[0][i]]), ';'.join([str(ee) for ee in match.bet_win[1][i]])])
+                            s = str(match.eventsInfo[i])
                             if lastS != s:
-                                info.append([match.ts[i], match.score[i], [match.bet_win[0][i], match.bet_win[1][i]]])
+                                info.append([match.ts[i], match.eventsInfo[i]])
                             lastS = s
 
                         fout.write('\t' + json.dumps(info, ensure_ascii=False))
                         fout.write('\n')
-                        print([match.eventId, match.dt, match.compName, match.players, match.score[0], [match.bet_win[0][0], match.bet_win[1][0]]])
-                        print([match.eventId, match.ts[-1], match.compName, match.players, match.score[-1], [match.bet_win[0][-1], match.bet_win[1][-1]]])
+                        print([match.eventId, match.dt, match.compName, match.players, match.eventsInfo[0]])
+                        print([match.eventId, match.ts[-1], match.compName, match.players, match.eventsInfo[-1]])
+
+def updateMatchDict(fp, segment, matchesBets):
+    with open(fp, encoding='utf-8') as fin:
+        for line in fin:
+            tokens = line.split('\t')
+            eventId = tokens[0]
+            dt = tokens[1]
+            compName = tokens[2]
+            players = [tokens[3].split(';'), tokens[4].split(';')]
+            info = json.loads(tokens[5])
+            ts = []
+            eventsInfo = []
+            for i in range(len(info)):
+                ts.append(info[i][0])
+                eventsInfo.append(info[i][1])
+            matchBet = MatchBet(eventId, [], dt, compName, players, ts, eventsInfo)
+            mbKey = compName + '\t' + eventId + '\t' + ';'.join(players[0]) + '\t' + ';'.join(players[1])
+            if mbKey in matchesBets:
+                try:
+                    print(mbKey)
+                    matchesBets[mbKey] = [matchesBets[mbKey][0] + [segment], matchesBets[mbKey][1].merge(matchBet)]
+                except Exception as e:
+                    print('Error')
+                    print(e)
+                    print(matchesBets[mbKey][0])
+                    print(matchesBets[mbKey][1])
+                    print(matchBet)
+                    print(dt)
+                    print(mbKey)
+                    raise
+            else:
+                matchesBets[mbKey] = [[segment], matchBet]
+
 
 def main():
     #playersDict = GlobalPlayersDict()
+
+    segments = dict()
 
     segments = {'master_tour_mix': 'segment28824.txt',
                 'master_tour_women': 'segment25827.txt',  # + CHINA!?
@@ -56,45 +94,40 @@ def main():
     segments['challenger_series_men'] = 'segment13574.txt'
     segments['challenger_series_women'] = 'segment19423.txt'
 
-    parseDirs(segments)
+    segments1 = dict()
+    segments1['liga_pro_men'] = 'Наст. теннис. Лига Про. Москва.txt'
+    segments1['liga_pro_women'] = 'Наст.теннис.Жен.Лига Про.Москва.txt'
+    segments1['challenger_series_men'] = 'Наст. теннис. Челленджер серия.txt'
+    segments1['challenger_series_women'] = 'Наст. теннис. Жен. Челленджер серия.txt'
+    segments1['master_tour_men_spb'] = 'Наст. теннис. Мастер-Тур. С-Петербург.txt'
+    segments1['master_tour_women'] = 'Наст. теннис. Жен. Мастер-Тур. С-Петербург.txt'
+    segments1['master_tour_men_isr'] = 'Наст. теннис. Мастер-Тур. Израиль.txt'
+
+#    parseDirs(segments, flNew = 0)
+    parseDirs(segments1, flNew = 1)
 
     dirname_parsed = 'data/bkfon/live_parsed'
 
     matchesBets = dict()
     for segment in segments:
+#        break
         filename = segments[segment]
         for f in walk(dirname_parsed):
             for ff in f[2]:
                 fp = os.path.abspath(os.path.join(f[0], ff))
                 if fp.find(filename) != -1:
-                    with open(fp, encoding='utf-8') as fin:
-                        for line in fin:
-                            tokens = line.split('\t')
-                            eventId = tokens[0]
-                            dt = tokens[1]
-                            compName = tokens[2]
-                            players = [tokens[3].split(';'), tokens[4].split(';')]
-                            info = json.loads(tokens[5])
-                            ts = []; score = []; bet_win = [[],[]]
-                            for i in range(len(info)):
-                                ts.append(info[i][0])
-                                score.append(info[i][1])
-                                bet_win[0].append(info[i][2][0])
-                                bet_win[1].append(info[i][2][1])
-                            matchBet = MatchBet(eventId, [], dt, compName, players, ts, score, bet_win)
-                            mbKey = eventId
-                            if mbKey in matchesBets:
-                                try:
-                                    print(mbKey)
-                                    matchesBets[mbKey] = [matchesBets[mbKey][0] + segment, matchesBets[mbKey][1].merge(matchBet)]
-                                except:
-                                    print('Error')
-                                    print(dt)
-                                    print(mbKey)
-                            else:
-                                matchesBets[mbKey] = [[segment], matchBet]
+                    updateMatchDict(fp, segment, matchesBets)
+
+    for segment in segments1:
+        filename = segments1[segment]
+        for f in walk(dirname_parsed):
+            for ff in f[2]:
+                fp = os.path.abspath(os.path.join(f[0], ff))
+                if fp.find(filename) != -1:
+                    updateMatchDict(fp, segment, matchesBets)
 
     print(len(matchesBets))
+
     with open('prepared_data/bkfon/live/all_bets.txt', 'w', encoding='utf-8') as fout:
         for mbKey, matchBet in sorted(matchesBets.items(), key = lambda x: x[1][1].dt):
             segment = matchBet[0]
@@ -102,17 +135,19 @@ def main():
             fout.write(';'.join(segment) + '\t')
             fout.write('\t'.join(
                 [match.eventId, match.dt, match.compName, ';'.join(match.players[0]), ';'.join(match.players[1])]))
+#            info = []
+#            lastS = None
+#            for i in range(len(match.ts)):
+#                if match.score[i].find('http') != -1:
+#                    match.score[i] = match.score[i].split('http')[0].strip()
+#                s = ';'.join([match.score[i], ';'.join([str(ee) for ee in match.bet_win[0][i]]),
+#                              ';'.join([str(ee) for ee in match.bet_win[1][i]])])
+#                if lastS != s:
+#                info.append([match.ts[i], match.score[i], [match.bet_win[0][i], match.bet_win[1][i]]])
+#                lastS = s
             info = []
-            lastS = None
             for i in range(len(match.ts)):
-                if match.score[i].find('http') != -1:
-                    match.score[i] = match.score[i].split('http')[0].strip()
-                s = ';'.join([match.score[i], ';'.join([str(ee) for ee in match.bet_win[0][i]]),
-                              ';'.join([str(ee) for ee in match.bet_win[1][i]])])
-                if lastS != s:
-                    info.append([match.ts[i], match.score[i], [match.bet_win[0][i], match.bet_win[1][i]]])
-                lastS = s
-
+                info.append([match.ts[i], match.eventsInfo[i]])
             fout.write('\t' + json.dumps(info, ensure_ascii=False))
             fout.write('\n')
 

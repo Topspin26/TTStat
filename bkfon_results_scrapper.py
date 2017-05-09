@@ -42,12 +42,13 @@ def main():
         print(len(active_days))
         if year == '2017':
             for i in range(nd - flLast):
-                if month == 4:
-                    continue
+#                if month == 4:
+#                    continue
 #                if i < 10:
 #                    continue
-#                if month != 3 and month != 4:
-#                    continue
+                if month != 5:
+                    flExit = 1
+                    continue
                 curDate = year + '-' + str(month).zfill(2) + '-' + str(i + 1).zfill(2)
                 print(curDate)
                 filename ='data/bkfon/results/' + curDate + '_new.txt'
@@ -56,27 +57,48 @@ def main():
                 print(active_days[i].get_attribute('innerHTML'))
                 active_days[i].click()
                 time.sleep(10 + random.random())
+
+                tt = None
+                try:
+                    tt = driver.find_element_by_xpath('//span[@class="events__filter-icon icon _type_sport _icon_13"]')
+                except:
+                    pass
+                if tt is None:
+                    print('try click')
+                    driver.find_element_by_xpath('//div[@class="events__filter _type_sport"]/*/span[@class="events__filter-text"]').click()
+                    print('click')
+                    try:
+                        tt = driver.find_element_by_xpath('//span[@class="events__filter-icon icon _type_sport _icon_3088"]')
+                        print('find tt')
+                        tt.click()
+                    except:
+                        tt = None
+
+                if tt:
+                    s = driver.find_element_by_xpath('//div[@class="results_table"]').get_attribute('innerHTML')
+                    if sLast is None:
+                        with open(filename, 'w', encoding = 'utf-8') as fout:
+                            fout.write(s)
+                    elif sLast.strip() != s.strip():
+                        arr1 = s.split('class="table__row')
+                        arr2 = sLast.split('class="table__row')
+                        flNewInfo = 0
+                        for e in arr2:
+                            if not (e in arr1):
+                                flNewInfo = 1
+                                print(e)
+                        if flNewInfo == 1:
+                            print(curDate + ' NEW INFO')
+                            with open(filename, 'w', encoding='utf-8') as fout:
+                                fout.write(s)
+                            with open(filename[:-4] + '_old' + tDate + '.txt', 'w', encoding='utf-8') as fout:
+                                fout.write(sLast)
+                else:
+                    driver.find_element_by_xpath('//div[@class="events__filter _type_sport"]/*/span[@class="events__filter-text"]').click()
+                    print('no table-tennis')
+
                 driver.find_element_by_xpath('//span[@class="events__filter-down icon _icon_arrow-tree-light"]').click()
                 active_days = driver.find_elements_by_xpath('//td[contains(@class, "ui-calendar__col") and not (contains(@class, "_state_off"))]/a')
-
-                s = driver.find_element_by_xpath('//div[@class="results_table"]').get_attribute('innerHTML')
-                if sLast is None:
-                    with open(filename, 'w', encoding = 'utf-8') as fout:
-                        fout.write(s)
-                elif sLast.strip() != s.strip():
-                    arr1 = s.split('class="table__row')
-                    arr2 = sLast.split('class="table__row')
-                    flNewInfo = 0
-                    for e in arr2:
-                        if not (e in arr1):
-                            flNewInfo = 1
-                            print(e)
-                    if flNewInfo == 1:
-                        print(curDate + ' NEW INFO')
-                        with open(filename, 'w', encoding='utf-8') as fout:
-                            fout.write(s)
-                        with open(filename[:-4] + '_old' + tDate + '.txt', 'w', encoding='utf-8') as fout:
-                            fout.write(sLast)
 #                return
         else:
             flExit = 1
