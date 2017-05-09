@@ -1318,7 +1318,7 @@ m1327	OYENIYAN Boboye
 m1328	LU Liping
 m1329	Карл Аландер Йоханссон;Ahlander-J Carl
 m1330	Вон Чун Тин;Wong Chun Ting;Вонг Чун Тинг
-m1331	YOKOTA Gustavo
+m1331	YOKOTA Gustavo;Йокота Густаво
 m1332	NAD NEMEDI Valentin
 m1333	Амин Миралмаси;Miralmasi Amin
 m1334	KAWATA Takayuki
@@ -16760,3 +16760,4 @@ m16775	Mihailovic Nikola
 m16776	Кует Нгуен
 m16777	Евгений Масокин
 m16778	Владимир Луцкий
+m16779	Дмитрий Игнатьев

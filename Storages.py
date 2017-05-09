@@ -100,25 +100,55 @@ class MatchesBetsStorage:
                 ids = [tokens[4].split(';'), tokens[5].split(';')]
                 info = json.loads(tokens[8])
                 pattern = r"\(([A-Za-z0-9- ]+)\)"
-                pointsScore = re.search(pattern, info[-1][1])
+
+                lastMatchInd = len(info) - 1
+                while not ('match' in info[lastMatchInd][1]):
+                    lastMatchInd -= 1
+                    if lastMatchInd == -1:
+                        break
+                if lastMatchInd == -1:
+                    print('bad info')
+                    raise
+
+                pointsScore = re.search(pattern, info[lastMatchInd][1]['match']['score'].replace('*', ''))
                 points = None
                 if not (pointsScore is None):
                     pointsScore = pointsScore.group(0).replace('(', '').replace(')', '').replace(' ', ';').replace('-', ':') + ';'
                     _, points = Match.getPointsScoreInfo(pointsScore)
-                setsScore = info[-1][1].split(' ')[0]
+                setsScore = info[lastMatchInd][1]['match']['score'].split(' ')[0]
+
+                #print(info[-1][1], pointsScore)
+
+                if tokens[-1] != '':
+                    pointsScoreFinal = tokens[-1] + ';'
+                    setsScoreFinal = tokens[-2]
+                    if points and pointsScoreFinal != pointsScore or setsScore != '' and setsScore != setsScoreFinal:
+                        print(dt, compName, ids, setsScore, pointsScore, setsScoreFinal, pointsScoreFinal)
+                        #raise
+#                    if pointsScore is None or setsScore == '':
+                        pointsScore = pointsScoreFinal
+                        setsScore = setsScoreFinal
+                        info.append(['final', {'match': {'score': setsScoreFinal + ' ' + pointsScoreFinal}}])
+                        _, points = Match.getPointsScoreInfo(pointsScoreFinal)
+
                 matchHash = None
                 if setsScore != '':
-                    matchHash = calcHash([dt[:10]] + ids[0] + ids[1] + [int(e) for e in setsScore.split(':')] + [e * i for i, e in enumerate(Match.getSetSumPoints(points))])
+                    try:
+                        matchHash = calcHash([dt[:10]] + ids[0] + ids[1] + [int(e) for e in setsScore.split(':')] + [e * i for i, e in enumerate(Match.getSetSumPoints(points))])
+                    except:
+                        print(dt, compName, ids, setsScore, pointsScore, setsScoreFinal, pointsScoreFinal, info)
+                        raise
                 if matchHash in hash2matchInd:
                     ts = []
                     score = []
                     bet_win = [[], []]
+
+                    ts = []
+                    eventsInfo = []
                     for i in range(len(info)):
                         ts.append(info[i][0])
-                        score.append(info[i][1])
-                        bet_win[0].append(info[i][2][0])
-                        bet_win[1].append(info[i][2][1])
-                    matchBet = MatchBet(eventId, [], dt, compName, ids, ts, score, bet_win)
+                        eventsInfo.append(info[i][1])
+                    matchBet = MatchBet(eventId, [], dt, compName, ids, ts, eventsInfo)
                     if not (matchHash in self.bets):
                         self.bets[matchHash] = matchBet
                     else:

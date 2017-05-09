@@ -47,8 +47,9 @@ def main():
                                 if id in id2player and id2player[id] != name:
                                     print([id, id2player[id], name])
                                     print('error')
-                                    raise
-                                id2player[id] = name
+                                    #raise
+                                else:
+                                    id2player[id] = name
                                 if not (name in player2id):
                                     player2id[name] = []
                                 if not (id in player2id[name]):

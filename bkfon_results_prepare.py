@@ -40,6 +40,7 @@ def fillLPCorr(ligaProCorr):
     ligaProCorr.append(['Булхак А', 'Антон Булхак'])
     ligaProCorr.append(['Фомина А', 'Анастасия Фомина'])
     ligaProCorr.append(['Кутузова А', 'Алина Кутузова'])
+    ligaProCorr.append(['Воронов А', 'Александр Воронов'])
 
 def fillChSCorr(chsCorr):
     chsCorr.append(['Мего П', 'Павол Мего'])

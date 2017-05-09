@@ -975,7 +975,7 @@ w1110	LISOVA Olga
 w1111	YEH Tung-Yi
 w1112	PERSSON Marie (1986)
 w1113	BAKKER Diana
-w1114	GOBEL Jessica;Goebel Jessica;Гобель Джесика
+w1114	GOBEL Jessica;Goebel Jessica;Гобель Джесика;Гобель Дж
 w1115	Fan Ying;Фань Ин
 w1116	WU Xianjing
 w1117	Hsing Ariel;Ариель Син

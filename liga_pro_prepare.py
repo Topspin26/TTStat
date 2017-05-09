@@ -160,6 +160,7 @@ def main():
     idLinks['309'] = 'm619'
     idLinks['310'] = 'm2739'
     idLinks['301'] = 'm9894'
+    #idLinks['301'] = 'm9894'
 
     playersDict = GlobalPlayersDict("filtered")
 
