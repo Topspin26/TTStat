@@ -86,17 +86,17 @@ class GlobalPlayersDict():
                     self.name2id2[short_player].append(id)
                     self.name2id2[short_player] = list(set(self.name2id2[short_player]))
 
-    def getId(self, name, fl = 1):
+    def getId(self, name, fl=1):
         name = name.lower().replace('ё', 'е').replace('ö', 'o').replace('^', '').replace(',', '').strip()
         if fl == 1:
             return self.name2id2.get(name, [])
         return self.name2id.get(name, None)
 
-    def getName(self, id):
-        return self.id2names[id][0]
+    def getName(self, playerId):
+        return self.id2names[playerId][0]
 
-    def getNames(self, id):
-        return self.id2names[id]
+    def getNames(self, playerId):
+        return self.id2names[playerId]
 
     def getMaxId(self, mw):
         res = 0

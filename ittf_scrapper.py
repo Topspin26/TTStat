@@ -1,19 +1,10 @@
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
 import time
 import datetime as datetime
 import random
 import re
 import os
 from os import walk
-
-
-def initDriver(url):
-    driver = webdriver.Chrome('chromedriver_win32/chromedriver', port = 5938)
-    driver.get(url)
-    #time.sleep(2) # Let the user actually see something!
-    return driver
+from common import *
 
 '''
 def readIttfPlayers():
@@ -37,7 +28,7 @@ def getIttfMatches(driver, url, pages):
             break
         driver.get(url + str(page))
 
-        tds = driver.find_elements_by_xpath('//*//table[@bordercolor = "#000080"]//tr//td')
+        tds = driver.find_elements_by_xpath('//*//table[@bordercolor="#000080"]//tr//td')
         playerId = None
         playerRating = None
         numCols = 6
@@ -111,7 +102,8 @@ def main():
 
     url = 'http://www.old.ittf.com/competitions/matches_per_player_all.asp?P_ID=&Formrnd64_Page='
     driver = initDriver(url)
-    getIttfMatches(driver, url, list(range(1,101)))
+    getIttfMatches(driver, url, list(range(197, 301)))
+#    getIttfMatches(driver, url, list(range(1, 101)))
 
 
 if __name__ == "__main__":
