@@ -29,7 +29,7 @@ h2{
 }
 
 #right{
-    width: 40%;
+    width: 60%;
     margin-top: 30px;
     margin-left: 20px;
     margin-right: 20px;
@@ -102,7 +102,9 @@ h2{
      padding: 2px 6px;
 }
 
+
 .pagination > li.active a,
+.pagination > li.active a:focus,
 .pagination > li.active a:hover{
     background-color: #eee;
     border-color: #ddd;
@@ -110,6 +112,7 @@ h2{
 .pagination > li a:hover{
     background-color: #f7f7e0;
 }
+
 
 #table_data{
     width: 100%;

@@ -1,5 +1,5 @@
 from flask import render_template, request, flash, redirect
-from ttstat import ttstat, ttModel
+from ttstat import ttstat, ttModel, db
 import json
 
 
@@ -7,6 +7,7 @@ import json
 @ttstat.route('/index')
 def index():
     return render_template('index.html')
+
 
 @ttstat.route('/matches')
 def matches():
@@ -20,14 +21,27 @@ def matches():
         filters['playerName'] = ttModel.getPlayerName(request.args.get('playerId'))
     else:
         filters['playerName'] = None
-    return render_template('matches.html', matches_columns = ttModel.matches_columns, bets_columns = ttModel.bets_columns, filters = filters)
+    return render_template('matches.html',
+                           matches_columns=ttModel.matches_columns,
+                           bets_columns=ttModel.bets_columns,
+                           filters=filters)
+
+
+@ttstat.route('/matches/<matchId>')
+def match_info(matchId):
+    filters = dict()
+    match = ttModel.getMatch(matchId).toDict()
+    match['players'] = [ttModel.getPlayersHrefs(e) for e in match['players']]
+    return render_template('match_info.html', bets_columns=ttModel.bets_columns, match=match, filters=filters)
+
 
 @ttstat.route('/players')
 def players():
-    return render_template('players.html', columns = ttModel.players_columns)
+    return render_template('players.html', columns=ttModel.players_columns)
 
-@ttstat.route('/players/<id>')
-def player_info(id):
+
+@ttstat.route('/players/<playerId>')
+def player_info(playerId):
     filters = dict()
     filters['compId'] = request.args.get('compId')
     filters['compName'] = ttModel.competitionsStorage.getCompName(request.args.get('compId'))
@@ -38,10 +52,11 @@ def player_info(id):
         filters['playerName'] = ttModel.getPlayerName(request.args.get('playerId'))
     else:
         filters['playerName'] = None
-    return render_template('player_info.html', id = id, name = ttModel.getPlayerNames(id),
-                           matches_columns = ttModel.matches_columns,
-                           rankings_columns = ttModel.player_rankings_columns,
-                           bets_columns=ttModel.bets_columns, filters = filters)
+    return render_template('player_info.html', playerId=playerId, name=ttModel.getPlayerNames(playerId),
+                           matches_columns=ttModel.matches_columns,
+                           rankings_columns=ttModel.player_rankings_columns,
+                           bets_columns=ttModel.bets_columns, filters=filters)
+
 
 @ttstat.route('/competitions')
 def competitions():
@@ -51,37 +66,94 @@ def competitions():
 #    if request.args.get('compId'):
 #    filters['compId'] = request.args.get('compId')
 #    filters['compName'] = ttModel.competitionsStorage.getCompName(request.args.get('compId'))
-    return render_template('competitions.html', competitions_columns = ttModel.competitions_columns, filters = filters)
+    return render_template('competitions.html', competitions_columns=ttModel.competitions_columns, filters=filters)
 
-@ttstat.route('/competitions/<id>')
-def competition_info(id):
+
+@ttstat.route('/competitions/<copmId>')
+def competition_info(compId):
     filters = dict()
-    filters['compId'] = id
+    filters['compId'] = compId
     filters['compName'] = ttModel.competitionsStorage.getCompName(filters['compId'])
-    return render_template('competitions.html', matches_columns = ttModel.matches_columns, bets_columns = ttModel.bets_columns, filters = filters)
+    return render_template('competitions.html', matches_columns=ttModel.matches_columns, bets_columns=ttModel.bets_columns, filters=filters)
 
 
 @ttstat.route('/rankings')
 def rankings():
-    return render_template('rankings.html', columns = ttModel.rankings_columns, sex = 'men')
+    return render_template('rankings.html', columns=ttModel.rankings_columns, sex='men')
+
 
 @ttstat.route('/sources')
 def sources():
     return render_template('sources.html')
 
-@ttstat.route('/sources/<id>')
-def source_info(id):
+
+@ttstat.route('/sources/<sourceId>')
+def source_info(sourceId):
     return render_template('sources.html')
+
 
 @ttstat.route('/rankings/<sex>')
 def rankings1(sex):
-    return render_template('rankings.html', columns = ttModel.rankings_columns, sex = sex)
+    return render_template('rankings.html', columns=ttModel.rankings_columns, sex=sex)
+
 
 @ttstat.route('/prognosis')
 def prognosis():
-    return render_template('prognosis.html', columns = ttModel.players_columns)
+    return render_template('prognosis.html', columns=ttModel.players_columns)
 
-@ttstat.route('/selectPlayer', methods = ['POST'])
+
+@ttstat.route('/live')
+def live():
+    return render_template('live.html', columns=['datettime', 'eventId', 'compname', 'Игрок1', 'Игрок2', 'Счет', 'info'])
+
+
+@ttstat.route('/live/<matchId>')
+def live_match_info(matchId):
+    filters = dict()
+    match = ttModel.getLiveBet(matchId).toDict()
+    #match['players'] = [ttModel.getPlayersHrefs(e) for e in match['players']]
+    return render_template('live_match_info.html', bets_columns=ttModel.bets_columns, match=match, filters=filters)
+
+
+@ttstat.route("/_retrieve_live_data")
+def retrieve_live_data():
+#    cur = db.cursor()
+#    cur.execute("SELECT * FROM fonbet_live WHERE datetime = (SELECT MAX(datetime) FROM fonbet_live)")
+#    db.commit()
+    aaData_rows = ttModel.getLiveBetsTable()
+#    for row in cur.fetchall():
+#        aaData_rows.append([str(e) for e in row])
+
+#    text = request.values['sSearch'].lower()
+#    print(text)
+
+    output = dict()
+    output['iTotalRecords'] = str(len(aaData_rows))
+    sortInd = int(request.values['iSortCol_0'])
+    sortAsc = request.values['sSortDir_0']
+    output['iTotalDisplayRecords'] = str(len(aaData_rows))
+
+    output['aaData'] = aaData_rows
+    results = output
+    return json.dumps(results)
+
+
+@ttstat.route("/_retrieve_live_finished_data")
+def retrieve_live_finished_data():
+    aaData_rows = ttModel.getBetsTable()
+    print(aaData_rows)
+    output = dict()
+    output['iTotalRecords'] = str(len(aaData_rows))
+    sortInd = int(request.values['iSortCol_0'])
+    sortAsc = request.values['sSortDir_0']
+    output['iTotalDisplayRecords'] = str(len(aaData_rows))
+
+    output['aaData'] = aaData_rows
+    results = output
+    return json.dumps(results)
+
+
+@ttstat.route('/selectPlayer', methods=['POST'])
 def selectPlayer():
     playerId = request.values['playerId']
     print(playerId)
@@ -92,7 +164,8 @@ def selectPlayer():
     res['playerR'] = str(ttModel.getFeatures(playerId))
     return json.dumps(res)
 
-@ttstat.route('/makePrognosis', methods = ['POST'])
+
+@ttstat.route('/makePrognosis', methods=['POST'])
 def makePrognosis():
     playerId1 = request.values['playerId1']
     playerId2 = request.values['playerId2']
@@ -104,23 +177,22 @@ def makePrognosis():
     print(res['pred'])
     return json.dumps(res)
 
+
 @ttstat.route("/_retrieve_players_names")
 def get_players_names():
     s = request.values['name']
     res = []
-    for k,player in sorted(ttModel.players.items(), key = lambda x: x[1].name):
-        if player.findString(s) == True:
+    for k,player in sorted(ttModel.players.items(), key=lambda x: x[1].name):
+        if player.findString(s) is True:
             res.append('{"name": "' + player.name + '","id": "' + player.id + '"}')
             if len(res) > 10:
                 break
     print('[' + ','.join(res) + ']')
     return '[' + ','.join(res) + ']'
 
+
 @ttstat.route("/_retrieve_matches_data")
 def get_matches_data():
-
-    columns = ttModel.matches_columns
-
     player0IdFilter = None
     if 'player0Id' in request.values:
         player0IdFilter = request.values['player0Id']
@@ -156,30 +228,30 @@ def get_matches_data():
 
     matches = []
     matchesList = ttModel.matches
-    if not (player0IdFilter is None):
+    if player0IdFilter is not None:
         matchesList = ttModel.players[player0IdFilter].matches
-    elif not (compIdFilter is None):
+    elif compIdFilter is not None:
         matchesList = ttModel.competitionsStorage.getComp(compIdFilter).matches
     output['iTotalRecords'] = str(len(matchesList))
     for match in matchesList:
         if compIdFilter:
             if str(match.compId) != str(compIdFilter):
                 continue
-        if sourceIdFilter and not sourceIdFilter in match.sources:
+        if sourceIdFilter and sourceIdFilter not in match.sources:
             continue
         flMatch = 0
         for i in range(2):
             for player in match.players[i]:
-                if ttModel.players[player].findString(text) == True:
+                if ttModel.players[player].findString(text) is True:
                     flMatch = 1
 #        if (' - '.join(ttModel.getNames(match.players[0]))).lower().find(text) != -1 or (' - '.join(ttModel.getNames(match.players[1]))).lower().find(text) != -1:
-        if request.values['playerInfo'] == '1' and not (player0IdFilter in match.players[0]):
+        if request.values['playerInfo'] == '1' and player0IdFilter not in match.players[0]:
             match = match.reverse()
         if player0IdFilter:
-            if playerIdFilter and not (playerIdFilter in match.players[1]):
+            if playerIdFilter and playerIdFilter not in match.players[1]:
                 continue
         else:
-            if playerIdFilter and not (playerIdFilter in (match.players[0] + match.players[1])):
+            if playerIdFilter and playerIdFilter not in (match.players[0] + match.players[1]):
                 continue
         if flMatch == 1:
             matches.append(match)
@@ -187,7 +259,7 @@ def get_matches_data():
     sortInd = int(request.values['iSortCol_0'])
     sortAsc = request.values['sSortDir_0']
     print([sortInd, ttModel.matches_dtypes[sortInd]])
-    aaData_rows = ttModel.getMatchesTable(matches, sortInd, int(sortAsc == 'asc'), filterFlag = True)
+    aaData_rows = ttModel.getMatchesTable(matches, sortInd, int(sortAsc == 'asc'), filterFlag=True)
 
 #    if ttModel.matches_dtypes[sortInd] == 'string':
 #        aaData_rows = sorted(aaData_rows, key = lambda x: x[sortInd], reverse=(sortAsc!='asc'))
@@ -201,15 +273,14 @@ def get_matches_data():
     results = output
     return json.dumps(results)
 
+
 @ttstat.route("/_retrieve_match_bets_data")
 def get_match_bets_data():
-    columns = ttModel.bets_columns
-
     print(request.values)
     print(request.values['sSortDir_0'])
     #leftInd = int(request.values['iDisplayStart'])
     #rightInd = leftInd + int(request.values['iDisplayLength'])
-    output = {}
+    output = dict()
     output['sEcho'] = str(int(request.values['sEcho']))
 
     #text = request.values['sSearch'].lower()
@@ -234,11 +305,8 @@ def get_match_bets_data():
     return json.dumps(results)
 
 
-
 @ttstat.route("/_retrieve_player_rankings_data")
 def get_player_rankings_data():
-    columns = ttModel.player_rankings_columns
-
     playerIdFilter = None
     if 'playerId' in request.values:
         playerIdFilter = request.values['playerId']
@@ -246,7 +314,7 @@ def get_player_rankings_data():
 
     leftInd = int(request.values['iDisplayStart'])
     rightInd = leftInd + int(request.values['iDisplayLength'])
-    output = {}
+    output = dict()
     output['sEcho'] = str(int(request.values['sEcho']))
 
     c = 0
@@ -254,22 +322,26 @@ def get_player_rankings_data():
     aaData_rows = []
     if playerIdFilter in ttModel.rankingStorage.rankings['ttfr']:
         output['iTotalRecords'] += len(ttModel.rankingStorage.rankings['ttfr'][playerIdFilter])
-        for e in sorted(ttModel.rankingStorage.rankings['ttfr'][playerIdFilter].items(), key = lambda x: x[0], reverse=True):
+        for e in sorted(ttModel.rankingStorage.rankings['ttfr'][playerIdFilter].items(),
+                        key=lambda x: x[0], reverse=True):
             aaData_rows.append([e[0], 'TTFR', e[1][0], e[1][1]])
             c += 1
     if playerIdFilter in ttModel.rankingStorage.rankings['ittf']:
         output['iTotalRecords'] += len(ttModel.rankingStorage.rankings['ittf'][playerIdFilter])
-        for e in sorted(ttModel.rankingStorage.rankings['ittf'][playerIdFilter].items(), key = lambda x: x[0], reverse=True):
+        for e in sorted(ttModel.rankingStorage.rankings['ittf'][playerIdFilter].items(),
+                        key=lambda x: x[0], reverse=True):
             aaData_rows.append([e[0], 'ITTF', e[1][0], e[1][1]])
             c += 1
     if playerIdFilter in ttModel.rankingStorage.rankings['my']:
         output['iTotalRecords'] += len(ttModel.rankingStorage.rankings['my'][playerIdFilter])
-        for e in sorted(ttModel.rankingStorage.rankings['my'][playerIdFilter].items(), key = lambda x: x[0], reverse=True):
+        for e in sorted(ttModel.rankingStorage.rankings['my'][playerIdFilter].items(),
+                        key=lambda x: x[0], reverse=True):
             aaData_rows.append([e[0], 'MY', format(float(e[1][0]),'.3f'), e[1][1]])
             c += 1
     if playerIdFilter in ttModel.rankingStorage.rankings['liga_pro']:
         output['iTotalRecords'] += len(ttModel.rankingStorage.rankings['liga_pro'][playerIdFilter])
-        for e in sorted(ttModel.rankingStorage.rankings['liga_pro'][playerIdFilter].items(), key = lambda x: x[0], reverse=True):
+        for e in sorted(ttModel.rankingStorage.rankings['liga_pro'][playerIdFilter].items(),
+                        key=lambda x: x[0], reverse=True):
             aaData_rows.append([e[0], 'LIGA-PRO', e[1][0], 0])
             c += 1
     output['iTotalRecords'] = str(output['iTotalRecords'])
@@ -286,14 +358,10 @@ def get_player_rankings_data():
     results = output
     return json.dumps(results)
 
+
 @ttstat.route("/_retrieve_rankings_data")
 def get_rankings_data():
-    columns = ttModel.rankings_columns
-
-#    playerIdFilter = None
-#    if 'playerId' in request.values:
-#        playerIdFilter = request.values['playerId']
-#    print(playerIdFilter)
+    print(request.values)
 
     leftInd = int(request.values['iDisplayStart'])
     rightInd = leftInd + int(request.values['iDisplayLength'])
@@ -336,10 +404,9 @@ def get_rankings_data():
     results = output
     return json.dumps(results)
 
+
 @ttstat.route("/_retrieve_players_data")
 def get_players_data():
-    columns = ttModel.players_columns
-
     print(request.values)
     print(request.values['sSortDir_0'])
     leftInd = int(request.values['iDisplayStart'])
@@ -354,7 +421,7 @@ def get_players_data():
 
     players = []
     for k,player in ttModel.players.items():
-        if player.findString(text) == True:
+        if player.findString(text) is True:
             players.append(player)
         c += 1
     aaData_rows = ttModel.getPlayersTable(players)
@@ -419,6 +486,12 @@ def get_competitions_data():
     # return the results as a string for the datatable
     return json.dumps(results)
 
+
+def update(a, b):
+    cur = db.cursor()
+    cur.execute("SELECT * FROM fonbet_live WHERE datetime > '{}' ORDER BY datetime ASC".format(ttModel.lastUpdateTime))
+    db.commit()
+    ttModel.update(cur.fetchall())
 
 '''
 @myfirst.route('/player/<id>')

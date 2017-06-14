@@ -1,8 +1,9 @@
-import pandas as pd
-#import xgboost as xgb
-import pickle
+# import pandas as pd
+# import xgboost as xgb
+# import pickle
 
 from Storages import *
+from BetsStorage import *
 from Entity import *
 from common import *
 from sklearn import linear_model
@@ -15,8 +16,8 @@ class TTModel:
         self.competitions_columns = ['Дата', 'Название', 'Игроки', 'Матчи', 'Источники']
         self.competitions_dtypes = ['string'] * 2 + ['number'] * 2 + ['string']
 
-        self.bets_columns = ['Дата', 'Время', 'Турнир', 'id1', 'id2', 'Счет', 'К1', 'К2']
-        self.bets_dtypes = ['string'] * 8
+        self.bets_columns = ['Дата', 'Турнир', 'id1', 'id2', 'Счет', 'К1', 'К2']
+        self.bets_dtypes = ['string'] * 7
 
         self.players_columns = ['id', 'Игрок', 'Матчи']
         self.players_dtypes = ['string'] * 2 + ['number']
@@ -49,8 +50,8 @@ class TTModel:
         sources.append(['challenger_series', dirname + '/prepared_data/challenger_series/all_results.txt'])
         sources.append(['bkfon', dirname + '/prepared_data/bkfon/all_results.txt'])
         sources.append(['local', dirname + '/prepared_data/local/kchr_results.txt'])
-        sources.append(['ittf', dirname + '/prepared_data/ittf/all_results.txt'])
-        sources.append(['rttf', dirname + '/prepared_data/rttf/all_results.txt'])
+        # sources.append(['ittf', dirname + '/prepared_data/ittf/all_results.txt'])
+        # sources.append(['rttf', dirname + '/prepared_data/rttf/all_results.txt'])
 
         self.matchesStorage = MatchesStorage(sources)
         self.matches = self.matchesStorage.matches
@@ -68,13 +69,20 @@ class TTModel:
             for e in match.players[1]:
                 self.players[e].matches.append(match)
 
-        self.matchesBetsStorage = MatchesBetsStorage(self.hash2matchInd, dirname=dirname + '/')
-        self.bets = self.matchesBetsStorage.bets
+        self.betsStorage = BetsStorage()
+        self.betsStorage.loadFromFile(dirname + '/prepared_data/bkfon/live/tail.txt')
+        # self.betsStorage.loadFromFile(dirname + '/prepared_data/bkfon/live/all_bets_prepared.txt')
+#        self.matchesBetsStorage = MatchesBetsStorage(self.hash2matchInd,filename=)
+
+        self.bets = self.betsStorage.bets
+
+        self.lastUpdateTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')[:10] + ' 00:00:00'
 
         self.n = len(self.matches)
         '''
         with open(r'D:\Programming\SportPrognoseSystem\TTStat\test\dataset.txt', 'w', encoding = 'utf-8') as fout:
-            fout.write('\t'.join(['date', 'time', 'compName', 'players1', 'players2', 'setsScore', 'pointsScore', 'rus1', 'ittf1', 'my1', 'rus2', 'ittf2', 'my2', 'y']) + '\n')
+            fout.write('\t'.join(['date', 'time', 'compName', 'players1', 'players2', 'setsScore', 'pointsScore',
+                                  'rus1', 'ittf1', 'my1', 'rus2', 'ittf2', 'my2', 'y']) + '\n')
             for match in self.matches:
                 if match.date >= '2015':
                     if len(match.players[0]) == 1 and not (match.wins is None):
@@ -88,26 +96,52 @@ class TTModel:
             self.model = pickle.load(fin)
         '''
 
-    def getHref(self, id, name, filterFlag = False):
-        hr = '<a href=/players/' + id + ' target="blank">' + name + '</a>'
+    def update(self, rows):
+        lastTime = None
+        block = []
+        rowNames = dict(zip(['id', 'datetime', 'eventId', 'compName', 'info'], range(5)))
+        for row in rows:
+            row = [str(e) for e in row]
+            print(row)
+            curTime = str(row[1])
+            if lastTime is not None and curTime != lastTime:
+                self.betsStorage.update(block)
+                block = []
+            tokens = row[rowNames['info']].split('\t')
+            dt = row[rowNames['datetime']]
+            eventsInfo = json.loads(tokens[2])
+            players = [tokens[0].split(';'), tokens[1].split(';')]
+            ids = self.getMatchPlayersIds(players)
+            block.append(MatchBet(row[rowNames['eventId']], dt, row[rowNames['compName']],
+                                  ids, [eventsInfo], players=players))
+            self.lastUpdateTime = max(self.lastUpdateTime, curTime)
+            lastTime = curTime
+        if lastTime is not None:
+            self.betsStorage.update(block)
+
+        print(self.lastUpdateTime)
+
+    def getHref(self, playerId, playerName, filterFlag=False):
+        hr = '<a href=/players/' + playerId + ' target="blank">' + playerName + '</a>'
         if filterFlag:
-            return '<a class="matchFilter" playerId="' + id + '"><span class="glyphicon glyphicon-search"></span></a>' + \
-                    hr
+            return '<a class="matchFilter" playerId="' + playerId + \
+                   '"><span class="glyphicon glyphicon-search"></span></a>' + hr
         else:
             return hr
 
     def getCompHref0(self, id, name):
-        return '<a href=/competitions/' + str(id) + ' target="blank">' + name + '</a>'
+        return '<a href=/competitions/' + str(id) + ' target="_blank">' + name + '</a>'
 
     def getCompHref(self, id, name):
-        return '<a class="matchFilter" compId="' + str(id) + '">' + '<span class="glyphicon glyphicon-search"></span></a>' + \
-               '<a href=/competitions/' + str(id) + ' target="blank">' + name + '</a>'
+        return '<a class="matchFilter" compId="' + str(id) + '">' + \
+               '<span class="glyphicon glyphicon-search"></span></a>' + \
+               '<a href=/competitions/' + str(id) + ' target="_blank">' + name + '</a>'
 
     def getSourceHref(self, name):
 #        return '<a class="matchFilter" sourceId="' + str(name) + '">' + '<span class="glyphicon glyphicon-search"></span></a>' + \
 #               '<a href=/sources/' + str(name) + ' target="blank">' + name + '</a>'
-        return '<a class="matchFilter" sourceId="' + str(name) + '">' + '<span class="glyphicon glyphicon-search"></span></a>' + \
-               name
+        return '<a class="matchFilter" sourceId="' + str(name) + '">' + \
+               '<span class="glyphicon glyphicon-search"></span></a>' + name
 
     def getPlayerNames(self, id):
         return self.playersDict.getNames(id)
@@ -115,38 +149,87 @@ class TTModel:
         return self.playersDict.getName(id)
     def getMatchPlayersNames(self, ids):
         return [self.playersDict.getName(id) for id in ids]
+    def getMatchPlayersIds(self, players):
+        # for i in range(2):
+        #    for playerName in players[i]:
+        #        playerIds = self.playersDict.getId(playerName)
+        return [[','.join(self.playersDict.getId(playerName)) for playerName in players[0]],
+                [','.join(self.playersDict.getId(playerName)) for playerName in players[1]]]
 
-    def getMatchesTable(self, matches, sortInd = 0, sortAsc = 1, filterFlag = False):
+    def getMatch(self, matchId):
+        if matchId in self.hash2matchInd:
+            return self.matches[self.hash2matchInd[matchId]]
+        return None
+
+    def getLiveBet(self, matchId):
+        if matchId in self.betsStorage.liveBets:
+            return self.betsStorage.liveBets[matchId]
+        return None
+
+    def getPlayersHrefs(self, ids, filterFlag=False):
+        return ' - '.join([self.getHref(e, self.playersDict.getName(e), filterFlag=filterFlag) for e in ids])
+
+    def getPlayersIdsHrefs(self, players, ids, filterFlag=False):
+        arr = []
+        for playerName, playerId in zip(players, ids):
+            if playerId == '' or playerId.find(',') != -1:
+                arr.append(playerName)
+            else:
+                arr.append(self.getHref(playerId, playerName))
+        return ' - '.join(arr)
+
+    def getLiveBetsTable(self):
         data = []
-        for i,match in enumerate(matches):
-            id1 = ' - '.join(match.players[0])
-            names1 = ' - '.join(self.getMatchPlayersNames(match.players[0]))
-            id2 = ' - '.join(match.players[1])
-            names2 = ' - '.join(self.getMatchPlayersNames(match.players[1]))
-            flBet = '+' if match.hash in self.bets else ''
-            data.append([match.date + ', ' + (match.time if match.time else '-'), self.getCompHref(match.compId, match.compName),
-                         id1, names1, id2, names2, match.setsScore + ', (' + match.pointsScore + ')',
-                         '; '.join([self.getSourceHref(e) for e in match.sources]), flBet, match.hash])
-        data = sorted(data, key = lambda x: x[sortInd], reverse = (sortAsc == 0))
-        for i,row in enumerate(data):
-            names1 = ' - '.join([self.getHref(e, self.playersDict.getName(e), filterFlag = filterFlag) for e in row[2].split(' - ')])
-            names2 = ' - '.join([self.getHref(e, self.playersDict.getName(e), filterFlag = filterFlag) for e in row[4].split(' - ')])
-            data[i][3] = names1
-            data[i][5] = names2
-            data[i] = data[i][:2] + [data[i][3], data[i][5]] + data[i][6:]
-
+        for key,matchBet in sorted(self.betsStorage.liveBets.items(), key=lambda x: x[1].dt, reverse=1):
+            names1 = self.getPlayersIdsHrefs(matchBet.players[0], matchBet.ids[0])
+            names2 = self.getPlayersIdsHrefs(matchBet.players[1], matchBet.ids[1])
+            data.append([matchBet.dt, matchBet.eventId, matchBet.compName,
+                        names1, names2, matchBet.getLastScore(), str(matchBet.eventsInfo[-1]), matchBet.getKey()])
         return data
 
-    def getMatchBetsTable(self, matchHash, sortInd = 0, sortAsc = 1):
+    def getBetsTable(self):
+        data = []
+        for key,matchBet in sorted(self.betsStorage.bets.items(), key=lambda x: x[1].dt, reverse=1):
+            names1 = self.getPlayersIdsHrefs(matchBet.players[0], matchBet.ids[0])
+            names2 = self.getPlayersIdsHrefs(matchBet.players[1], matchBet.ids[1])
+            data.append([matchBet.dt, matchBet.eventId, matchBet.compName,
+                        names1, names2, matchBet.getLastScore(), str(matchBet.eventsInfo[-1]), ''])
+        return data
+
+    def getMatchesTable(self, matches, sortInd=0, sortAsc=1, filterFlag=False):
+        data = []
+        for i,match in enumerate(sorted(matches, key=lambda x: x.date + ', ' + (x.time if x.time else '-'), reverse=1)):
+            #id1 = ' - '.join(match.players[0])
+            names1 = self.getPlayersHrefs(match.players[0], filterFlag = filterFlag)
+            #' - '.join(self.getMatchPlayersNames(match.players[0]))
+            #id2 = ' - '.join(match.players[1])
+            names2 = self.getPlayersHrefs(match.players[1], filterFlag = filterFlag)
+            #names2 = ' - '.join(self.getMatchPlayersNames(match.players[1]))
+            flBet = '+' if match.hash in self.bets else ''
+            data.append([match.date + ', ' + (match.time if match.time else '-'), self.getCompHref(match.compId, match.compName),
+                         names1, names2, match.setsScore + ', (' + match.pointsScore + ')',
+                         '; '.join([self.getSourceHref(e) for e in match.sources]), flBet, match.hash])
+        #data = sorted(data, key = lambda x: x[sortInd], reverse = (sortAsc == 0))
+#        for i,row in enumerate(data):
+#            names1 = ' - '.join([self.getHref(e, self.playersDict.getName(e), filterFlag = filterFlag) for e in row[2].split(' - ')])
+#            names2 = ' - '.join([self.getHref(e, self.playersDict.getName(e), filterFlag = filterFlag) for e in row[4].split(' - ')])
+#            data[i][3] = names1
+#            data[i][5] = names2
+#            data[i] = data[i][:2] + [data[i][3], data[i][5]] + data[i][6:]
+        return data
+
+    def getMatchBetsTable(self, matchHash, sortInd=0, sortAsc=1):
         data = []
         if not (matchHash in self.bets):
             return data
         matchBet = self.bets[matchHash]
-        for i in range(len(matchBet.ts)):
-            id1 = ' - '.join(matchBet.players[0])
-            id2 = ' - '.join(matchBet.players[1])
-            data.append([matchBet.ts[i][:10], matchBet.ts[i][11:], matchBet.compName, id1, id2, matchBet.score[i], str(matchBet.bet_win[0][i]), str(matchBet.bet_win[1][i])])
-
+        id1 = ' - '.join(matchBet.players[0])
+        id2 = ' - '.join(matchBet.players[1])
+        for i in range(len(matchBet.eventsInfo)):
+            print(matchBet.eventsInfo[i])
+            mb = matchBet.eventsInfo[i][1].get('match', dict())
+            data.append([matchBet.eventsInfo[i][0][:10] + ', ' + matchBet.eventsInfo[i][0][11:],
+                         matchBet.compName, id1, id2, mb.get('score', ''), mb.get('win1', ''), mb.get('win2', '')])
         return data
 
     def getPlayersTable(self, players):
