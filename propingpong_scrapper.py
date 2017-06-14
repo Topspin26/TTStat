@@ -227,13 +227,18 @@ def getLastRusRankings(mw):
         except:
             driver = initDriver(url + '&page=' + str(page))
 
-        rows = driver.find_elements_by_xpath('//*[@class = "table"]')[1].find_elements_by_xpath('//*[@class = "row"]')
+        rows = driver.find_elements_by_xpath('//table[@id="rightarea"]//div[@class="table"]//div[@class="row"]')
         for i,row in enumerate(rows[1:]):
-            s = row.find_elements_by_xpath('./div[@class = "cell-val"]')[0].get_attribute('innerHTML')
-            #print(s)
-            playerId = s.split('id=')[1].split('">')[0]
-            playerName = s.split('id=')[1].split('>')[1].split('<')[0]
-            playerRating = int(row.find_elements_by_xpath('./div[@class = "cell"]')[4].get_attribute('innerHTML'))
+            s = row.find_elements_by_xpath('./div[@class="cell-val"]')[0].get_attribute('innerHTML')
+#            print(s)
+#            continue
+            arr = s.split('id=')
+#            if len(arr) < 2:
+#                print(s)
+#                continue
+            playerId = arr[1].split('">')[0]
+            playerName = arr[1].split('>')[1].split('<')[0]
+            playerRating = int(row.find_elements_by_xpath('./div[@class="cell"]')[4].get_attribute('innerHTML'))
             #print([playerId, playerName, playerRating])
             rankings[playerId] = playerRating
             if not (playerId in rusid2names):
@@ -246,7 +251,6 @@ def getLastRusRankings(mw):
         print([page, len(rankings)])
         #break
     driver.quit()
-
     return [rankings, rusid2names]
 
 def updateRusRanking(year, month):
@@ -303,18 +307,15 @@ def getIttfRankings(mw, year, month):
     else:
         ids = [set(), set()]
         for page in range(1, pagesCnt + 1):
-            try:
-                driver.get(url + '&page=' + str(page))
-                driver.find_element_by_xpath('//*//a[@class = "setruslang"]').click()
-            except:
-                driver = initDriver(url + '&page=' + str(page))
-                driver.find_element_by_xpath('//*//a[@class = "setruslang"]').click()
-
+            driver.get(url + '&page=' + str(page))
+            ul = driver.find_elements_by_xpath('//li[@class="dropdown"]')[-1]
+            ul.click()
+            ul.find_elements_by_xpath('./ul/li/a')[0].click()
             for ii in range(2):
-                rows = driver.find_elements_by_xpath('//*[@class = "table"]')[1].find_elements_by_xpath('//*[@class = "row"]')
+                rows = driver.find_elements_by_xpath('//table[@id="rightarea"]//div[@class="table"]//div[@class="row"]')
                 for i,row in enumerate(rows[1:]):
                     s = row.get_attribute('innerHTML')
-                    #print(s)
+#                    print(s)
                     playerId = s.split('ittfid=')[1].split('">')[0]
                     playerName = s.split('ittfid=')[1].split('>')[1].split('<')[0]
                     playerRating = int(s.split('country=')[1].split('</div>')[1].split('>')[-1])
@@ -328,7 +329,9 @@ def getIttfRankings(mw, year, month):
                         print([page, playerName])
                     ids[ii].add(playerId)
                 if ii == 0:
-                    driver.find_element_by_xpath('//*//a[@class = "setenglang"]').click()
+                    ul = driver.find_elements_by_xpath('//li[@class="dropdown"]')[-1]
+                    ul.click()
+                    ul.find_elements_by_xpath('./ul/li/a')[1].click()
             print([page, len(rankings)])
     driver.quit()
 
@@ -358,8 +361,8 @@ def updateIttfRanking():
                         elif ';'.join(sorted(ittfId2names[id])) != ';'.join(sorted(names)):
                             for name in names:
                                 if not (name in ittfId2names[id]):
-                                    ittfId2names[id].append(name)
                                     print('CHANGED ID ' + id + '\t' + ';'.join(ittfId2names[id]) + '\t' + ';'.join(names))
+                                    ittfId2names[id].append(name)
 
                     with open('data/propingpong/propingpong_ittfId2names_' + mw + '.txt', 'w', encoding='utf-8') as fout:
                         for e in sorted(ittfId2names.items(), key=lambda x: x[0]):
@@ -537,7 +540,7 @@ def main():
 #    getIttfRankings('men', 2005, 5)
 
     updateIttfRanking()
-#    updateRusRanking(2017, 5)
+#    updateRusRanking(2017, 6)
 
 
 '''

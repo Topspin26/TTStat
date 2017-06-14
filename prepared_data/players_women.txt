@@ -2184,7 +2184,7 @@ w2189	SARUWATARI Naoko
 w2190	CHIH De-Rong
 w2191	BALATBAT Sendrina
 w2192	Каролина Мишек;Mischek Karoline
-w2193	TUBIKANEC Ivana
+w2193	TUBIKANEC Ivana;Тубиканец Ивана
 w2194	ISAEVA Sasha
 w2195	SUN Mingyang
 w2196	DING Yan

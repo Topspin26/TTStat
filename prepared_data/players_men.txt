@@ -654,7 +654,7 @@ m661	Bankosz Michal;Михаль Банкош
 m662	WU Nan
 m663	Zauli Isaac;Исаак Заули
 m664	Чжоу Ю;Zhou Yu
-m665	Родриго Гилаберт;Gilabert Rodrigo
+m665	Родриго Гилаберт;Родриго Хилаберт;Gilabert Rodrigo
 m666	OLSSON Henrik
 m667	Ромуальдо Манна;Manna Romualdo
 m668	CHOI Wonjin
@@ -904,7 +904,7 @@ m912	OJAKANGAS Jimmy
 m913	Kang Wi Hun;Кан Ви Хун
 m914	JANSSENS Tim
 m915	Townsend Kane;Кейн Таунсенд
-m916	MARINKOVIC Nikola
+m916	MARINKOVIC Nikola;Маринкович Никола
 m917	SKUCAS Matas
 m918	KARLSSON Peter
 m919	JOST Frederick
@@ -1060,7 +1060,7 @@ m1069	ANIKIN Denis
 m1070	HARA Masahiko
 m1071	Gatien Jean-Philippe;Жан-Филипп Готье
 m1072	ROSVALL Henrik
-m1073	Polansky Tomas;Томаш Полански
+m1073	Polansky Tomas;Томаш Полански;Томаш Поланский
 m1074	WATANABE Takashi
 m1075	Максим Максимов
 m1076	KAI Yoshikazu
@@ -1399,7 +1399,7 @@ m1408	Tsuboi Gustavo;Густаво Цубой;Густаво Цубои
 m1409	TZIAMBOS Andreas
 m1410	CLARKE Abbie
 m1411	Андрей Гачина;Gacina Andrej
-m1412	Rogiers Benjamin;Бенджамин Роджерс
+m1412	Rogiers Benjamin;Бенджамин Роджерс;Бенджамин Рожье
 m1413	STENBERG Marten
 m1414	Vitta Kilomo;Киломо Витта
 m1415	Wu Chih-Chi;Ву Чжи Цзи
@@ -2067,7 +2067,7 @@ m2079	Park Ganghyeon;Ган Хен Пак
 m2080	Юки Морита;Morita Yuki
 m2081	LEI Zhenhua
 m2082	VAKHTA Dmitry
-m2083	Роман Руи;Ruiz Romain
+m2083	Роман Руи;Ruiz Romain;Роман Руис
 m2084	KARLOVIC Denis
 m2085	Zhan Jian;Джан Жиан
 m2086	SARGSYAN Davit
@@ -2353,7 +2353,7 @@ m2367	SCHLICHTER Jorg
 m2368	TAKAHASHI Toru
 m2369	ZHANG Yong
 m2370	Lee Yat Hin;Ли Ят Хинь
-m2371	ABIODUN Bode
+m2371	ABIODUN Bode;Абиодун Боде
 m2372	CHIANG Peng-Lung
 m2373	PANAGITGUN Yanapong
 m2374	LEVIS Bruno
@@ -14709,7 +14709,7 @@ m14724	WILSON Aaron
 m14725	VERA Eduardo
 m14726	BRESSAN Marco
 m14727	MISCHUK Aleksei
-m14728	Йенс Шабакер;Schabacker Jens
+m14728	Йенс Шабакер;Енс Шабаккер;Schabacker Jens
 m14729	PLETNEV Andrei
 m14730	JEZO Martin
 m14731	ALIYEV Rustam
