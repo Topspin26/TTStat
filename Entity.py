@@ -1,20 +1,63 @@
 import hashlib
+import json
 import numpy as np
 from common import *
 
 class MatchBet:
-    def __init__(self, eventId, rows, dt, compName, players, ts, eventsInfo):
+    def __init__(self, eventId, dt, compName, ids, eventsInfo, players=None, segment="segment"):
         self.eventId = eventId
-        self.rows = rows
         self.dt = dt
         self.compName = compName
-        self.players = players
-        self.ts = ts
+        self.ids = ids
         self.eventsInfo = eventsInfo
+        self.players = players
+        self.segment = segment
 
     def __str__(self):
-        return '\t'.join([self.eventId, self.dt, self.compName, ';'.join(self.players[0]), ';'.join(self.players[1])] + \
-                         [e[0] + ';' + str(e[1]) for e in zip(self.ts, self.eventsInfo)])
+        return '\t'.join([self.eventId, self.dt, self.compName, ';'.join(self.players[0]), ';'.join(self.players[1]),
+                         json.dumps(self.eventsInfo, ensure_ascii=False)])
+
+    def getKey(self):
+        return calcHash([self.compName, str(self.eventId)])
+
+    def toDict(self):
+        res = dict()
+        res['key'] = self.getKey()
+        res['date'] = self.dt
+        res['ids'] = [e.copy() for e in self.ids]
+        res['players'] = [e.copy() for e in self.players]
+#        res['setsScore'] = self.setsScore
+#        res['pointsScore'] = self.pointsScore
+        return res
+
+#    def calcHash(self):
+#        return calcHash([self.dt[:10]] + ids[0] + ids[1] + [int(e) for e in setsScore.split(':')] + \
+#                                             [e * i for i, e in enumerate(Match.getSetSumPoints(points))])
+
+    def getLastScore(self):
+        lastMatchInd = len(self.eventsInfo) - 1
+        while 'match' not in self.eventsInfo[lastMatchInd][1]:
+            try:
+                if 'match' in self.eventsInfo[lastMatchInd][1][0]:
+                    return self.eventsInfo[lastMatchInd][1][0]['match'].get('score', None)
+            except:
+                pass
+            lastMatchInd -= 1
+            if lastMatchInd == -1:
+                break
+        if lastMatchInd == -1:
+            return None
+        return self.eventsInfo[lastMatchInd][1]['match'].get('score', None)
+
+
+    def from_str(self, s):
+        tokens = s.split('\t')
+        self.segment = tokens[0]
+        self.eventId = tokens[1]
+        self.dt = tokens[2]
+        self.compName = tokens[3]
+        self.ids = [tokens[4].split(';'), tokens[5].split(';')]
+        self.eventsInfo = json.loads(tokens[6])
 
     def merge(self, matchBet):
         if self.compName != matchBet.compName:
@@ -25,11 +68,11 @@ class MatchBet:
         if ';'.join(self.players[1]) != ';'.join(matchBet.players[1]):
             raise
         if self.dt < matchBet.dt:
-            self.ts = self.ts + matchBet.ts
+            #self.ts = self.ts + matchBet.ts
             self.eventsInfo = self.eventsInfo + matchBet.eventsInfo
         else:
             self.dt = matchBet.dt
-            self.ts = matchBet.ts + self.ts
+            #self.ts = matchBet.ts + self.ts
             self.eventsInfo = matchBet.eventsInfo + self.eventsInfo
         return self
 
@@ -173,6 +216,15 @@ class Match:
 
     def toArr(self):
         return [self.date, self.time, self.compName, ';'.join(self.players[0]), ';'.join(self.players[1]), str(self.setsScore), str(self.pointsScore)]
+
+    def toDict(self):
+        res = dict()
+        res['hash'] = self.hash
+        res['date'] = self.date
+        res['players'] = [e.copy() for e in self.players]
+        res['setsScore'] = self.setsScore
+        res['pointsScore'] = self.pointsScore
+        return res
 
     @staticmethod
     def getPointsScoreInfo(pointsScore):
