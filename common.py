@@ -17,7 +17,7 @@ def calcHash(arr):
 
 
 class GlobalPlayersDict():
-    def __init__(self, mode = None, dirname = ''):
+    def __init__(self, mode=None, dirname=''):
         self.name2id = dict()
         self.name2id2 = dict()
         self.id2names = dict()
@@ -76,6 +76,10 @@ class GlobalPlayersDict():
                            tn[1] + ' ' + ' '.join([(e[0]) for e in [tn[0]] + tn[2:]]),
                            tn1[1] + ' ' + ' '.join([(e[0] + '.') for e in [tn1[0]] + tn1[2:]]),
                            tn1[1] + ' ' + ' '.join([(e[0]) for e in [tn1[0]] + tn1[2:]])]
+                    if tn[0] == 'александр':
+                        arr += [tn[1] + ' ал-р', 'ал-р ' + tn[1]]
+                    elif tn[1] == 'александр':
+                        arr += [tn[0] + ' ал-р', 'ал-р ' + tn[0]]
             else:
                 arr = [name]
             for short_player in arr:
@@ -92,8 +96,10 @@ class GlobalPlayersDict():
             return self.name2id2.get(name, [])
         return self.name2id.get(name, None)
 
-    def getName(self, playerId):
-        return self.id2names[playerId][0]
+    def getName(self, playerId, fl=0):
+        if fl == 0:
+            return self.id2names[playerId][0]
+        return self.id2names.get(playerId, [None])[0]
 
     def getNames(self, playerId):
         return self.id2names[playerId]
@@ -111,7 +117,7 @@ class GlobalPlayersDict():
             self.setId2Names(id, self.id2names[id] + [name])
 
 
-def updateDict(d, k, val = 1):
+def updateDict(d, k, val=1):
     if k in d:
         d[k] += val
     else:

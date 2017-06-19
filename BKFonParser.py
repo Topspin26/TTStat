@@ -6,7 +6,7 @@ import os
 from os import walk
 import re
 
-class ParserBKFonNew:
+class BKFonParserNew:
     def __init__(self, dirname, filename, maxCnt=-1):
         self.matches = []
         self.matchesDict = dict()
@@ -186,7 +186,7 @@ class ParserBKFonNew:
 #        for match in self.matches:
 
 
-class ParserBKFon:
+class BKFonParser:
     def __init__(self, dirname, filename, maxCnt = -1):
 
         filenames = []

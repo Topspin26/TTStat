@@ -12,7 +12,7 @@ def main():
     dir = 'C:/Programming/SportPrognoseSystem/Результаты/КЧР'
 
     fout = open('prepared_data/local/kchr_results.txt', 'w', encoding = 'utf-8')
-    fout.write('\t'.join(['date','time','compName','id1','id2','setsScore','pointsScore','name1','name2']))
+    fout.write('\t'.join(['date','time','compName','id1','id2','setsScore','pointsScore','name1','name2']) + '\n')
 
     monthname2Num = {'января':1,'февраля':2,'марта':3,'апреля':4,'мая':5,'июня':6,'июля':7,'августа':8,'сентября':9,'октября':10,'ноября':11,'декабря':12}
 

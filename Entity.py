@@ -4,28 +4,28 @@ import numpy as np
 from common import *
 
 class MatchBet:
-    def __init__(self, eventId, dt, compName, ids, eventsInfo, players=None, segment="segment"):
+    def __init__(self, eventId, dt, compName, ids, eventsInfo, names=None, segment="segment"):
         self.eventId = eventId
         self.dt = dt
         self.compName = compName
         self.ids = ids
         self.eventsInfo = eventsInfo
-        self.players = players
+        self.names = names
         self.segment = segment
 
     def __str__(self):
-        return '\t'.join([self.eventId, self.dt, self.compName, ';'.join(self.players[0]), ';'.join(self.players[1]),
+        return '\t'.join([self.eventId, self.dt, self.compName, ';'.join(self.names[0]), ';'.join(self.names[1]),
                          json.dumps(self.eventsInfo, ensure_ascii=False)])
 
     def getKey(self):
-        return calcHash([self.compName, str(self.eventId)])
+        return 'l' + calcHash([self.compName, str(self.eventId)])
 
     def toDict(self):
         res = dict()
         res['key'] = self.getKey()
         res['date'] = self.dt
         res['ids'] = [e.copy() for e in self.ids]
-        res['players'] = [e.copy() for e in self.players]
+        res['names'] = [e.copy() for e in self.names]
 #        res['setsScore'] = self.setsScore
 #        res['pointsScore'] = self.pointsScore
         return res
@@ -63,9 +63,9 @@ class MatchBet:
         if self.compName != matchBet.compName:
             print(self.compName, matchBet.compName)
 #            raise
-        if ';'.join(self.players[0]) != ';'.join(matchBet.players[0]):
+        if ';'.join(self.names[0]) != ';'.join(matchBet.names[0]):
             raise
-        if ';'.join(self.players[1]) != ';'.join(matchBet.players[1]):
+        if ';'.join(self.names[1]) != ';'.join(matchBet.names[1]):
             raise
         if self.dt < matchBet.dt:
             #self.ts = self.ts + matchBet.ts
@@ -91,7 +91,7 @@ class Competition:
         self.matches.append(match)
 
         for i in range(2):
-            for e in match.players[i]:
+            for e in match.ids[i]:
                 self.playersSet.add(e)
         for e in match.sources:
             if not (e in self.sources):
@@ -134,10 +134,11 @@ class Match:
         self.pointsScore = pointsScore
     '''
 
-    def __init__(self, date, players, matchId = None, winsScore = None, setsScore = None, pointsScore=None,
-                 time=None, isPair = None, compName = None, source = None, round = None):
+    def __init__(self, date, ids, names=None, matchId=None, winsScore=None, setsScore=None, pointsScore=None,
+                 time=None, isPair=None, compName=None, source=None, round=None):
         self.date = date
-        self.players = players
+        self.ids = ids
+        self.names = names
         self.matchId = matchId
         self.flError = 0
 
@@ -155,20 +156,21 @@ class Match:
         if (self.setsScore is None) and not (self.pointsScore is None):
             self.sets, self.points = Match.getPointsScoreInfo(self.pointsScore)
             self.setsScore = str(self.sets[0]) + ':' + str(self.sets[1])
-        if not (self.setsScore is None) and (self.sets is None):
+        if (self.setsScore is not None) and (self.sets is None):
             try:
                 self.sets = [int(e) for e in self.setsScore.split(':')]
             except:
                 self.flError = 1
                 pass
-        if not (self.pointsScore is None) and (self.points is None):
+        if (self.pointsScore is not None) and (self.points is None):
             try:
                 _, self.points = Match.getPointsScoreInfo(self.pointsScore)
             except:
+                # self.points = [[], []]
                 self.flError = 1
                 pass
 
-        if (self.winsScore is None) and not (self.sets is None):
+        if (self.winsScore is None) and (self.sets is not None):
             self.wins = [int(self.sets[0] > self.sets[1]), int(self.sets[1] > self.sets[0])]
             self.winsScore = str(self.wins[0]) + ':' + str(self.wins[1])
         if not (self.winsScore is None) and (self.wins is None):
@@ -181,7 +183,7 @@ class Match:
         self.isPair = isPair
         if (self.isPair is None):
             self.isPair = 0
-            if len(self.players[0]) == 2:
+            if len(self.ids[0]) == 2:
                 self.isPair = 1
 
         self.hash = self.getHash()
@@ -198,11 +200,15 @@ class Match:
             sets = []
         else:
             sets = self.sets
-        return calcHash([self.date] + self.players[0] + self.players[1] + sets + [e * i for i,e in enumerate(Match.getSetSumPoints(self.points))])
+        return calcHash([self.date] +
+                        [e1 if e1 != '' else e2 for e1, e2 in zip(self.ids[0], self.names[0])] +
+                        [e1 if e1 != '' else e2 for e1, e2 in zip(self.ids[1], self.names[1])] +
+                        sets + [e * i for i, e in enumerate(Match.getSetSumPoints(self.points))])
         #return calcHash([self.date, self.round] + self.players[0] + self.players[1] + sets + [e * i for i,e in enumerate(Match.getSetSumPoints(self.points))])
 
     def reverse(self):
-        matchReversed = Match(self.date, [self.players[1].copy(), self.players[0].copy()],
+        matchReversed = Match(self.date, [self.ids[1].copy(), self.ids[0].copy()],
+                              names=[self.names[1].copy(), self.names[0].copy()],
                               setsScore=Match.reverseSetsScore(self.setsScore),
                               pointsScore=Match.reversePointsScore(self.pointsScore))
         matchReversed.time = self.time
@@ -212,16 +218,18 @@ class Match:
         return matchReversed
 
     def toStr(self):
-        return '\t'.join([self.date, self.time, self.compName, ';'.join(self.players[0]), ';'.join(self.players[1]), str(self.setsScore), str(self.pointsScore)])
+        return '\t'.join([self.date, self.time, self.compName, ';'.join(self.ids[0]), ';'.join(self.ids[1]),
+                          str(self.setsScore), str(self.pointsScore), self.hash])
 
     def toArr(self):
-        return [self.date, self.time, self.compName, ';'.join(self.players[0]), ';'.join(self.players[1]), str(self.setsScore), str(self.pointsScore)]
+        return [self.date, self.time, self.compName, ';'.join(self.ids[0]), ';'.join(self.ids[1]), str(self.setsScore), str(self.pointsScore)]
 
     def toDict(self):
         res = dict()
         res['hash'] = self.hash
         res['date'] = self.date
-        res['players'] = [e.copy() for e in self.players]
+        res['ids'] = [e.copy() for e in self.ids]
+        res['names'] = [e.copy() for e in self.names]
         res['setsScore'] = self.setsScore
         res['pointsScore'] = self.pointsScore
         return res
