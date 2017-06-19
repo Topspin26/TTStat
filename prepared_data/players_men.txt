@@ -52,7 +52,7 @@ m51	Вадим Бочковский
 m52	Вадим Ярошенко;Yarashenka Vadim
 m53	Валентин Панкратов
 m54	Валерий Зоненко;Zonenko Valeriy
-m55	Валерий Раков;Rakov Valerij
+m55	Валерий Раков;Rakov Valerij;Rakov Valeriy
 m56	Василий Лакеев;LAKEEV Vasily
 m57	Василий Скаленко
 m58	Василий Филатов;FILATOV Vasilij
@@ -14410,7 +14410,7 @@ m14425	PETER Alessio
 m14426	GARCIA Milton
 m14427	NAVARRETE Nicolas
 m14428	SCHANBACHER Jan Peter
-m14429	Даниэль Кишш;Kiss Daniel Gabor
+m14429	Даниэль Кишш;Kiss Daniel;Kiss Daniel Gabor
 m14430	HUANG Yan-Cheng
 m14431	QUARTUCCIO Giuseppe
 m14432	LOPEZ Cesar
@@ -16761,3 +16761,6 @@ m16776	Кует Нгуен
 m16777	Евгений Масокин
 m16778	Владимир Луцкий
 m16779	Дмитрий Игнатьев
+m16780	Андрей Сырцов
+m16781	Сергей Курдюков
+m16782	Филипп Ерошов
