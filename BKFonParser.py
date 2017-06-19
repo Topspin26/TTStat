@@ -8,78 +8,78 @@ import re
 
 class ParserBKFonNew:
     def __init__(self, dirname, filename, maxCnt=-1):
-
-        filenames = []
-        for f in walk(dirname):
-            for ff in f[2]:
-                fp = os.path.abspath(os.path.join(f[0], ff))
-                if fp.find(filename) != -1:
-                    filenames.append(fp)
-
         self.matches = []
-        matches = dict()
+        self.matchesDict = dict()
+        self.lastEventId = None
+        self.lastUpdate = dict()
+#        self.counter = 0
+        self.maxCnt = maxCnt
+
+    def addLineBlock(self, dt, lines):
+        matchesDict = dict()
         trSegmentS = None
         lastEventId = None
-        lastUpdate = dict()
-        k = 0
-        for filename in filenames:
-            print(filename)
-            with open(filename, 'r', encoding='utf-8') as fin:
-                for line in fin:
-                    tokens = line.split('\t')
-                    time = ''
-                    if len(tokens) == 2:
-                        time = tokens[0]
-                        line = tokens[1]
-                    line = re.sub(r'\<\!--[^>]*--\>', '', line)
-                    tr = html.fromstring(line)
-                    cl = tr.get('class')
-                    if cl.find('table__row _type_segment _sport_3088') != -1:
-                        trSegmentS = [time, line]
-                    else:
-                        #print(line)
-                        if tr.getchildren()[0].get('class').find('_indent_2') == -1:
-                            lastEventId = line.split('"table__event-number">')[1].split('<')[0].strip()
-                            #print(lastEventId)
-                            #lastEventId = tr.get('id')
-                        if not (lastEventId in matches):
-                            matches[lastEventId] = [trSegmentS]
-                            lastUpdate[lastEventId] = k
-                        matches[lastEventId].append([time, line])
-                        lastUpdate[lastEventId] = k
-                    k += 1
+        for line in lines:
+            #print(line)
+            #tokens = line.split('\t')
+            #time = ''
+            #if len(tokens) == 2:
+            #    time = tokens[0]
+            #    line = tokens[1]
+            line = re.sub(r'\<\!--[^>]*--\>', '', line)
+            tr = html.fromstring(line)
+            cl = tr.get('class')
+            if cl.find('table__row _type_segment _sport_3088') != -1:
+                trSegmentS = line
+                lastEventId = None
+            else:
+                if tr.getchildren()[0].get('class').find('_indent_2') == -1:
+                    lastEventId = line.split('"table__event-number">')[1].split('<')[0].strip()
+                    #print(lastEventId)
+                    #lastEventId = tr.get('id')
+                if not (lastEventId is None):
+                    if not (lastEventId in matchesDict):
+                        matchesDict[lastEventId] = [trSegmentS]
+    #                    self.lastUpdate[lastEventId] = self.counter
+                    matchesDict[lastEventId].append(line)
+#                self.lastUpdate[lastEventId] = self.counter
+        resultBlock = []
+        for key, value in matchesDict.items():
+            resultBlock.append(self.prepareMatch(key, dt, value))
+        return resultBlock
 
-                    if k % 10000 == 0:
-                        print([k, len(matches)])
-                        matchesNew = dict()
-                        for key, value in matches.items():
-                            if (k - lastUpdate[key]) > 5000:
-                                print('key', key)
-                                self.matches.append(self.prepareMatch(key, value))
-                            else:
-                                matchesNew[key] = value
-                        matches.clear()
-                        matches = matchesNew
-                        print([len(self.matches), len(matches)])
+        '''
+        if self.counter % 10000 == 0:
+            print([self.counter, len(self.matchesDict)])
+            matchesNew = dict()
+            for key, value in self.matchesDict.items():
+                if (self.counter - self.lastUpdate[key]) > 5000:
+                    print('key', key)
+                    self.matches.append(self.prepareMatch(key, value))
+                else:
+                    matchesNew[key] = value
+            self.matchesDict.clear()
+            matches = matchesNew
+            print([len(self.matches), len(matches)])
 
-                    if k == maxCnt:
-                        break
-        # if k == 2000:
-        #                break
-        for key, value in matches.items():
+            #if self.counter == self.maxCnt:
+            #    break
+            # if k == 2000:
+            #     break
+        for key, value in self.matchesDict.items():
             print('key', key)
             self.matches.append(self.prepareMatch(key, value))
+        '''
 
-    def prepareMatch(self, eventId, rows):
+    def prepareMatch(self, eventId, dt, rows):
         players = None
         compName = None
-        dt = rows[0][0]
         eventsInfo = []
         ts = []
         lastTime = None
         events = dict()
         for i in range(len(rows)):
-            line = rows[i][1]
+            line = rows[i]
 #            print(line)
             line = line.replace(' _type-active', '')
             tr = html.fromstring(line)
@@ -89,14 +89,16 @@ class ParserBKFonNew:
                 continue
             trId = line.split('"table__event-number">')[1].split('<')[0].strip()
 
+            '''
             if lastTime != rows[i][0]:
                 if not (lastTime is None):
                     ts.append(lastTime)
                     eventsInfo.append(events.copy())
                     #print(events)
                     events = dict()
-
+            
             lastTime = rows[i][0]
+            '''
 
             if tr.getchildren()[0].get('class').find('_indent_2') == -1:
                 #the whole match
@@ -111,7 +113,7 @@ class ParserBKFonNew:
                     players = players.split(' — ')  # defis
                     for j in range(2):
                         players[j] = players[j].split('/')
-                    print(players)
+                    #print(players)
             else:
                 arr = line.split('"table__match-title-text">')
                 if len(arr) > 1:
@@ -172,11 +174,12 @@ class ParserBKFonNew:
                 else:
                     events[name][columns[i]] = [0, 0, -1]
 
-        if not (lastTime is None):
-            ts.append(lastTime)
-            eventsInfo.append(events.copy())
-            #print(events)
-        return MatchBet(eventId, [], dt, compName, players, ts, eventsInfo)
+#        if not (lastTime is None):
+#            ts.append(lastTime)
+#        eventsInfo.append(events.copy())
+        eventsInfo = events.copy()
+        #print(events)
+        return MatchBet(eventId, dt, compName, None, [dt, eventsInfo], players=players)
 
 # self.createMatchesDict()
 #    def createMatchesDict(self):
