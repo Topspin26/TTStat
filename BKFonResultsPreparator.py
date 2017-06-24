@@ -55,192 +55,59 @@ fillLPCorr(lpCorr)
 fillChSCorr(chsCorr)
 fillMTCorr(mtCorr)
 
-def processOld(ff, matches, corrections):
-    with open('data/bkfon/results/' + ff, 'r', encoding='utf-8') as fin:
+def process(filename, matches, corrections):
+    with open(filename, 'r', encoding='utf-8') as fin:
         for line in fin:
-            table = html.fromstring(line)
-            trs = table.xpath("*//tr")
-            flTT = 0
-            compName = ''
-            for tr in trs:
-                if tr.get('class') == 'sectCaption':
-                    s = tr.xpath('.//th/text()')[0].replace(u'\xa0', ' ')
-                    compName = s
-                    if s.find('Наст. теннис') != -1 and s.find('TT-CUP') == -1:
-                        flTT = 1
-                        # print(s)
-                    else:
-                        flTT = 0
+            dt, matchTime, compName, matchId, names1, names2, setsScore, pointsScore = line.rstrip('\n').split('\t')
+            names = [names1, names2]
+
+            tcorr = corrections.copy()
+            if compName.replace('Жен. ', '').find('Лига Про. Москва') != -1:
+                tcorr += lpCorr
+            if compName.replace('Жен. ', '').find('Челленджер серия') != -1:
+                tcorr += chsCorr
+            if compName.replace('Жен. ', '').find('Мастер-Тур') != -1:
+                tcorr += mtCorr
+
+#            names = re.sub(' +', ' ', names.replace(u'\xa0', ' '))
+#            names = names.strip().split(' - ')
+
+            for k, v in tcorr:
+                if k.find(';') != -1:
+                    if k.split(';')[0] == dt:
+                        names = [e.replace(k.split(';')[1], v) for e in names]
                 else:
-                    if flTT == 1:
-                        tcorr = corrections.copy()
-                        if compName.replace('Жен. ', '').find('Лига Про. Москва') != -1:
-                            tcorr += lpCorr
-                        if compName.replace('Жен. ', '').find('Челленджер серия') != -1:
-                            tcorr += chsCorr
-                        if compName.replace('Жен. ', '').find('Мастер-Тур') != -1:
-                            tcorr += mtCorr
-                        arr = [re.sub(' +', ' ', e.replace(u'\xa0', ' ')) for e in tr.xpath('.//text()')]
+                    names = [e.replace(k, v) for e in names]
+                    #                    print(names)
 
-                        #print(arr)
-                        timeArr = arr[1].split(' ')
-                        if len(timeArr) == 2:
-                            time = timeArr[1].strip()
-                        else:
-                            time = timeArr[0].strip()
-
-                        matchTime = time
-
-                        dt = timeArr[0].strip()
-                        if len(dt.split('.')) == 2:
-                            day = dt.split('.')[0].zfill(2)
-                            month = dt.split('.')[1].zfill(2)
-                            year = ff[:4]
-                            dt = year + '-' + month + '-' + day
-                        else:
-                            dt = ff[:10]
-
-                        arr = [e.replace('(ж)', '') for e in arr]
-                        s0 = '\t'.join(arr)
-                        for k, v in tcorr:
-                            if k.find(';') != -1:
-                                if k.split(';')[0] == dt:
-                                    arr = [e.replace(k.split(';')[1], v) for e in arr]
-                            else:
-                                arr = [e.replace(k, v) for e in arr]
-                        if '\t'.join(arr) != s0:
-                            print(s0 + '\n' + '\t'.join(arr) + '\n')
-                            #                                if s0.find('(ж)') != -1:
-                            #                                    print(s0)
-                        # arr = [pattern.sub(lambda x: corrections[x.group()], e) for e in arr]
-
-                        names = arr[2].strip().split(' - ')
-                        if len(names) != 2:
-                            print(arr)
-                            continue
-                        if names[0].lower().find('game') != -1:
-                            continue
-                            #                                if dt != ff[:10]:
-                            #                                    print(dt + ' ' + ff[:10])
-                        if arr[4] != 'отмена':
-                            matches.append(Match(dt,
-                                                 [[e.strip() for e in names[0].strip().split('/')],
-                                                  [e.strip() for e in names[1].strip().split('/')]],
-                                                 setsScore=arr[3],
-                                                 pointsScore=arr[4].replace('(', '').replace(')', '').replace(' ', ';').replace('-', ':'),
-                                                 time=matchTime,
-                                                 compName=compName,
-                                                 matchId=arr[0]))
-
-
-monthname2Num = {'янв':1,'фев':2,'мар':3,'апр':4,'май':5,'мая':5,'июн':6,'июл':7,'авг':8,'сен':9,'окт':10,'ноя':11,'дек':12}
-
-def processNew(ff, matches, corrections):
-    print(ff)
-    with open('data/bkfon/results/' + ff, 'r', encoding='utf-8') as fin:
-        for line in fin:
-            table = html.fromstring(line)
-            trs = table.xpath("//tr")
-            print(len(trs))
-            compName = ''
-            for itr,tr in enumerate(trs):
-                if tr.get('class').find('table__row _type_segment _sport_3088') != -1:
-                    s = re.sub(r'\<\!--[^>]*--\>', '', etree.tostring(tr, pretty_print=True, encoding='unicode'))
-                    #print(s)
-                    compName = s.split('"table__title-text">')[1].split('<')[0]
-#                    print(compName)
-                else:
-                    if compName.find('TT-CUP') != -1:
-                        continue
-                    tds = tr.xpath('//tr[' + str(itr+1) + ']/td')
-                    s = re.sub(r'\<\!--[^>]*--\>', '', etree.tostring(tds[0], pretty_print=True, encoding='unicode'))
-#                    print(s.strip())
-                    timeArr = s.split('"table__time-icon')[1].split('<span>')[1].split('<')[0].split(' в ')
-                    matchTime = timeArr[1]
-                    month =  str(monthname2Num[timeArr[0].split()[1][:3]]).zfill(2)
-                    dt = ff[:4] + '-' + month + '-' + timeArr[0].split()[0].zfill(2)
-#                    print(timeArr)
-#                    print(dt)
-                    names = s.split('"table__event-number">')[1].split('</span>')[1].split('<')[0].strip()
-
-                    tcorr = corrections.copy()
-                    if compName.replace('Жен. ', '').find('Лига Про. Москва') != -1:
-                        tcorr += lpCorr
-                    if compName.replace('Жен. ', '').find('Челленджер серия') != -1:
-                        tcorr += chsCorr
-                    if compName.replace('Жен. ', '').find('Мастер-Тур') != -1:
-                        tcorr += mtCorr
-
-                    names = re.sub(' +', ' ', names.replace(u'\xa0', ' '))
-
-                    names = names.strip().split(' - ')
-
-                    for k, v in tcorr:
-                        if k.find(';') != -1:
-                            if k.split(';')[0] == dt:
-                                names = [e.replace(k.split(';')[1], v) for e in names]
-                        else:
-                            names = [e.replace(k, v) for e in names]
-        #                    print(names)
-
-                    matchId = s.split('"table__event-number">')[1].split('</span>')[0].strip()
-#                    print(matchId)
-                    setsScore = ''
-                    try:
-                        setsScore = s.split('"table__score">')[1].split('<')[0]
-                    except:
-                        pass
-#                    print(setsScore)
-                    pointsScore = ''
-                    try:
-                        pointsScore = s.split('"table__score-more">')[1].split('<')[0]
-                        pointsScore = pointsScore.replace('(', '').replace(')', '').replace('\xa0', ';').replace('-', ':')
-                    except:
-                        pass
-#                    print(pointsScore)
-
-                    if names[0].lower().find('game') != -1:
-                        continue
-
-                    if len(setsScore) > 0:
-                        matches.append(Match(dt,
-                         [[e.strip() for e in names[0].strip().split('/')],
-                          [e.strip() for e in names[1].strip().split('/')]],
-                         setsScore=setsScore,
-                         pointsScore=pointsScore,
-                         time=matchTime,
-                         compName=compName,
-                         matchId=matchId))
-
-                        print(matches[-1].toStr())
+            names = [names[0].split(';'), names[1].split(';')]
+            if pointsScore != 'отмена' and len(setsScore) > 0:
+                matches.append(Match(dt,
+                                     names,
+                                     names=names,
+                                     setsScore=setsScore,
+                                     pointsScore=pointsScore,
+                                     time=matchTime,
+                                     compName=compName,
+                                     matchId=matchId))
 
 
 def getMatches(corrections, wrongLines):
-#    pattern = re.compile('|'.join(corrections.keys()))
     matches = []
-    for f in walk('data/bkfon/results'):
-        fSet = set(f[2])
+    for f in walk('data/bkfon/results_parsed'):
         for ff in f[2]:
-            #print(ff)
-            if ff.find('old') != -1:
-                continue
-            if ff.find('new') != -1:
-                if not (ff.replace('_new', '') in fSet):
-                    processNew(ff, matches, corrections)
-#                    break
-                continue
-    #            if ff.find('2016-11') == -1 and ff.find('2016-12') == -1 and ff.find('2017-') == -1:
-#                continue
-#            if ff.find('2017-02-07') == -1:
-#                continue
-            processOld(ff, matches, corrections)
+            process('data/bkfon/results_parsed' + '/' + ff, matches, corrections)
+#            if ff.find('new') != -1:
+#                processNew(ff, matches, corrections)
+#            else:
+#                processOld(ff, matches, corrections)
     return matches
 
 def getMatchesPlayers(matches):
     res = dict()
     for match in matches:
         for i in range(2):
-            for player in match.players[i]:
+            for player in match.names[i]:
                 updateDict(res, player)
     return res
 
@@ -290,9 +157,9 @@ def main():
     for player in players:
         playersMW[player] = [0, 0, 0]
     for match in matches:
-        if len(match.players[0]) == 1:
-            pl1 = match.players[0][0]
-            pl2 = match.players[1][0]
+        if len(match.names[0]) == 1:
+            pl1 = match.names[0][0]
+            pl2 = match.names[1][0]
             if pl1 in m:
                 playersMW[pl2][0] += 1
             elif pl1 in w:
@@ -340,7 +207,7 @@ def main():
 #                print(match.toStr())
                 ids = [[], []]
                 for i in range(2):
-                    for player in match.players[i]:
+                    for player in match.names[i]:
 
                         id = playersDict.getId(player)
 

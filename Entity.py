@@ -36,6 +36,9 @@ class MatchBet:
 
     def getLastScore(self):
         lastMatchInd = len(self.eventsInfo) - 1
+        #print(self.eventsInfo)
+        #print(self.eventsInfo[lastMatchInd])
+        #print()
         while 'match' not in self.eventsInfo[lastMatchInd][1]:
             try:
                 if 'match' in self.eventsInfo[lastMatchInd][1][0]:
@@ -48,7 +51,6 @@ class MatchBet:
         if lastMatchInd == -1:
             return None
         return self.eventsInfo[lastMatchInd][1]['match'].get('score', None)
-
 
     def from_str(self, s):
         tokens = s.split('\t')
@@ -64,9 +66,28 @@ class MatchBet:
             print(self.compName, matchBet.compName)
 #            raise
         if ';'.join(self.names[0]) != ';'.join(matchBet.names[0]):
-            raise
+            with open('entity_names.txt', 'a') as flog:
+                flog.write(str(self.names) + '\n')
+                flog.write(str(matchBet.names) + '\n')
+            print(self.names[0], self.names[1])
+            print(matchBet.names[0], matchBet.names[1])
+#            if self.names[0][0] != 'Гинзбург Ш' and \
+#               self.names[0][0] != 'Медвецкая А' and \
+#               self.names[0][0] != 'Пан И Ц' and \
+#               self.names[0][0] != 'Game 2 Египет А  (ж)':
+#                raise
+            self.names = matchBet.names
         if ';'.join(self.names[1]) != ';'.join(matchBet.names[1]):
-            raise
+            with open('entity_names.txt', 'a') as flog:
+                flog.write(str(self.names) + '\n')
+                flog.write(str(matchBet.names) + '\n')
+            print(self.names[0], self.names[1])
+            print(matchBet.names[0], matchBet.names[1])
+#            if self.names[1][0] != 'Мольнар Ч' and \
+#               self.names[1][0] != 'Желубенков А' and \
+#               self.names[1][0] != 'Какунина Я':
+#                raise
+            self.names = matchBet.names
         if self.dt < matchBet.dt:
             #self.ts = self.ts + matchBet.ts
             self.eventsInfo = self.eventsInfo + matchBet.eventsInfo
@@ -181,7 +202,7 @@ class Match:
         self.sources.append(source)
         self.time = time
         self.isPair = isPair
-        if (self.isPair is None):
+        if self.isPair is None:
             self.isPair = 0
             if len(self.ids[0]) == 2:
                 self.isPair = 1

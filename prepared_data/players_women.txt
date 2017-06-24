@@ -1617,7 +1617,7 @@ w1620	NEMES Olga
 w1621	SMIGANOVSCAIA Ecaterina
 w1622	BARREIRA Nathalia
 w1623	LEE Chaeeun
-w1624	Дора Мадарас;Madarasz Dora
+w1624	Дора Мадарас;Madarasz Dora;Дора Мадарац
 w1625	WEI Dan
 w1626	PAPADAKI Angeliki
 w1627	KAMADA Nami
@@ -2647,7 +2647,7 @@ w2654	ASENOVA Tanya
 w2655	Мун Хунь Юн;Moon Hyunjung
 w2656	JOZEPSONE Ina
 w2657	BORQUAYE Bernice
-w2658	Бритт Эрланд;Eerland Britt
+w2658	Бритт Эрланд;Eerland Britt;Бритт Иирланд
 w2659	Паулина Книшевская;Knyszewska Paulina
 w2660	GUZMAN Andrea
 w2661	HAGA Stine

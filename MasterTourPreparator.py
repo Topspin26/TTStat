@@ -118,13 +118,13 @@ class MasterTourPreparator:
                     print('match.flError ' + match.toStr())
 
         print('\nMULTIPLE')
-        for k,v in sorted(multiple.items(), key = lambda x: -x[1]):
+        for k, v in sorted(multiple.items(), key=lambda x: -x[1]):
             print([k, v])
         print('\nUNKNOWN')
-        for k,v in sorted(unknown.items(), key = lambda x: -x[1]):
+        for k, v in sorted(unknown.items(), key=lambda x: -x[1]):
             print([k, v])
         print('\nSOLVED')
-        for k,v in sorted(solved.items(), key = lambda x: -x[1]):
+        for k, v in sorted(solved.items(), key=lambda x: -x[1]):
             print([k, v])
 
 def main():

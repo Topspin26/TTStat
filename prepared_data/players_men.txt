@@ -740,8 +740,8 @@ m747	Devos Robin;Робин Девос
 m748	BENTSEN Allan
 m749	TAVUKCUOGLU Irfan
 m750	Сео Хундеок;Seo Hyundeok
-m751	MOLNAR Csaba
-m752	Crepulja Bojan;Боян Крепуля;Боян Крепулья
+m751	MOLNAR Csaba;Мольнар Чаба;Мольнар Ксаба
+m752	Crepulja Bojan;Боян Крепуля;Боян Крепулья;Боян Црепулья
 m753	WALLACE Simon
 m754	HOFFMANN Tamas
 m755	MATSUSHITA Eishi
@@ -782,7 +782,7 @@ m790	ZHANG Yahao
 m791	KOBES Kristian
 m792	TAFESE Angelo
 m793	TSENG Chun-Yuan
-m794	Асука Мати;Machi Asuka
+m794	Асука Мачи;Асука Мати;Machi Asuka
 m795	TASEI Kunihito
 m796	ALICIC Almir
 m797	PETKOV Marko
@@ -883,7 +883,7 @@ m891	SOINE Samuli
 m892	JALAL Ameen
 m893	LAWSON-GAIZER Fessou
 m894	KIM Taeksoo
-m895	Андреа Ландрье;Андреа Ландрю;Landrieu Andrea
+m895	Андреа Ландрье;Андреа Ландрю;Андреа Ландри;Landrieu Andrea
 m896	SAKAMOTO Ryusuke
 m897	GAMBRA Jorge
 m898	Andersson Harald;Харальд Андерссон
@@ -915,7 +915,7 @@ m923	LEE Jungjae
 m924	CHUAN Che-Wei
 m925	SOKOLOV Mikhail
 m926	GUO Yi Teng
-m927	Роман Лоренц;Lorentz Romain
+m927	Роман Лоренц;Lorentz Romain;Роман Лорентц
 m928	TAN Chin
 m929	BRITO Roberto
 m930	CHRISTE Michael
@@ -944,7 +944,7 @@ m952	Machado Carlos;Карлос Мачадо
 m953	STEFANELLI Andrea
 m954	LIM Youngjun
 m955	SLATINSEK Uros
-m956	Wang Zengyi;Ван Цзэн И
+m956	Wang Zengyi;Ван Цзэн И;Ванг Зэн И
 m957	MAKOWSKI Andrezei
 m958	HIRANO Yuki
 m959	Пьер-Люк Терио;Theriault Pierre-Luc
@@ -1096,7 +1096,7 @@ m1105	WIJERS Barry
 m1106	LI Xing Chang
 m1107	DAHLSTROM Patrik
 m1108	SKAFAR Gregor
-m1109	GUNDUZ Ibrahim;Ибрагим Гюндюз
+m1109	GUNDUZ Ibrahim;Ибрагим Гюндюз;Ибрагим Гундуз
 m1110	Rezetka Roman;Роман Резетка
 m1111	TAKAHASHI Kanshiro
 m1112	MATSUSHITA Kaiki
@@ -1296,7 +1296,7 @@ m1305	Эммануэль Лебессон;Lebesson Emmanuel
 m1306	MARTINEZ Livan
 m1307	KANG Donghoon
 m1308	KOJIMA Rodrigo
-m1309	Кэндзи Матсудайра;Matsudaira Kenji
+m1309	Кэндзи Матсудайра;Matsudaira Kenji;Мацудайра Кендзи
 m1310	WEN Wei-Chieh
 m1311	Райко Гомерс;Gommers Rajko
 m1312	ZHANG Jiete
@@ -1393,7 +1393,7 @@ m1402	CABRERA Thierry
 m1403	LAMOQUE Florent
 m1404	SKIERSKI Piotr
 m1405	Сюй Хай Дун;Xu Haidong
-m1406	Тибо Дарсис;Darcis Thibaut
+m1406	Тибо Дарсис;Darcis Thibaut;Тибо Дарцис
 m1407	ZHANG Yiqin
 m1408	Tsuboi Gustavo;Густаво Цубой;Густаво Цубои
 m1409	TZIAMBOS Andreas
@@ -1415,7 +1415,7 @@ m1424	GUO Keli
 m1425	Роман Березин
 m1426	HANDOYO Reno
 m1427	Yang Shuo;Ян Шуо
-m1428	Ho Kwan Kit;Хо Кван Кит;Хо К К
+m1428	Ho Kwan Kit;Хо Кван Кит;Хо Ван Кит;Хо К К
 m1429	WOSIK Torben
 m1430	CHEN Keda
 m1431	PLATTNER Dominique
@@ -1654,7 +1654,7 @@ m1664	Патрик Затовка;Zatowka Patryk
 m1665	Кристоф Лего;Legout Christophe
 m1667	KIM Hyunmin
 m1668	Филипп Шиманский;Szymanski Filip
-m1669	Кристиан Карлссон;Karlsson Kristian
+m1669	Кристиан Карлссон;Karlsson Kristian;Кристиан Карлсон
 m1670	CHUANG Chun-Yu
 m1671	EVANS Gavin
 m1672	Бастиан Штегер;Steger Bastian
@@ -1826,7 +1826,7 @@ m1838	Fegerl Stefan;Штефан Фегерль;Стефан Фегерль
 m1839	Karlsson Mattias;Маттиас Карлссон
 m1840	YU Kalun
 m1841	Angles Enzo;Энзо Англе
-m1842	Szudi Adam;Адам Суди;Адам Зуди
+m1842	Szudi Adam;Адам Суди;Адам Зуди;Адам Шуди
 m1843	AL-HARBI Khaled
 m1844	Ryuzaki Tonin;Тонин Рюзаки
 m1845	CHOI Kichan
@@ -1870,7 +1870,7 @@ m1882	MILICEVIC Srdan
 m1883	Rosskopf Jorg;Йорг Росскопф
 m1884	TORNKVIST Andreas;Toernkvist Andreas
 m1885	Bedair Omar;Омар Бедер
-m1886	Pang Xue Jie;Пан Сюэ Цзе
+m1886	Pang Xue Jie;Пан Сюэ Цзе;Панг Сю Джи
 m1887	FENG Xiaoquan
 m1888	CLOSSET Marc
 m1889	DE NODREST Leo
@@ -2036,7 +2036,7 @@ m2048	SAHA Subhajit
 m2049	ALMUGHANNE Fahed
 m2050	WINBORN Aaron
 m2051	Soderlund Hampus;Хампус Содерлунд
-m2052	Йенс Лундквист;Lundqvist Jens
+m2052	Йенс Лундквист;Lundqvist Jens;Йенс Люндквист
 m2053	HMAM Adem
 m2054	AJI Donny
 m2055	Koriyama Hokuto;Хокуто Корияма
@@ -2331,7 +2331,7 @@ m2345	Хьюго Кальдерано;Calderano Hugo
 m2346	SUAREZ Dino
 m2347	HU Bingtao
 m2348	Schmid Elia;Элия Шмид
-m2349	Qiu Dang;Ки Дан;Цю Дан
+m2349	Qiu Dang;Ки Дан;Цю Дан;Цю Данг
 m2350	CHANG Kun
 m2351	KATO Yoshiyuki
 m2352	TRUKSA Jaromir
@@ -2681,7 +2681,7 @@ m2695	GORMAN Viktor
 m2696	MAGUIRE Gavin
 m2697	WASIM Shahzad
 m2698	MRKVICKA Radek
-m2699	Джонхун Лим;Lim Jonghoon
+m2699	Джонхун Лим;Йонхун Лим;Lim Jonghoon
 m2700	VU Manh Cuong
 m2701	TANG Fei
 m2702	Ростислав Салкин

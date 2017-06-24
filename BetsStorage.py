@@ -1,5 +1,6 @@
 import json
 import re
+import copy
 import datetime
 
 from Entity import *
@@ -19,7 +20,7 @@ class BetsStorage:
                 dt = tokens[2]
                 compName = tokens[3]
                 ids = [tokens[4].split(';'), tokens[5].split(';')]
-                players = [tokens[6].split(';'), tokens[7].split(';')]
+                names = [tokens[6].split(';'), tokens[7].split(';')]
                 info = json.loads(tokens[8])
                 pattern = r"\(([A-Za-z0-9- ]+)\)"
 
@@ -64,7 +65,7 @@ class BetsStorage:
                         raise
                 if matchHash is not None:
                     if matchHash not in self.bets:
-                        matchBet = MatchBet(eventId, dt, compName, ids, info, players=players)
+                        matchBet = MatchBet(eventId, dt, compName, ids, info, names=names)
                         self.bets[matchHash] = matchBet
                     else:
                         print('not unique bet match hash')
@@ -99,6 +100,7 @@ class BetsStorage:
 
 
     def update(self, blocks):
+        finished = []
         for matchBet in blocks:
             mKey = matchBet.getKey()
             if mKey in self.liveBets:
@@ -108,15 +110,30 @@ class BetsStorage:
             self.lastUpdate[mKey] = self.counter
         liveBetsNew = dict()
         lastUpdateNew = dict()
-        for betId,bet in self.liveBets.items():
-            print(bet.getLastScore(), self.isFinalScore(bet.getLastScore()))
-            if (self.counter - self.lastUpdate[betId] > 200) or \
-               (self.counter - self.lastUpdate[betId] > 10) and self.isFinalScore(bet.getLastScore()):
-                self.bets[bet.dt + '\t' + betId] = bet
-                print(bet)
+        for mKey, bet in self.liveBets.items():
+            #print(bet.getLastScore(), self.isFinalScore(bet.getLastScore()))
+            if (self.counter - self.lastUpdate[mKey] > 200) or \
+               (self.counter - self.lastUpdate[mKey] > 10) and self.isFinalScore(bet.getLastScore()):
+
+                self.bets[mKey] = bet
+                ids = [[''] * len(bet.names[0]), [''] * len(bet.names[0])]
+                if bet.ids is not None:
+                    ids = copy.deepcopy(bet.ids)
+                match = Match(bet.dt[:10], ids,
+                              names=bet.names,
+                              setsScore=bet.getLastScore(),
+                              pointsScore=bet.getLastScore(),
+                              time=bet.dt[11:],
+                              compName=bet.compName,
+                              source='bkfon_live')
+                self.bets[match.hash] = bet
+                finished.append(match)
+                #print(match.toStr())
             else:
-                liveBetsNew[betId] = bet
-                lastUpdateNew[betId] = self.lastUpdate[betId]
+                liveBetsNew[mKey] = bet
+                lastUpdateNew[mKey] = self.lastUpdate[mKey]
         self.liveBets = liveBetsNew
         self.lastUpdate = lastUpdateNew
         self.counter += 1
+
+        return finished
