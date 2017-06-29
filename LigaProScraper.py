@@ -2,7 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 from os import walk
 
-class LigaProScrapper:
+
+class LigaProScraper:
     @staticmethod
     def run():
         curId = 1
@@ -21,7 +22,7 @@ class LigaProScrapper:
                 #        break
 
     @staticmethod
-    def scrapp(tid):
+    def scrap(tid):
         url = 'http://tt-liga.pro/tours/' + str(tid)
 
         result = requests.get(url)
@@ -39,7 +40,7 @@ class LigaProScrapper:
 
 
 def main():
-    LigaProScrapper.run()
+    LigaProScraper.run()
 
 if __name__ == "__main__":
     main()

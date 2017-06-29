@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from os import walk
 
 
-class MasterTourScrapper:
+class MasterTourScraper:
     @staticmethod
     def run():
         curDate = '2013-01-03'
@@ -19,7 +19,7 @@ class MasterTourScrapper:
         while True:
             tUrl = 'http://master-tour.pro/tournaments/' + curDate + '.html'
             print(tUrl + '\t', end='')
-            fl = MasterTourScrapper.scrapp(curDate, tUrl)
+            fl = MasterTourScraper.scrap(curDate, tUrl)
             print(fl)
             if curDate == datetime.datetime.now().strftime("%Y-%m-%d"):
                 break
@@ -28,7 +28,7 @@ class MasterTourScrapper:
             time.sleep(2)
 
     @staticmethod
-    def scrapp(curDate, url):
+    def scrap(curDate, url):
         try:
             result = requests.get(url)
         except Exception as ex:
@@ -48,7 +48,7 @@ class MasterTourScrapper:
 
 
 def main():
-    MasterTourScrapper.run()
+    MasterTourScraper.run()
 
 if __name__ == "__main__":
     main()

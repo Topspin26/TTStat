@@ -218,7 +218,7 @@ m221	Алексей Хмелев
 m222	Циги Дикштейн
 m223	Вадим Кубов
 m224	Гай Кохли
-m225	Шахар Гинзбург
+m225	Шахар Гинзбург;Шахар Гинcберг;Шахар Гинсбург
 m226	Дмитрий Овчаров;Ovtcharov Dimitrij
 m227	Владимир Самсонов;Samsonov Vladimir
 m228	Александр Шибаев;Shibaev Alexander
@@ -1238,7 +1238,7 @@ m1247	Dyjas Jakub;Якуб Дияс
 m1248	TALAVANOV Kiril
 m1249	NGUYEN Nam Hai
 m1250	PALACIOS Daniel
-m1251	CHOJNOWSKI Patryk;Патрик Чойновски
+m1251	CHOJNOWSKI Patryk;Патрик Чойновски;Патрик Хойновский
 m1252	Toriola Segun;Сегун Ториола
 m1253	LI Zhuangwei
 m1254	Stoyanov Niagol;Ниагол Стоянов
@@ -1762,7 +1762,7 @@ m1774	Hou Yingchao;Инчау Хоу
 m1775	FAN Shengpeng
 m1776	SHAN Mingjie
 m1777	LIN Yi-Sien
-m1778	ZWICKL Daniel
+m1778	ZWICKL Daniel;Даниэль Цвикл
 m1779	FAN Yiyong
 m1780	Perman Oscar;Оскар Перман
 m1781	YANAGIDA Toshinori
@@ -1796,7 +1796,7 @@ m1808	MOSSLLY Yhya
 m1809	TSUBOGUCHI Michikazu
 m1810	Даниэль Гонсалес;Gonzalez Daniel
 m1811	TAPIA Rodrigo
-m1812	PICHLER Michael
+m1812	PICHLER Michael;Михаэль Пихлер
 m1813	Liu Dingshuo;Лю Дин Шуо
 m1814	SOBHY Yasser
 m1815	SONNET Frederic
@@ -14410,7 +14410,7 @@ m14425	PETER Alessio
 m14426	GARCIA Milton
 m14427	NAVARRETE Nicolas
 m14428	SCHANBACHER Jan Peter
-m14429	Даниэль Кишш;Kiss Daniel;Kiss Daniel Gabor
+m14429	Даниэль Кишш;Даниэль Габор Кишш;Kiss Daniel;Kiss Daniel Gabor
 m14430	HUANG Yan-Cheng
 m14431	QUARTUCCIO Giuseppe
 m14432	LOPEZ Cesar
@@ -15362,7 +15362,7 @@ m15377	FRIEDRICH Christian
 m15378	GECHELIN Dmitri
 m15379	SHEN Hailong
 m15380	MCTIERNAN Liam
-m15381	Мацей Колодзейчик;Kolodziejczyk Maciej
+m15381	Мацей Колодзейчик;Мацей Коледзейчик;Kolodziejczyk Maciej
 m15382	ERSKINE Chris
 m15383	ISMOILOV Sirojiddin
 m15384	ECHEVARRIA Luis
@@ -16227,7 +16227,7 @@ m16242	Саркис Моклозян
 m16243	Георгий Прикащенков
 m16244	Денис Макаров
 m16245	Андрей Овчинников
-m16246	Baum Bjorn
+m16246	Baum Bjorn;Баум Бьйорн
 m16247	Максим Пищанский
 m16248	Сергей Воробьев
 m16249	Манук Заргарян

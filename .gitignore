@@ -71,3 +71,5 @@ data/2017-06-22/Наст. теннис. Лига Про. Москва.txt
 data/bkfon/live_parsed_new/*
 data/bkfon/results_parsed/*
 entity_names.txt
+data/rttf/results_new/*
+data/rttf/tournaments/*

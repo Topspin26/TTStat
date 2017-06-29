@@ -2,11 +2,13 @@ from selenium import webdriver
 import time
 import hashlib
 
-def initDriver(url, sleepTime = 0, port = 5938):
-    driver = webdriver.Chrome('chromedriver_win32/chromedriver', port = port)
+
+def initDriver(url, sleepTime=0, port=5938):
+    driver = webdriver.Chrome('chromedriver_win32/chromedriver', port=port)
     driver.get(url)
     time.sleep(sleepTime)
     return driver
+
 
 def calcHash(arr):
     res = 0
@@ -16,8 +18,11 @@ def calcHash(arr):
     return str(res)
 
 
-class GlobalPlayersDict():
+class GlobalPlayersDict:
     def __init__(self, mode=None, dirname=''):
+        if mode == 'filtered':
+            import filterPlayersByRusRanking
+            filterPlayersByRusRanking.main()
         self.name2id = dict()
         self.name2id2 = dict()
         self.id2names = dict()
@@ -50,7 +55,7 @@ class GlobalPlayersDict():
             name1 = ' '.join(name_tokens[1:]) + ' ' + name_tokens[0]
             for tname in [name, name1]:
                 if self.name2id.get(tname, id) != id:
-                    print('Bad name ' + tname + ' '  + self.name2id.get(tname, id) + ' ' + id)
+                    print('Bad name ' + tname + ' ' + self.name2id.get(tname, id) + ' ' + id)
                     if not (tname in {'yang ying', 'ying yang',\
                                       'li xiang', 'xiang li',\
                                       'yang min', 'min yang',\
@@ -64,7 +69,7 @@ class GlobalPlayersDict():
             tn = name.split(' ')
             tn1 = name1.split(' ')
             if len(tn) > 1:
-                if name[0] >= 'a' and name[0] <= 'z':
+                if 'a' <= name[0] <= 'z':
                     arr = [name, name1, tn[0], tn1[0],
                            tn[0] + ' ' + ' '.join([(e[0] + '.') for e in tn[1:]]),
                            tn[0] + ' ' + ' '.join([(e[0]) for e in tn[1:]]),
@@ -74,12 +79,20 @@ class GlobalPlayersDict():
                     arr = [name, name1, tn[1], tn1[1],
                            tn[1] + ' ' + ' '.join([(e[0] + '.') for e in [tn[0]] + tn[2:]]),
                            tn[1] + ' ' + ' '.join([(e[0]) for e in [tn[0]] + tn[2:]]),
+                           tn[-1] + ' ' + ' '.join([(e[0]) for e in tn[:-1]]),
+                           tn[-1] + ' ' + ' '.join([(e[0] + '.') for e in tn[:-1]]),
+                           tn1[-1] + ' ' + ' '.join([(e[0] + '.') for e in tn1[:-1]]),
+                           tn1[-1] + ' ' + ' '.join([(e[0]) for e in tn1[:-1]]),
                            tn1[1] + ' ' + ' '.join([(e[0] + '.') for e in [tn1[0]] + tn1[2:]]),
                            tn1[1] + ' ' + ' '.join([(e[0]) for e in [tn1[0]] + tn1[2:]])]
                     if tn[0] == 'александр':
                         arr += [tn[1] + ' ал-р', 'ал-р ' + tn[1]]
                     elif tn[1] == 'александр':
                         arr += [tn[0] + ' ал-р', 'ал-р ' + tn[0]]
+                    if tn[0] == 'алексей':
+                        arr += [tn[1] + ' ал-й', 'ал-й ' + tn[1]]
+                    elif tn[1] == 'алексей':
+                        arr += [tn[0] + ' ал-й', 'ал-й ' + tn[0]]
             else:
                 arr = [name]
             for short_player in arr:

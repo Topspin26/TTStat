@@ -618,7 +618,7 @@ w620	HALAS Helena
 w621	Lovet Idalys;Идалис Ловет
 w622	Сандра Пергель;Pergel Szandra
 w623	Hayata Hina;Хина Хаята
-w624	Srebrnjak Dorina;Дорина Сребняк
+w624	Srebrnjak Dorina;Дорина Сребняк;Дорина Сребрняк
 w625	KANG Gayun
 w626	LIANG Lu
 w627	Gui Lin;Ги Лин

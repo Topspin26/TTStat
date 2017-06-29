@@ -4,6 +4,7 @@ from common import *
 from Entity import *
 from Storages import *
 
+
 def main():
 
     rankingSources = []
@@ -27,6 +28,7 @@ def main():
                         names[0] == 'Скребнев Александр' or \
                         names[0] == 'Минченко Сергей' or \
                         names[0] == 'Фомин Константин' or \
+                        names[0] == 'Данилович Игорь' or \
                         id == 'm2781': #Федоров Владислав
             id2names_filtered[id] = names
     with open('prepared_data/players_men_filtered.txt', 'w', encoding='utf-8') as fout_men, \

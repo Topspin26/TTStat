@@ -20,7 +20,7 @@ def getResults(curDate):
     return s
 
 
-class BKFonResultsScrapper:
+class BKFonResultsScraper:
     @staticmethod
     def run():
         url = 'https://www.fonbet.ru/#!/results'
@@ -125,7 +125,7 @@ class BKFonResultsScrapper:
 
 
 def main():
-    BKFonResultsScrapper.run()
+    BKFonResultsScraper.run()
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import os
 
 
-class ChallengerSeriesScrapper:
+class ChallengerSeriesScraper:
     @staticmethod
     def run():
         url = 'http://challengerseries.net/content/results'
@@ -34,11 +34,11 @@ class ChallengerSeriesScrapper:
         # ids = [['1035', '27.02. - 28.02.2017']]
         for id, dt in ids[j:]:
             print([id, dt])
-            ChallengerSeriesScrapper.scrapp(url + '?q=node/' + id, id, dt)
+            ChallengerSeriesScraper.scrap(url + '?q=node/' + id, id, dt)
             time.sleep(2)
 
     @staticmethod
-    def scrapp(url, id, dts):
+    def scrap(url, id, dts):
         startDate = dts[-4:] + '-' + dts[3:5] + '-' + dts[:2]
         filename = 'data/challenger_series/results_raw/' + startDate + '_' + id + '.txt'
 
@@ -49,7 +49,7 @@ class ChallengerSeriesScrapper:
 
 
 def main():
-    ChallengerSeriesScrapper.run()
+    ChallengerSeriesScraper.run()
 
 if __name__ == "__main__":
     main()
