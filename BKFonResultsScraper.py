@@ -1,19 +1,12 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-import time
 from datetime import datetime
 import random
-import os
-import re
-from subprocess import Popen
 from common import *
 
 
 def getResults(curDate):
     s = None
     try:
-        with open('data/bkfon/results/' + curDate + '_new.txt', 'r', encoding = 'utf-8') as fin:
+        with open('data/bkfon/results/' + curDate + '_new.txt', 'r', encoding='utf-8') as fin:
             s = next(fin)
     except:
         s = None
@@ -33,7 +26,7 @@ class BKFonResultsScraper:
 
             flLast = 1
             flExit = 0
-            while (flExit == 0):
+            while flExit == 0:
                 if flLast == 1:
                     driver.find_element_by_xpath('//span[@class="events__filter-down icon _icon_arrow-tree-light"]').click()
                 s = driver.find_element_by_class_name('ui-calendar__title').get_attribute('innerHTML')
@@ -46,13 +39,13 @@ class BKFonResultsScraper:
                     '//td[contains(@class, "ui-calendar__col") and not (contains(@class, "_state_off"))]/a')
                 nd = len(active_days)
                 print(len(active_days))
-                if year == '2017':
+                if year == str(datetime.now().year):
                     for i in range(nd - flLast):
     #                   if month == 4:
     #                       continue
     #                   if i < 10:
     #                        continue
-                        if month != 6:
+                        if month != datetime.now().month and month != datetime.now().month - 1:
                             flExit = 1
                             continue
                         curDate = year + '-' + str(month).zfill(2) + '-' + str(i + 1).zfill(2)

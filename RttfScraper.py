@@ -1,15 +1,16 @@
 import os
 import requests
 from bs4 import BeautifulSoup
+import datetime
 
 
 class RttfScraper:
     @staticmethod
     def run():
-        for year in range(2017, 2018):
+        for year in range(2017, datetime.datetime.now().year + 1):
             for month in range(1, 13):
                 RttfScraper.scrapMonth(str(year) + '-' + str(month).zfill(2))
-                if year == 2017 and month == 6:
+                if year == datetime.datetime.now().year and month == datetime.datetime.now().month:
                     break
 
     @staticmethod

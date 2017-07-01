@@ -244,8 +244,9 @@ class BKFonResultsPreparator:
                         raise
                     if mHash not in matchesHashes:
                         matches.append(match)
-                        matchesHashes[mHash] = filename + '\t' + line.rstrip()
+                        matchesHashes[mHash] = [len(matches) - 1, filename + '\t' + line.rstrip()]
                     else:
+                        matches[matchesHashes[mHash][0]] = match
                         print(matchesHashes[mHash])
                         print(filename + '\t' + line.rstrip())
                         print()

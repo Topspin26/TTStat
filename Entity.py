@@ -177,7 +177,7 @@ class Match:
         self.wins = None
         self.setsScore = setsScore
         self.sets = None
-        self.pointsScore = pointsScore
+        self.pointsScore = pointsScore.rstrip(';') if pointsScore else pointsScore
         self.points = None
 
         if (self.setsScore is None) and not (self.pointsScore is None):

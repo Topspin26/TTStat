@@ -11,8 +11,8 @@ class MatchesStorage:
         self.hash2matchInd = dict()
         self.oneVSone = dict()
 
-        matchesDict = dict()
-        compNamesPairs = set()
+        self.matchesDict = dict()
+        self.compNamesPairs = set()
         for source, filename in sources:
             print(filename)
             with open(filename, encoding='utf-8') as fin:
@@ -22,40 +22,49 @@ class MatchesStorage:
                     tokens = line.split('\t')
                     match = Match(tokens[headerDict['date']],
                                   [tokens[headerDict['id1']].split(';'), tokens[headerDict['id2']].split(';')],
+                                  names=[tokens[headerDict['name1']].split(';'), tokens[headerDict['name2']].split(';')],
                                   setsScore=tokens[headerDict['setsScore']],
                                   pointsScore=tokens[headerDict['pointsScore']],
                                   time=tokens[headerDict['time']],
                                   compName=tokens[headerDict['compName']],
                                   source=source)
-                    matchHash = match.getHash()
-                    if not (matchHash in matchesDict) and match.date >= '2014':
-                        if not matchHash in matchesDict:
-                            matchesDict[matchHash] = []
-                        matchesDict[matchHash].append(match)
-                        self.matches.append(match)
-                        self.hash2matchInd[matchHash] = len(self.matches) - 1
-                        if match.isPair == 0:
-                            pp = min(match.players[0][0], match.players[1][0]) + '\t' + max(match.players[0][0], match.players[1][0])
-                            if not (pp in self.oneVSone):
-                                self.oneVSone[pp] = [match]
-                            else:
-                                self.oneVSone[pp].append(match)
-#                    print(line)
-                    elif matchHash in matchesDict:
-                        matchesDict[matchHash][0].addSource(source)
-                        if matchesDict[matchHash][0].compName != match.compName:
-                            compNamesPairs.add(matchesDict[matchHash][0].compName + ' === ' + match.compName)
+                    self.addMatch(match)
 
-    def getOneVSOneMatches(self, p1, p2, curDate, curTime, ws = 1):
-        if curTime == None:
+    def addMatch(self, match):
+        if match.date < '2014':
+            return
+        if match.hash not in self.matchesDict:
+            if match.hash not in self.matchesDict:
+                self.matchesDict[match.hash] = []
+            self.matchesDict[match.hash].append(match)
+            self.matches.append(match)
+            #self.hash2matchInd[match.hash] = len(self.matches) - 1
+            if match.isPair == 0:
+                pp = min(match.ids[0][0], match.ids[1][0]) + '\t' + max(match.ids[0][0], match.ids[1][0])
+                if not (pp in self.oneVSone):
+                    self.oneVSone[pp] = [match]
+                else:
+                    self.oneVSone[pp].append(match)
+#                    print(line)
+        else:
+            self.matchesDict[match.hash][0].addSource(match.sources[0])
+            if self.matchesDict[match.hash][0].compName != match.compName:
+                self.compNamesPairs.add(self.matchesDict[match.hash][0].compName + ' === ' + match.compName)
+
+    def buildHash2MatchInd(self):
+        for i, match in enumerate(self.matches):
+            self.hash2matchInd[match.hash] = i
+
+    def getOneVSOneMatches(self, p1, p2, curDate, curTime, ws=1):
+        if curTime is None:
             curTime = '00:00'
         result = []
         pp = min(p1, p2) + '\t' + max(p1, p2)
         leftDate = (datetime.datetime.strptime(curDate, "%Y-%m-%d").date() - datetime.timedelta(days=ws)).strftime("%Y-%m-%d")
-        for match in sorted(self.oneVSone.get(pp, []), key = lambda x: x.date + ' ' + (x.time if not (x.time is None) else '99:99')):
+        for match in sorted(self.oneVSone.get(pp, []), key=lambda x: x.date + ' ' + (x.time if not (x.time is None) else '99:99')):
             matchTime = (match.time if not (match.time is None) else '99:99')
             if match.date >= leftDate and match.date + ' ' + matchTime < curDate + ' ' + curTime:
-                if not (p1 in match.players[0]):
+                if p1 not in match.ids[0]:
                     match = match.reverse()
                 result.append(match)
         return result

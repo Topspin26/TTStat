@@ -14,12 +14,19 @@ from BKFonResultsScraper import BKFonResultsScraper
 from BKFonResultsParser import BKFonResultsParser
 from BKFonResultsPreparator import BKFonResultsPreparator
 
+from RttfScraper import RttfScraper
+from RttfParser import RttfParser
+from RttfPreparator import RttfPreparator
+
+from IttfScraperParser import IttfParser
+from IttfPreparator import *
 
 def scrap():
     LigaProScraper.run()
     MasterTourScraper.run()
     ChallengerSeriesScraper.run()
-    BKFonResultsScraper.run()
+#    BKFonResultsScraper.run()
+    RttfScraper.run()
 
 
 def parse():
@@ -27,6 +34,8 @@ def parse():
     MasterTourParser.run()
     ChallengerSeriesParser.run()
     BKFonResultsParser.run()
+    RttfParser.run()
+    IttfParser.run()
 
 
 def prepare():
@@ -34,12 +43,15 @@ def prepare():
     MasterTourPreparator.run()
     ChallengerSeriesPreparator.run()
     BKFonResultsPreparator.run()
+    RttfPreparator.run()
+    IttfPreparator.run()
 
 
 def main():
-    #scrap()
-    #parse()
-    prepare()
+    IttfParser.run()
+#    scrap()
+#    parse()
+#    prepare()
 
 if __name__ == "__main__":
     main()
