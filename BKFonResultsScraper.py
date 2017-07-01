@@ -52,7 +52,7 @@ class BKFonResultsScraper:
     #                       continue
     #                   if i < 10:
     #                        continue
-                        if month != 5 and month != 6:
+                        if month != 6:
                             flExit = 1
                             continue
                         curDate = year + '-' + str(month).zfill(2) + '-' + str(i + 1).zfill(2)

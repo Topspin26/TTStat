@@ -9,6 +9,27 @@ monthname2Num = {'янв': 1, 'фев': 2, 'мар': 3, 'апр': 4, 'май': 5
 
 class BKFonResultsParser:
     @staticmethod
+    def run():
+        for f in walk('data/bkfon/results'):
+            fSet = set(f[2])
+            for ff in f[2]:
+                # print(ff)
+                if ff.find('old') != -1:
+                    continue
+                if ff.find('new') != -1:
+                    if not (ff.replace('_new', '') in fSet):
+                        sKey, lines = BKFonResultsParser.parse('data/bkfon/results/' + ff, mode='new')
+#            if ff.find('2016-11') == -1 and ff.find('2016-12') == -1 and ff.find('2017-') == -1:
+#                continue
+#            if ff.find('2017-02-07') == -1:
+#                continue
+                else:
+                    sKey, lines = BKFonResultsParser.parse('data/bkfon/results/' + ff, mode='old')
+                print(sKey)
+                with open('data/bkfon/results_parsed/' + sKey + '.txt', 'w', encoding='utf-8') as fout:
+                    fout.write(lines)
+
+    @staticmethod
     def parse(filename, mode='new'):
         if mode == 'new':
             return BKFonResultsParser.processNew(filename)
@@ -141,24 +162,7 @@ class BKFonResultsParser:
         return tid, '\n'.join(lines)
 
 def main():
-    for f in walk('data/bkfon/results'):
-        fSet = set(f[2])
-        for ff in f[2]:
-            # print(ff)
-            if ff.find('old') != -1:
-                continue
-            if ff.find('new') != -1:
-                if not (ff.replace('_new', '') in fSet):
-                    sKey, lines = BKFonResultsParser.parse('data/bkfon/results/' + ff, mode='new')
-#            if ff.find('2016-11') == -1 and ff.find('2016-12') == -1 and ff.find('2017-') == -1:
-#                continue
-#            if ff.find('2017-02-07') == -1:
-#                continue
-            else:
-                sKey, lines = BKFonResultsParser.parse('data/bkfon/results/' + ff, mode='old')
-            print(sKey)
-            with open('data/bkfon/results_parsed/' + sKey + '.txt', 'w', encoding='utf-8') as fout:
-                fout.write(lines)
+    BKFonResultsParser.run()
 
 if __name__ == "__main__":
     main()

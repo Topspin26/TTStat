@@ -13,13 +13,12 @@ class LigaProScraper:
         curId = max(1, curId - 2)
         print(curId)
         fl = 0
-        for tid in range(curId, 300):
+        for tid in range(curId, 1000):
             print(tid)
-            tfl = LigaProScrapper.scrapp(tid)
+            tfl = LigaProScraper.scrap(tid)
             fl = (fl + 1) if tfl == 1 else 0
             if fl == 4:
                 break
-                #        break
 
     @staticmethod
     def scrap(tid):

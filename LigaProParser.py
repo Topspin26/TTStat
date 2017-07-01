@@ -7,6 +7,29 @@ from bs4 import BeautifulSoup
 
 
 class LigaProParser:
+
+    @staticmethod
+    def run():
+        for f in walk('data/liga_pro/tours'):
+            for ff in sorted(f[2]):
+                print(ff)
+                sKey, lines = LigaProParser.parse('data/liga_pro/tours/' + ff)
+                print(sKey)
+                with open('data/liga_pro/results/' + sKey + '.txt', 'w', encoding='utf-8') as fout:
+                    fout.write(lines)
+                '''
+                for e1, e2 in zip(c[ff.split('_')[1][:-4]], s):
+                    e1 = e1.replace('Бурдин А', 'Бурдин Ал-й').strip()
+                    e1 = e1.replace('Медведев С;59', 'Медведев С;256')
+                    e1 = e1.replace('Филатов В;104', 'Филатов В;231')
+                    e2 = e2.strip()
+                    if e1 != e2:
+                        print(e1)
+                        print(e2)
+                        print()
+                        #return
+                '''
+
     @staticmethod
     def parse(filename):
         tid = filename.split('_')[-1][:-4]
@@ -95,30 +118,7 @@ class LigaProParser:
 
 
 def main():
-#    c = dict()
-#    for f in walk('data/liga_pro/results'):
-#        for ff in f[2]:
-#            c[ff.split('_')[1]] = open('data/liga_pro/results/' + ff, encoding='utf-8').readlines()
-
-    for f in walk('data/liga_pro/tours'):
-        for ff in f[2]:
-            print(ff)
-            sKey, lines = LigaProParser.parse('data/liga_pro/tours/' + ff)
-            print(sKey)
-            with open('data/liga_pro/results/' + sKey + '.txt', 'w', encoding='utf-8') as fout:
-                fout.write(lines)
-            '''
-            for e1, e2 in zip(c[ff.split('_')[1][:-4]], s):
-                e1 = e1.replace('Бурдин А', 'Бурдин Ал-й').strip()
-                e1 = e1.replace('Медведев С;59', 'Медведев С;256')
-                e1 = e1.replace('Филатов В;104', 'Филатов В;231')
-                e2 = e2.strip()
-                if e1 != e2:
-                    print(e1)
-                    print(e2)
-                    print()
-                    #return
-            '''
+    LigaProParser.run()
 
 if __name__ == "__main__":
     main()

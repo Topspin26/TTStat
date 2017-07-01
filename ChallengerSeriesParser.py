@@ -2,7 +2,19 @@ from os import walk
 import datetime
 from bs4 import BeautifulSoup
 
+
 class ChallengerSeriesParser:
+
+    @staticmethod
+    def run():
+        for f in walk('data/challenger_series/results_raw'):
+            for ff in sorted(f[2]):
+                print(ff)
+                sKey, lines = ChallengerSeriesParser.parse('data/challenger_series/results_raw/' + ff)
+                print(sKey)
+                with open('data/challenger_series/results/' + sKey + '.txt', 'w', encoding='utf-8') as fout:
+                    fout.write(lines)
+
     @staticmethod
     def parse(filename):
         soup = BeautifulSoup(open(filename, encoding='utf-8').read(), "lxml")
@@ -37,13 +49,7 @@ class ChallengerSeriesParser:
 
 
 def main():
-    for f in walk('data/challenger_series/results_raw'):
-        for ff in f[2]:
-            print(ff)
-            sKey, lines = ChallengerSeriesParser.parse('data/challenger_series/results_raw/' + ff)
-            print(sKey)
-            with open('data/challenger_series/results/' + sKey + '.txt', 'w', encoding='utf-8') as fout:
-                fout.write(lines)
+    ChallengerSeriesParser.run()
 
 if __name__ == "__main__":
     main()

@@ -79,10 +79,9 @@ def main():
     updateGlobalPlayersDict(rusId2names)
     updateGlobalPlayersDict(ittfId2names)
 
-    filterPlayersByRusRanking.main()
-    playersDict = GlobalPlayersDict("filtered")
+    playersDict = GlobalPlayersDict()
 
-    idLinks = {'rus':{}, 'ittf':{}}
+    idLinks = {'rus': dict(), 'ittf': dict()}
     idLinks['rus']['121'] = 'm249'
     idLinks['rus']['1820'] = 'm323'
     idLinks['rus']['599'] = 'm256'
@@ -95,13 +94,17 @@ def main():
     idLinks['rus'][''] = 'w185'
     idLinks['rus']['1630'] = 'm2803'
     idLinks['rus']['1576'] = 'm38'
-    idLinks['rus']['177'] = None #Архипов Иван
-    idLinks['rus']['17185'] = None #Морозов Александр
-    idLinks['rus']['9703'] = None #Игорь Егоров
-    idLinks['rus']['14596'] = None #Иванов Виктор
-    idLinks['rus']['3853'] = 'm2781'#Федоров Владислав
-    idLinks['rus']['1413'] = 'm284'#Иванов Михаил
-    idLinks['rus']['1412'] = None#Иванов Михаил
+    idLinks['rus']['177'] = None # Архипов Иван
+    idLinks['rus']['17185'] = None # Морозов Александр
+    idLinks['rus']['9703'] = None # Игорь Егоров
+    idLinks['rus']['14596'] = None # Иванов Виктор
+    idLinks['rus']['3853'] = 'm2781' # Федоров Владислав
+    idLinks['rus']['1413'] = 'm284' # Иванов Михаил
+    idLinks['rus']['1412'] = None # Иванов Михаил
+    idLinks['rus']['15288'] = 'm2853'# Савельев Алексей
+    idLinks['rus']['3211'] = None # Савельев Алексей, по идее объединить надо с предыдущим
+    idLinks['rus']['8288'] = None # Савельев Алексей
+    idLinks['rus']['20152'] = None # Воробьев Сергей
 
     prefix = 'prepared_data/propingpong/'
     for rt in ['rus', 'ittf']:
@@ -111,8 +114,8 @@ def main():
         badIds = dict()
 
         rankings = readPlayersRankings('data/propingpong/ranking_' + rt)
-        with open('prepared_data/propingpong/ranking_' + rt + '.txt', 'w', encoding = 'utf-8') as fout:
-            for k,v in sorted(rankings.items(), key = lambda x: x[0]):
+        with open('prepared_data/propingpong/ranking_' + rt + '.txt', 'w', encoding='utf-8') as fout:
+            for k, v in sorted(rankings.items(), key=lambda x: x[0]):
                 arr = k.split('\t')
                 mw = arr[0]
                 dt = arr[1]
@@ -138,8 +141,8 @@ def main():
                         id = [idLinks[rt][playerId]]
                     else:
                         id = playersDict.getId(playerName)
-#                    if playerName == 'Морозов Александр' or playerName == 'Александр Морозов':
-#                        print(playerName, id, playerId)
+                    if playerName == 'Станислав Медведев' or playerName == 'Гусев Андрей':
+                        print(playerName, id, playerId)
                     if len(id) == 1:
                         fout.write('\t'.join([dt, id[0]] + v) + '\n')
                     elif len(id) == 0:

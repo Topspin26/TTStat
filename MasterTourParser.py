@@ -6,10 +6,21 @@ from os import walk
 from common import *
 from bs4 import BeautifulSoup
 
+
 class MasterTourParser:
+
+    @staticmethod
+    def run():
+        for f in walk('data/master_tour/tournaments'):
+            for ff in sorted(f[2]):
+                print(ff)
+                sKey, lines = MasterTourParser.parse('data/master_tour/tournaments/' + ff)
+                print(sKey)
+                with open('data/master_tour/results/' + sKey + '.txt', 'w', encoding='utf-8') as fout:
+                    fout.write(lines)
+
     @staticmethod
     def parse(filename):
-
         soup = BeautifulSoup(open(filename, encoding='utf-8').read(), "lxml")
 
         lines2 = []
@@ -35,18 +46,7 @@ class MasterTourParser:
 
 
 def main():
-#    c = dict()
-#    for f in walk('data/liga_pro/results'):
-#        for ff in f[2]:
-#            c[ff.split('_')[1]] = open('data/liga_pro/results/' + ff, encoding='utf-8').readlines()
-
-    for f in walk('data/master_tour/tournaments'):
-        for ff in f[2]:
-            print(ff)
-            sKey, lines = MasterTourParser.parse('data/master_tour/tournaments/' + ff)
-            print(sKey)
-            with open('data/master_tour/results/' + sKey + '.txt', 'w', encoding='utf-8') as fout:
-                fout.write(lines)
+    MasterTourParser.run()
 
 if __name__ == "__main__":
     main()

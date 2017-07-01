@@ -74,7 +74,7 @@ class ChallengerSeriesPreparator:
         pattern = re.compile('|'.join(corrections.keys()))
         matches = []
         for f in walk('data/challenger_series/results'):
-            for ff in f[2]:
+            for ff in sorted(f[2]):
                 with open('data/challenger_series/results/' + ff, 'r', encoding='utf-8') as fin:
                     for line in fin:
     #                    line = corrections.get(line, line)

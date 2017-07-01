@@ -15,7 +15,7 @@ def main():
 
     id2names_filtered = dict()
 
-    for id,names in playersDict.id2names.items():
+    for id, names in playersDict.id2names.items():
         r = rankingStorage.getPlayerAllRankings(id, 'ttfr')
         if len(r) == 0 or max([int(e[0]) for e in r.values()]) > 400 or \
                         names[0] == 'Бекташ Игорь' or \

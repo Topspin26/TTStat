@@ -133,13 +133,18 @@ class Player:
         self.names = names
         self.name = names[0]
         self.mw = mw
-        self.matches = []
+        self.matches = list()
+        self.hrefs = dict()
 
     def findString(self, s):
         for name in self.names:
             if name.lower().find(s.lower()) != -1:
                 return True
         return False
+
+    def addHref(self, source, href):
+        self.hrefs[source] = href
+
 
 class Match:
     '''
@@ -163,7 +168,8 @@ class Match:
         self.matchId = matchId
         self.flError = 0
 
-        self.sources = []
+        self.sources = list()
+        self.hrefs = dict()
 
         self.round = round
 

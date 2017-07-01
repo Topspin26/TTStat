@@ -10,7 +10,7 @@ class MasterTourPreparator:
         pattern = re.compile('|'.join(corrections.keys()))
         matches = []
         for f in walk('data/master_tour/results'):
-            for ff in f[2]:
+            for ff in sorted(f[2]):
                 with open('data/master_tour/results/' + ff, 'r', encoding='utf-8') as fin:
                     for line in fin:
                         line = corrections.get(line, line)

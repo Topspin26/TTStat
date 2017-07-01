@@ -419,6 +419,7 @@ w467	Анна Гребенюк
 w468	Елизавета Лисова
 w469	Зинаида Москалева
 w471	Ева Нечипоренко
+w473	Таисия Денисова
 w477	Арина Казанцева
 w478	Алина Барабанщикова
 w496	Эвелина Калашникова
@@ -440,6 +441,7 @@ w564	Евгения Дмитриева
 w565	Екатерина Ситникова
 w566	Галина Бурова
 w567	Мария Петракова
+w568	Людмила Сухановская
 w571	Анастасия Степанова
 w574	Анна Степанова;STEPANOVA Anna
 w576	CHEONG Cheng I
@@ -1686,7 +1688,7 @@ w1825	Анастасия Лаврова;Lavrova Anastassiya
 w1826	FILI Christina
 w1827	JIN Dalrae
 w1828	LASCOLS Solene
-w1829	ANDRADE Raquel
+w1829	ANDRADE Raquel;Ракель Андраде
 w1830	PEREZ Maria
 w1831	YEE Herng Hwee
 w1832	NWACHUKWU Onyinyechi
@@ -1814,7 +1816,7 @@ w1955	Катерина Чехова;Cechova Katerina
 w1956	TIMOHHINA Tatjana
 w1957	KUO Chia-Yun
 w1958	ZAMFIR Adriana
-w1959	TOLIOU Aikaterini
+w1959	TOLIOU Aikaterini;Айкатерини Толиу
 w1960	ZHU Fiona
 w1961	ALVAREZ Ruth
 w1962	Lin Chia-Chih;Линь Цзя-Чжи
@@ -2236,7 +2238,7 @@ w2379	BATES Emily
 w2380	Solja Petrissa;Петрисса Солья
 w2381	Бернадетт Балин;Balint Bernadett
 w2382	LI Ju
-w2383	LUTZ Camille
+w2383	LUTZ Camille;Камилла Лутц
 w2384	NILSEN Nora
 w2385	VAKKILA Nina
 w2386	Ли Юн Хи;Lee Eunhee
@@ -2776,6 +2778,7 @@ w2922	Анита Лиссовенко
 w2923	Юлия Гулевская
 w2965	Анна Буланкина
 w2976	Анастасия Савина
+w2989	Анастасия Сизова
 w2997	Анастасия Мочалова;MOCHALOVA Anastasiya
 w2998	Екатерина Иванова
 w3025	Анастасия Иванова
@@ -2834,6 +2837,7 @@ w3942	Беляева Екатерина
 w3967	Кузьмина Анастасия
 w3992	Воробьева Виктория
 w3997	Андреева Анастасия
+w4013	Иванова Алина
 w4020	Андреева Яна
 w4023	Хоу Шенг
 w4062	Шибалова Анастасия
@@ -4899,3 +4903,21 @@ w10950	Patil Manushree
 w10951	Sung Joanna
 w10952	Chong Weng I
 w10953	Al-Wedian Bara
+w11056	Chen Tzu-Ting
+w11057	Tey Ka Ying
+w11058	Uritu Denisa
+w11059	Mantz Sarah
+w11060	Dyszkiewicz Gabriela
+w11061	Takahashi Giulia
+w11062	Fung Wai Chu
+w11063	Hsieh Tia Lynn
+w11064	Fukase Tamyres
+w11065	Tan Li Lin Jassy
+w11066	Tsai Yun-En
+w11067	Kimura Kasumi
+w11068	Mitrofan Luciana
+w11069	Lyne Karen
+w11070	I Ayano
+w11071	Kuan E Xian
+w11072	Цзин-Цзин Лян;Liang Jing-Jing
+w11073	Sasao Asuka
