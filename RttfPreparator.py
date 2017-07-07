@@ -11,11 +11,114 @@ class RttfPreparator:
         playersDict = GlobalPlayersDict("filtered")
 
         idLinks = dict()
-        idLinks['3879'] = 'm16248'
-        idLinks['210'] = 'm16233'
-        idLinks['6209'] = None
-        idLinks['6708'] = None
+
+        # Макаров Денис
+        idLinks['3710'] = 'm16244'
+
+        # Степанов Иван
         idLinks['162'] = None
+
+        # Шибаев Александр
+        idLinks['6708'] = None
+
+        # Карпов Андрей
+        idLinks['6209'] = None
+
+        # Сафиулин Марсель
+        idLinks['210'] = 'm16233'
+        idLinks['8482'] = None
+
+        # Воробьев Сергей
+        idLinks['3879'] = 'm16248'
+        idLinks['3581'] = None
+
+        # Овчинников Егор
+        idLinks['4551'] = None
+
+        # Осипов Дмитрий
+        idLinks['4172'] = None
+        idLinks['635'] = 'm16251'
+
+        # Свиридов Алексей
+        idLinks['5018'] = None
+        idLinks['1340'] = 'm2732'
+
+        # Коротков Александр
+        idLinks['8429'] = None
+        idLinks['8421'] = 'm323'
+
+        # Пищук Дмитрий
+        idLinks['1656'] = None
+        idLinks['10072'] = None
+        idLinks['8794'] = 'm554'
+
+        # Попов Дмитрий
+        idLinks['9674'] = None
+        idLinks['139'] = 'm279'
+
+        # Попов Олег
+        idLinks['8155'] = None
+        idLinks['3932'] = None
+        idLinks['2671'] = 'm16397'
+
+        # Егоров Николай
+        idLinks['9376'] = None
+        idLinks['7115'] = None
+        idLinks['59'] = 'm2730'
+
+        # Пульный Павел
+        idLinks['673'] = None
+        idLinks['282'] = 'm157'
+
+        # Донич Александр
+        idLinks['8380'] = None
+        idLinks['3053'] = 'm393'
+
+        # Федоров Дмитрий
+        idLinks['5703'] = None
+        idLinks['2611'] = 'm577'
+
+        # Голубева Екатерина
+        idLinks['6314'] = None
+
+        # Малахов Павел
+        idLinks['6618'] = None
+        idLinks['1137'] = None
+        idLinks['3179'] = 'm397'
+
+        # Маслов Даниил
+        idLinks['3613'] = None
+        idLinks['4331'] = 'm421'
+
+        with open('prepared_data/rttf/players_rttf.txt', 'w', encoding='utf-8') as fout:
+            for player, playerId in sorted(player2id.items(), key=lambda x: x[0]):
+                playerId = [e for e in playerId if idLinks.get(e, 1) is not None]
+                if len(playerId) > 1:
+                    print('multiple rttf players', player, playerId)
+                    continue
+                if len(playerId) == 0:
+                    print('ignore rttf player', player, playerId)
+                    continue
+                ids = playersDict.getId(player)
+                if len(ids) == 1:
+                    fout.write('\t'.join([ids[0], player, 'http://or.rttf.ru/players/' + playerId[0]]) + '\n')
+                elif len(ids) == 0:
+                    idLinked = idLinks.get(playerId[0])
+                    if idLinked in playersDict.id2names:
+                        print('solved unknown player', player, playerId, idLinked, playersDict.getNames(idLinked))
+                        fout.write('\t'.join([idLinked, player, 'http://or.rttf.ru/players/' + playerId[0]]) + '\n')
+                    else:
+                        print('unknown player', player, playerId, idLinked)
+                elif len(ids) > 1:
+                    idLinked = idLinks.get(playerId[0])
+                    if idLinked in playersDict.id2names:
+                        if not (idLinked in ids):
+                            print('strange id')
+                            raise
+                        print('solved multiple players', player, playerId, idLinked, playersDict.getNames(idLinked))
+                        fout.write('\t'.join([idLinked, player, 'http://or.rttf.ru/players/' + playerId[0]]) + '\n')
+                    else:
+                        print('multiple players', player, playerId, ids, idLinked)
 
         rankings = RttfPreparator.getRankings()
         with open('prepared_data/rttf/ranking_rttf.txt', 'w', encoding='utf-8') as fout:
@@ -48,23 +151,24 @@ class RttfPreparator:
                     for i in range(2):
                         for player in match.ids[i]:
                             playerName = id2player[player]
-                            id = player2id[playerName]
-                            if (len(id) == 1 or player in idLinks) and not (idLinks.get(player, '') is None):
+                            playerId = player2id[playerName]
+                            playerId = [e for e in playerId if idLinks.get(e, 1) is not None]
+                            if (len(playerId) == 1 or player in idLinks) and not (idLinks.get(player, '') is None):
                                 players[i].append(playerName)
                                 if player in idLinks:
-                                    id = [idLinks[player]]
+                                    playerId = [idLinks[player]]
                                     # print(player, playerName, id)
                                 else:
-                                    id = playersDict.getId(playerName)
-                                if len(id) == 1:
-                                    ids[i].append(id[0])
-                                elif len(id) == 0:
+                                    playerId = playersDict.getId(playerName)
+                                if len(playerId) == 1:
+                                    ids[i].append(playerId[0])
+                                elif len(playerId) == 0:
                                     flError = 1
                                     updateDict(unknown, playerName)
                                 else:
                                     flError = 1
                                     fl_mw = ''
-                                    for e in id:
+                                    for e in playerId:
                                         fl_mw += e[0]
                                     fl_mw = ''.join(sorted(set(list(fl_mw))))
                                     updateDict(multiple, fl_mw + ' ' + playerName)

@@ -108,8 +108,8 @@ class RankingsStorage:
         leftDate = (datetime.datetime.strptime(curDate, "%Y-%m-%d").date() - datetime.timedelta(days=ws)).strftime("%Y-%m-%d")
         r = -1
         if playerId in self.rankings[source]:
-            for e in sorted(self.rankings[source][playerId].items(), key = lambda x: x[0], reverse=True):
-                if e[0] > leftDate and e[0] <= curDate:
+            for e in sorted(self.rankings[source][playerId].items(), key=lambda x: x[0], reverse=True):
+                if leftDate < e[0] <= curDate:
                     r = e[1][0]
                     break
             if r == '-100':

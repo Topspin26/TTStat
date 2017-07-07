@@ -10,38 +10,6 @@ from os import walk
 from common import *
 
 
-'''
-def scrappTournament(curDate, url):
-    
-    if type(table) is list:
-        table = table[0]
-    trs = table.find_elements(By.TAG_NAME, "tr")
-    k = 0 
-    dt = ''
-    lines1 = []
-    for tr in trs:
-        k += 1
-        if k == 1:
-            continue
-        s = tr.get_attribute('outerHTML')
-        if s.find('sheduleTableSeparator') != -1:
-            sdt = tr.find_elements(By.TAG_NAME, "td")[0].get_attribute('innerHTML')
-            dt = datetime.datetime.strptime(sdt, "%d.%m.%Y").date().strftime("%Y-%m-%d")
-            print(dt)
-        else:
-            tds = tr.find_elements(By.TAG_NAME, "td")
-            tt = tds[0].get_attribute('innerHTML')
-            p1 = tds[2].find_elements(By.TAG_NAME, "a")[0].get_attribute('innerHTML')
-            p2 = tds[3].find_elements(By.TAG_NAME, "a")[0].get_attribute('innerHTML')
-            sets_score = tds[4].get_attribute('innerHTML')
-            match_score = tds[5].get_attribute('innerHTML')
-            lines1.append(dt + '\t' + tt + '\t' + p1 + '\t' + p2 + '\t' + sets_score + '\t' + match_score + '\n')
-            lines2.append(sets_score)
-            print(dt + ' ' + tt + '\t' + p1 + '\t' + p2 + '\t' + sets_score + '\t' + match_score)
-
-    driver.close()
-'''    
-                
 def updateRusPlayers(mw, driver):
     playersDict = dict()
     playersDictInv = dict()
@@ -540,7 +508,7 @@ def main():
 #    getIttfRankings('men', 2005, 5)
 
     updateIttfRanking()
-#    updateRusRanking(2017, 6)
+#    updateRusRanking(2017, 7)
 
 
 '''

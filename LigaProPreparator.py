@@ -183,6 +183,9 @@ class LigaProPreparator:
 
         with open('prepared_data/liga_pro/players_liga_pro.txt', 'w', encoding='utf-8') as fout:
             for player, playerId in sorted(player2id.items(), key=lambda x: x[0]):
+                if len(playerId) > 1:
+                    print(player, playerId)
+                    raise
                 ids = playersDict.getId(player)
                 if len(ids) == 1:
                     fout.write('\t'.join([ids[0], player, 'http://tt-liga.pro/players/' + playerId[0]]) + '\n')
