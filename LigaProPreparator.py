@@ -2,9 +2,182 @@ from os import walk
 import datetime as datetime
 import re
 from Entity import *
+from Logger import Logger
 
 
 class LigaProPreparator:
+
+    @staticmethod
+    def run(logger=Logger()):
+        print('LigaProPreparator')
+        logger.print('LigaProPreparator')
+        LigaProPreparator.makePlayer2Id(logger)
+        player2id, id2player = readPlayer2Id('data/liga_pro/player2id.txt')
+
+        idLinks = dict()
+        idLinks['30'] = 'm248'
+        idLinks['58'] = 'm421'
+        idLinks['10'] = 'm260'
+        idLinks['2'] = 'm249'
+        idLinks['132'] = 'm501'
+        idLinks['3'] = 'm434'
+        idLinks['128'] = 'w179'
+        idLinks['143'] = 'm3344'
+        idLinks['13'] = 'm256'
+        idLinks['186'] = 'm322'
+        idLinks['17'] = 'w9'
+        idLinks['27'] = 'm2730'
+        idLinks['31'] = 'm326'
+        idLinks['142'] = 'm22'
+        idLinks['32'] = 'm5'
+        idLinks['185'] = 'm280'
+        idLinks['42'] = 'm2728'
+        idLinks['119'] = 'm3655'
+        idLinks['147'] = 'w191'
+        idLinks['49'] = 'w144'
+        idLinks['55'] = 'm267'
+        idLinks['192'] = 'm16244'
+        idLinks['61'] = 'm337'
+        idLinks['64'] = 'm2706'
+        idLinks['126'] = 'w241'
+        idLinks['189'] = 'm16245'
+        idLinks['79'] = 'm552'
+        idLinks['138'] = 'm279'
+        idLinks['131'] = 'm311'
+        idLinks['89'] = 'm2732'
+        idLinks['90'] = 'm269'
+        idLinks['156'] = 'm11608'
+        idLinks['102'] = 'm577'
+        idLinks['148'] = 'w185'
+        idLinks['200'] = 'm537'
+        idLinks['187'] = 'm16248'
+        idLinks['221'] = 'm44'
+        idLinks['396'] = 'm16251'
+        idLinks['220'] = 'm9198'
+        idLinks['210'] = 'm16397'
+        idLinks['286'] = 'm292'
+        idLinks['249'] = 'm2781'
+        idLinks['194'] = 'm16400'
+        idLinks['273'] = 'm6638'
+        idLinks['304'] = 'm16758'
+        idLinks['238'] = 'm604'
+        idLinks['309'] = 'm619'
+        idLinks['310'] = 'm2739'
+        idLinks['301'] = 'm9894'
+        idLinks['406'] = 'm278'
+        idLinks['360'] = 'm2853'
+        # idLinks['301'] = 'm9894'
+
+        playersDict = GlobalPlayersDict("filtered")
+
+        if len(set(idLinks.values())) != len(idLinks):
+            logger.print('bad links')
+            raise
+
+        for k, v in idLinks.items():
+            if not v in playersDict.id2names:
+                logger.print(k, v)
+                raise
+
+        with open('prepared_data/liga_pro/players_liga_pro.txt', 'w', encoding='utf-8') as fout:
+            for player, playerId in sorted(player2id.items(), key=lambda x: x[0]):
+                if len(playerId) > 1:
+                    logger.print(player, playerId)
+                    raise
+                ids = playersDict.getId(player)
+                if len(ids) == 1:
+                    fout.write('\t'.join([ids[0], player, 'http://tt-liga.pro/players/' + playerId[0]]) + '\n')
+                elif len(ids) == 0:
+                    idLinked = idLinks.get(playerId[0])
+                    if idLinked in playersDict.id2names:
+                        logger.print('solved unknown player', player, playerId, idLinked, playersDict.getNames(idLinked))
+                        fout.write('\t'.join([idLinked, player, 'http://tt-liga.pro/players/' + playerId[0]]) + '\n')
+                    else:
+                        logger.print('unknown player', player, playerId, idLinked)
+                elif len(ids) > 1:
+                    idLinked = idLinks.get(playerId[0])
+                    if idLinked in playersDict.id2names:
+                        if not (idLinked in ids):
+                            logger.print('strange id')
+                            raise
+                            logger.print('solved multiple players', player, playerId, idLinked, playersDict.getNames(idLinked))
+                        fout.write('\t'.join([idLinked, player, 'http://tt-liga.pro/players/' + playerId[0]]) + '\n')
+                    else:
+                        logger.print('multiple players', player, playerId, ids, idLinked)
+
+        corrections = dict()
+        wrongLines = list()
+        matches = LigaProPreparator.getMatches(corrections, wrongLines)
+        logger.print(len(matches))
+
+        rankings = LigaProPreparator.getRankings()
+        with open('prepared_data/liga_pro/ranking_liga_pro.txt', 'w', encoding='utf-8') as fout:
+            for e in sorted(rankings):
+                dt, player, ranking = e.split('\t')
+                playerName, playerId = player.split(';')
+                if playerId in idLinks:
+                    id = [idLinks[playerId]]
+                else:
+                    id = playersDict.getId(playerName)
+                if len(id) == 1:
+                    fout.write(dt + '\t' + id[0] + '\t' + ranking + '\n')
+                else:
+                    logger.print('Ranking error ', playerName, playerId, id)
+
+                    #    multiple = dict()
+                    #    solved = dict()
+                    #    unknown = dict()
+
+        matchesDict = dict()
+
+        usedLinks = set()
+        badPlayers = set()
+
+        with open('prepared_data/liga_pro/all_results.txt', 'w', encoding='utf-8') as fout:
+            fout.write('date\ttime\tcompName\tid1\tid2\t')
+            fout.write('setsScore\tpointsScore\tname1\tname2\n')
+            for match in matches:
+                if match.flError == 0:
+                    flError = 0
+                    ids = [[], []]
+                    for i in range(2):
+                        for player in match.names[i]:
+                            playerName, playerId = player.split(';')
+                            if playerId in idLinks:
+                                id = [idLinks[playerId]]
+                                usedLinks.add(playerId)
+                            else:
+                                id = playersDict.getId(playerName)
+                            if len(id) == 1:
+                                ids[i].append(id[0])
+                            else:
+                                logger.print(playerName, playerId, id)
+                                if match.compName.find('Кубок баттерфляя') == -1:
+                                    badPlayers.add('\t'.join([str(e) for e in [playerName, playerId, id]]))
+                                flError = 1
+                    if flError == 0 and len(ids[0]) > 0 and len(ids[1]) > 0:
+                        if match.hash in matchesDict:
+                            logger.print('HASHES', matchesDict[match.hash], match.toArr(), match.round)
+                        else:
+                            resTokens = match.toArr()
+                            matchesDict[match.hash] = resTokens
+                            resTokens.append(resTokens[3].split(';')[0])
+                            resTokens.append(resTokens[4].split(';')[0])
+                            resTokens[3] = ';'.join(ids[0])
+                            resTokens[4] = ';'.join(ids[1])
+                            fout.write('\t'.join(resTokens) + '\n')
+                    else:
+                        if match.compName.find('Кубок баттерфляя') == -1:
+                            logger.print('flError ' + match.toStr())
+                else:
+                    logger.print('match.flError ' + match.toStr())
+
+        for e in badPlayers:
+            logger.print(e)
+
+        for k, v in idLinks.items():
+            if k not in usedLinks:
+                logger.print(k, v)
 
     @staticmethod
     def getMatches(corrections, wrongLines):
@@ -93,7 +266,7 @@ class LigaProPreparator:
         return rankings
 
     @staticmethod
-    def makePlayer2Id():
+    def makePlayer2Id(logger):
         corrections = dict()
         wrongLines = list()
         matches = LigaProPreparator.getMatches(corrections, wrongLines)
@@ -106,184 +279,14 @@ class LigaProPreparator:
                 if not (playerId in player2id[playerName]):
                     player2id[playerName].append(playerId)
                     if len(player2id[playerName]) > 1:
-                        print('MULTIPLE PLAYERS ' + playerName + ';'.join(player2id[playerName]))
+                        logger.print('MULTIPLE PLAYERS ' + playerName + ';'.join(player2id[playerName]))
         with open('data/liga_pro/player2id.txt', 'w', encoding='utf-8') as fout:
             for k,v in sorted(player2id.items(), key=lambda x: x[0]):
                 fout.write(k + '\t' + ';'.join(v) + '\n')
 
-    @staticmethod
-    def run():
-        LigaProPreparator.makePlayer2Id()
-        player2id, id2player = readPlayer2Id('data/liga_pro/player2id.txt')
-
-        idLinks = dict()
-        idLinks['30'] = 'm248'
-        idLinks['58'] = 'm421'
-        idLinks['10'] = 'm260'
-        idLinks['2'] = 'm249'
-        idLinks['132'] = 'm501'
-        idLinks['3'] = 'm434'
-        idLinks['128'] = 'w179'
-        idLinks['143'] = 'm3344'
-        idLinks['13'] = 'm256'
-        idLinks['186'] = 'm322'
-        idLinks['17'] = 'w9'
-        idLinks['27'] = 'm2730'
-        idLinks['31'] = 'm326'
-        idLinks['142'] = 'm22'
-        idLinks['32'] = 'm5'
-        idLinks['185'] = 'm280'
-        idLinks['42'] = 'm2728'
-        idLinks['119'] = 'm3655'
-        idLinks['147'] = 'w191'
-        idLinks['49'] = 'w144'
-        idLinks['55'] = 'm267'
-        idLinks['192'] = 'm16244'
-        idLinks['61'] = 'm337'
-        idLinks['64'] = 'm2706'
-        idLinks['126'] = 'w241'
-        idLinks['189'] = 'm16245'
-        idLinks['79'] = 'm552'
-        idLinks['138'] = 'm279'
-        idLinks['131'] = 'm311'
-        idLinks['89'] = 'm2732'
-        idLinks['90'] = 'm269'
-        idLinks['156'] = 'm11608'
-        idLinks['102'] = 'm577'
-        idLinks['148'] = 'w185'
-        idLinks['200'] = 'm537'
-        idLinks['187'] = 'm16248'
-        idLinks['221'] = 'm44'
-        idLinks['396'] = 'm16251'
-        idLinks['220'] = 'm9198'
-        idLinks['210'] = 'm16397'
-        idLinks['286'] = 'm292'
-        idLinks['249'] = 'm2781'
-        idLinks['194'] = 'm16400'
-        idLinks['273'] = 'm6638'
-        idLinks['304'] = 'm16758'
-        idLinks['238'] = 'm604'
-        idLinks['309'] = 'm619'
-        idLinks['310'] = 'm2739'
-        idLinks['301'] = 'm9894'
-        idLinks['406'] = 'm278'
-        idLinks['360'] = 'm2853'
-        # idLinks['301'] = 'm9894'
-
-        playersDict = GlobalPlayersDict("filtered")
-
-        if len(set(idLinks.values())) != len(idLinks):
-            print('bad links')
-            raise
-
-        for k, v in idLinks.items():
-            if not v in playersDict.id2names:
-                print(k, v)
-                raise
-
-        with open('prepared_data/liga_pro/players_liga_pro.txt', 'w', encoding='utf-8') as fout:
-            for player, playerId in sorted(player2id.items(), key=lambda x: x[0]):
-                if len(playerId) > 1:
-                    print(player, playerId)
-                    raise
-                ids = playersDict.getId(player)
-                if len(ids) == 1:
-                    fout.write('\t'.join([ids[0], player, 'http://tt-liga.pro/players/' + playerId[0]]) + '\n')
-                elif len(ids) == 0:
-                    idLinked = idLinks.get(playerId[0])
-                    if idLinked in playersDict.id2names:
-                        print('solved unknown player', player, playerId, idLinked, playersDict.getNames(idLinked))
-                        fout.write('\t'.join([idLinked, player, 'http://tt-liga.pro/players/' + playerId[0]]) + '\n')
-                    else:
-                        print('unknown player', player, playerId, idLinked)
-                elif len(ids) > 1:
-                    idLinked = idLinks.get(playerId[0])
-                    if idLinked in playersDict.id2names:
-                        if not (idLinked in ids):
-                            print('strange id')
-                            raise
-                        print('solved multiple players', player, playerId, idLinked, playersDict.getNames(idLinked))
-                        fout.write('\t'.join([idLinked, player, 'http://tt-liga.pro/players/' + playerId[0]]) + '\n')
-                    else:
-                        print('multiple players', player, playerId, ids, idLinked)
-
-        corrections = dict()
-        wrongLines = list()
-        matches = LigaProPreparator.getMatches(corrections, wrongLines)
-        print(len(matches))
-
-        rankings = LigaProPreparator.getRankings()
-        with open('prepared_data/liga_pro/ranking_liga_pro.txt', 'w', encoding='utf-8') as fout:
-            for e in sorted(rankings):
-                dt, player, ranking = e.split('\t')
-                playerName, playerId = player.split(';')
-                if playerId in idLinks:
-                    id = [idLinks[playerId]]
-                else:
-                    id = playersDict.getId(playerName)
-                if len(id) == 1:
-                    fout.write(dt + '\t' + id[0] + '\t' + ranking + '\n')
-                else:
-                    print('Ranking error ', playerName, playerId, id)
-
-                    #    multiple = dict()
-                    #    solved = dict()
-                    #    unknown = dict()
-
-        matchesDict = dict()
-
-        usedLinks = set()
-        badPlayers = set()
-
-        with open('prepared_data/liga_pro/all_results.txt', 'w', encoding='utf-8') as fout:
-            fout.write('date\ttime\tcompName\tid1\tid2\t')
-            fout.write('setsScore\tpointsScore\tname1\tname2\n')
-            for match in matches:
-                if match.flError == 0:
-                    flError = 0
-                    ids = [[], []]
-                    for i in range(2):
-                        for player in match.names[i]:
-                            playerName, playerId = player.split(';')
-                            if playerId in idLinks:
-                                id = [idLinks[playerId]]
-                                usedLinks.add(playerId)
-                            else:
-                                id = playersDict.getId(playerName)
-                            if len(id) == 1:
-                                ids[i].append(id[0])
-                            else:
-                                print(playerName, playerId, id)
-                                if match.compName.find('Кубок баттерфляя') == -1:
-                                    badPlayers.add('\t'.join([str(e) for e in [playerName, playerId, id]]))
-                                flError = 1
-                    if flError == 0 and len(ids[0]) > 0 and len(ids[1]) > 0:
-                        if match.hash in matchesDict:
-                            print('HASHES', matchesDict[match.hash], match.toArr(), match.round)
-                        else:
-                            resTokens = match.toArr()
-                            matchesDict[match.hash] = resTokens
-                            resTokens.append(resTokens[3].split(';')[0])
-                            resTokens.append(resTokens[4].split(';')[0])
-                            resTokens[3] = ';'.join(ids[0])
-                            resTokens[4] = ';'.join(ids[1])
-                            fout.write('\t'.join(resTokens) + '\n')
-                    else:
-                        if match.compName.find('Кубок баттерфляя') == -1:
-                            print('flError ' + match.toStr())
-                else:
-                    print('match.flError ' + match.toStr())
-
-        for e in badPlayers:
-            print(e)
-
-        for k, v in idLinks.items():
-            if k not in usedLinks:
-                print(k, v)
-
 
 def main():
-    LigaProPreparator.run()
+    LigaProPreparator.run(logger=Logger('LigaProPreparator.txt'))
 
 
 if __name__ == "__main__":

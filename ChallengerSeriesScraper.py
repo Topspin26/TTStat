@@ -2,11 +2,14 @@ import time
 import requests
 from bs4 import BeautifulSoup
 import os
+from Logger import Logger
 
 
 class ChallengerSeriesScraper:
     @staticmethod
-    def run():
+    def run(logger=Logger()):
+        print('ChallengerSeriesScraper')
+        logger.print('ChallengerSeriesScraper')
         url = 'http://challengerseries.net/content/results'
         result = requests.get(url)
         soup = BeautifulSoup(result.content, "lxml")
@@ -14,8 +17,8 @@ class ChallengerSeriesScraper:
         arr = soup.find(id='headselect').find_all('option')
         ids = []
         for e in arr:
-            print(e)
-            print(e.get('value'), e.text)
+            logger.print(e)
+            logger.print(e.get('value'), e.text)
             ids.append([e.get('value'), e.text])
 
         ids.reverse()
@@ -29,11 +32,11 @@ class ChallengerSeriesScraper:
             j += 1
         j = max(j - 2, 0)
 
-        print(len(ids), j)
+        logger.print(len(ids), j)
 
         # ids = [['1035', '27.02. - 28.02.2017']]
         for id, dt in ids[j:]:
-            print([id, dt])
+            logger.print([id, dt])
             ChallengerSeriesScraper.scrap(url + '?q=node/' + id, id, dt)
             time.sleep(2)
 
@@ -49,7 +52,7 @@ class ChallengerSeriesScraper:
 
 
 def main():
-    ChallengerSeriesScraper.run()
+    ChallengerSeriesScraper.run(logger=Logger('ChallengerSeriesScraper.txt'))
 
 if __name__ == "__main__":
     main()

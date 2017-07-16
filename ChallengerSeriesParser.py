@@ -1,17 +1,20 @@
 from os import walk
 import datetime
 from bs4 import BeautifulSoup
+from Logger import Logger
 
 
 class ChallengerSeriesParser:
 
     @staticmethod
-    def run():
+    def run(logger=Logger()):
+        print('ChallengerSeriesParser')
+        logger.print('ChallengerSeriesParser')
         for f in walk('data/challenger_series/results_raw'):
             for ff in sorted(f[2]):
-                print(ff)
+                logger.print(ff)
                 sKey, lines = ChallengerSeriesParser.parse('data/challenger_series/results_raw/' + ff)
-                print(sKey)
+                logger.print(sKey)
                 with open('data/challenger_series/results/' + sKey + '.txt', 'w', encoding='utf-8') as fout:
                     fout.write(lines)
 
@@ -49,7 +52,7 @@ class ChallengerSeriesParser:
 
 
 def main():
-    ChallengerSeriesParser.run()
+    ChallengerSeriesParser.run(logger=Logger('ChallengerSeriesParser.txt'))
 
 if __name__ == "__main__":
     main()

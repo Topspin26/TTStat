@@ -5,22 +5,25 @@ import os
 from os import walk
 from common import *
 from bs4 import BeautifulSoup
+from Logger import Logger
 
 
 class MasterTourParser:
 
     @staticmethod
-    def run():
+    def run(logger=Logger()):
+        print('MasterTourParser')
+        logger.print('MasterTourParser')
         for f in walk('data/master_tour/tournaments'):
             for ff in sorted(f[2]):
-                print(ff)
-                sKey, lines = MasterTourParser.parse('data/master_tour/tournaments/' + ff)
-                print(sKey)
+                logger.print(ff)
+                sKey, lines = MasterTourParser.parse('data/master_tour/tournaments/' + ff, logger)
+                logger.print(sKey)
                 with open('data/master_tour/results/' + sKey + '.txt', 'w', encoding='utf-8') as fout:
                     fout.write(lines)
 
     @staticmethod
-    def parse(filename):
+    def parse(filename, logger):
         soup = BeautifulSoup(open(filename, encoding='utf-8').read(), "lxml")
 
         lines2 = []
@@ -46,7 +49,7 @@ class MasterTourParser:
 
 
 def main():
-    MasterTourParser.run()
+    MasterTourParser.run(logger=Logger('MasterTourParser.txt'))
 
 if __name__ == "__main__":
     main()

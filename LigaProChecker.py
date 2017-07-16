@@ -142,6 +142,9 @@ class LigaProChecker:
         checked.add('Карпеш Роман')
         checked.add('Константин Носов')
         checked.add('Никита Мошков')
+        checked.add('Валерия Щетинкина')
+        checked.add('Евгений Груздов')
+        checked.add('Павел Перов')
 
         for playerId, player in sorted(players.items(), key=lambda x: x[1].name):
             flLP = 0

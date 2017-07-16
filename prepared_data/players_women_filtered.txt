@@ -549,7 +549,7 @@ w679	KOLA Nanapat
 w680	VASILJEVIC Suzana
 w681	GEORGESCU-ENCEA Mihaela
 w682	MUSOKE Mary
-w683	ZHANG Rui
+w683	ZHANG Rui;Чзан Руи
 w684	Kravchenko Marina;Марина Кравченко
 w685	KIM Kyungha
 w686	LEE Daeun
@@ -838,7 +838,7 @@ w971	GUNGOR Gokce Nur
 w972	TRIFONOVA Polina
 w973	POUNGSRI Cathareeya
 w974	NOWOCIN Katarzyna
-w975	SUN Yingsha
+w975	SUN Yingsha;Сунь Инша
 w976	VAN ACKER Florence
 w977	CERON Ximena
 w978	VENCKUTE Vitalija
@@ -2246,7 +2246,7 @@ w2387	SCHOPP Jie
 w2388	SARIEVA Ana
 w2389	VRAMENCALIEVA Kristina
 w2390	Kim Song I;Ким Сон И
-w2391	LIU Weishan
+w2391	LIU Weishan;Лю Вэйшань
 w2392	BAI Yang
 w2393	KEJEBACHIAN Lara
 w2394	SU Hsien-Ching
@@ -4884,6 +4884,7 @@ w10591	HALITI Ilirjana
 w10592	SEPULVEDA Stephany
 w10593	ADOM AMANKWAA Mareen
 w10663	Ксения Липатова
+w10777	Виктория Полушина
 w10935	Brinza Vitalina
 w10936	Santur Kelly
 w10937	Лью Жюдит;Liu Judith
@@ -4921,3 +4922,7 @@ w11070	I Ayano
 w11071	Kuan E Xian
 w11072	Цзин-Цзин Лян;Liang Jing-Jing
 w11073	Sasao Asuka
+w11129	Tee Ai Xin
+w11130	Sanchez Mileysha
+w11131	Cai Fong-En
+w11132	Xu Jiarui

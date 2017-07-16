@@ -1,20 +1,23 @@
 import requests
 from bs4 import BeautifulSoup
 from os import walk
+from Logger import Logger
 
 
 class LigaProScraper:
     @staticmethod
-    def run():
+    def run(logger=Logger()):
+        print('LigaProScraper')
+        logger.print('LigaProScraper')
         curId = 1
         for f in walk('data/liga_pro/tours'):
             for ff in f[2]:
                 curId = max(curId, int(ff.split('_')[1][:-4]))
         curId = max(1, curId - 2)
-        print(curId)
+        logger.print(curId)
         fl = 0
         for tid in range(curId, 1000):
-            print(tid)
+            logger.print(tid)
             tfl = LigaProScraper.scrap(tid)
             fl = (fl + 1) if tfl == 1 else 0
             if fl == 4:
@@ -39,7 +42,7 @@ class LigaProScraper:
 
 
 def main():
-    LigaProScraper.run()
+    LigaProScraper.run(logger=Logger('LigaProScraper.txt'))
 
 if __name__ == "__main__":
     main()

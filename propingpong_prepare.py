@@ -106,6 +106,10 @@ def main():
     idLinks['rus']['8288'] = None # Савельев Алексей
     idLinks['rus']['20152'] = None # Воробьев Сергей
 
+    idLinks['rus']['1477'] = 'm231' # Исмаилов Саади
+    idLinks['rus']['20166'] = 'm231' # Исмаилов Саъди
+    idLinks['rus']['19370'] = 'm231' # Исмаилов Саъди
+
     prefix = 'prepared_data/propingpong/'
     for rt in ['rus', 'ittf']:
         collisions = dict()
@@ -134,6 +138,10 @@ def main():
                     id = rusName2Id[playerName]
                 else:
                     id = ittfName2Id[playerName]
+                if playerName == 'Исмаилов Саади' or playerName == 'Саъди Исмаилов':
+                    print(dt, playerName, id, playerId, v)
+
+                id = [e for e in id if idLinks[rt].get(e, 1) is not None]
                 if len(id) == 1 or playerId in idLinks[rt] or (len(id) == 2 and len(id[0]) != len(id[1])):
                     if playerId in idLinks[rt] and idLinks[rt][playerId] is None:
                         continue
@@ -141,8 +149,8 @@ def main():
                         id = [idLinks[rt][playerId]]
                     else:
                         id = playersDict.getId(playerName)
-                    if playerName == 'Станислав Медведев' or playerName == 'Гусев Андрей':
-                        print(playerName, id, playerId)
+                    #if playerName == 'Станислав Медведев' or playerName == 'Гусев Андрей':
+                    #    print(playerName, id, playerId)
                     if len(id) == 1:
                         fout.write('\t'.join([dt, id[0]] + v) + '\n')
                     elif len(id) == 0:

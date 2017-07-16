@@ -4,17 +4,19 @@ import random
 import os
 from os import walk
 from bs4 import BeautifulSoup
-
+from Logger import Logger
 
 class LigaProParser:
 
     @staticmethod
-    def run():
+    def run(logger=Logger()):
+        print('LigaProParser')
+        logger.print('LigaProParser')
         for f in walk('data/liga_pro/tours'):
             for ff in sorted(f[2]):
-                print(ff)
-                sKey, lines = LigaProParser.parse('data/liga_pro/tours/' + ff)
-                print(sKey)
+                logger.print(ff)
+                sKey, lines = LigaProParser.parse('data/liga_pro/tours/' + ff, logger)
+                logger.print(sKey)
                 with open('data/liga_pro/results/' + sKey + '.txt', 'w', encoding='utf-8') as fout:
                     fout.write(lines)
                 '''
@@ -31,7 +33,7 @@ class LigaProParser:
                 '''
 
     @staticmethod
-    def parse(filename):
+    def parse(filename, logger):
         tid = filename.split('_')[-1][:-4]
         soup = BeautifulSoup(open(filename, encoding='utf-8').read(), "lxml")
 
@@ -45,7 +47,7 @@ class LigaProParser:
         try:
             place = soup.find_all('div', class_="desc")[1].find('div', class_="desc-item").find('a').getText()
         except:
-            print('no place')
+            logger.print('no place')
             pass
 #        print(place)
         monthname2Num = {'Янв':1,'Фев':2,'Мар':3,'Апр':4,'Май':5,'Мая':5,'Июн':6,'Июня':6,
@@ -85,7 +87,7 @@ class LigaProParser:
                 except:
                     dr1 = '0'
                     dr2 = '0'
-                    print(pl1Name, pl2Name, 'wrong dr')
+                    logger.print(pl1Name, pl2Name, 'wrong dr')
 #                print(dr1, dr2)
 
                 try:
@@ -100,7 +102,7 @@ class LigaProParser:
                     score = ''
                     gameId = ''
                     pointsScore = ''
-                    print('wrong score')
+                    logger.print('wrong score')
 
                 lines2.append('\t'.join([dt, tt, compInfo, gameId, stage,
                                          pl1Name + ';' + pl1Id, r1, dr1,
@@ -118,7 +120,7 @@ class LigaProParser:
 
 
 def main():
-    LigaProParser.run()
+    LigaProParser.run(logger=Logger('LigaProParser.txt'))
 
 if __name__ == "__main__":
     main()

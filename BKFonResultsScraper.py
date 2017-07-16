@@ -1,6 +1,7 @@
 from datetime import datetime
 import random
 from common import *
+from Logger import Logger
 
 
 def getResults(curDate):
@@ -15,7 +16,9 @@ def getResults(curDate):
 
 class BKFonResultsScraper:
     @staticmethod
-    def run():
+    def run(logger=Logger()):
+        print('BKFonResultsScraper')
+        logger.print('BKFonResultsScraper')
         url = 'https://www.fonbet.ru/#!/results'
         driver = initDriver(url, 10)
         try:
@@ -31,29 +34,29 @@ class BKFonResultsScraper:
                     driver.find_element_by_xpath('//span[@class="events__filter-down icon _icon_arrow-tree-light"]').click()
                 s = driver.find_element_by_class_name('ui-calendar__title').get_attribute('innerHTML')
                 month = monthname2Num[s.lower()[:3]]
-                print(month)
+                logger.print(month)
                 year = s.lower()[-4:]
-                print(year)
+                logger.print(year)
 
                 active_days = driver.find_elements_by_xpath(
                     '//td[contains(@class, "ui-calendar__col") and not (contains(@class, "_state_off"))]/a')
                 nd = len(active_days)
-                print(len(active_days))
+                logger.print(len(active_days))
                 if year == str(datetime.now().year):
                     for i in range(nd - flLast):
-    #                   if month == 4:
-    #                       continue
-    #                   if i < 10:
-    #                        continue
-                        if month != datetime.now().month and month != datetime.now().month - 1:
+                        #if month == 4:
+                        #    continue
+                        #if i < 7:
+                        #    continue
+                        if month != datetime.now().month and (datetime.now().day > 14 or month != datetime.now().month - 1):
                             flExit = 1
                             continue
                         curDate = year + '-' + str(month).zfill(2) + '-' + str(i + 1).zfill(2)
-                        print(curDate)
+                        logger.print(curDate)
                         filename = 'data/bkfon/results/' + curDate + '_new.txt'
                         sLast = getResults(curDate)
 
-                        print(active_days[i].get_attribute('innerHTML'))
+                        logger.print(active_days[i].get_attribute('innerHTML'))
                         active_days[i].click()
                         time.sleep(10 + random.random())
 
@@ -64,14 +67,14 @@ class BKFonResultsScraper:
                         except:
                             pass
                         if tt is None:
-                            print('try click')
+                            logger.print('try click')
                             driver.find_element_by_xpath(
                                 '//div[@class="events__filter _type_sport"]/*/span[@class="events__filter-text"]').click()
-                            print('click')
+                            logger.print('click')
                             try:
                                 tt = driver.find_element_by_xpath(
                                     '//span[@class="events__filter-icon icon _type_sport _icon_3088"]')
-                                print('find tt')
+                                logger.print('find tt')
                                 tt.click()
                             except:
                                 tt = None
@@ -88,9 +91,9 @@ class BKFonResultsScraper:
                                 for e in arr2:
                                     if not (e in arr1):
                                         flNewInfo = 1
-                                        print(e)
+                                        logger.print(e)
                                 if flNewInfo == 1:
-                                    print(curDate + ' NEW INFO')
+                                    logger.print(curDate + ' NEW INFO')
                                     with open(filename, 'w', encoding='utf-8') as fout:
                                         fout.write(s)
                                     with open(filename[:-4] + '_old' + tDate + '.txt', 'w', encoding='utf-8') as fout:
@@ -98,7 +101,7 @@ class BKFonResultsScraper:
                         else:
                             driver.find_element_by_xpath(
                                 '//div[@class="events__filter _type_sport"]/*/span[@class="events__filter-text"]').click()
-                            print('no table-tennis')
+                            logger.print('no table-tennis')
 
                         driver.find_element_by_xpath(
                             '//span[@class="events__filter-down icon _icon_arrow-tree-light"]').click()
@@ -118,7 +121,7 @@ class BKFonResultsScraper:
 
 
 def main():
-    BKFonResultsScraper.run()
+    BKFonResultsScraper.run(logger=Logger('BKFonResultsScraper.txt'))
 
 
 if __name__ == "__main__":

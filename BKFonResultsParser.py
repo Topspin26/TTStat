@@ -2,6 +2,7 @@ from os import walk
 from lxml import html
 from lxml import etree
 import re
+from Logger import Logger
 
 monthname2Num = {'янв': 1, 'фев': 2, 'мар': 3, 'апр': 4, 'май': 5, 'мая': 5, 'июн': 6,
                  'июл': 7, 'авг': 8, 'сен': 9, 'окт': 10, 'ноя': 11, 'дек': 12}
@@ -9,7 +10,9 @@ monthname2Num = {'янв': 1, 'фев': 2, 'мар': 3, 'апр': 4, 'май': 5
 
 class BKFonResultsParser:
     @staticmethod
-    def run():
+    def run(logger=Logger()):
+        print('BKFonResultsParser')
+        logger.print('BKFonResultsParser')
         for f in walk('data/bkfon/results'):
             fSet = set(f[2])
             for ff in f[2]:
@@ -18,56 +21,63 @@ class BKFonResultsParser:
                     continue
                 if ff.find('new') != -1:
                     if not (ff.replace('_new', '') in fSet):
-                        sKey, lines = BKFonResultsParser.parse('data/bkfon/results/' + ff, mode='new')
+                        sKey, lines = BKFonResultsParser.parse('data/bkfon/results/' + ff, logger, mode='new')
 #            if ff.find('2016-11') == -1 and ff.find('2016-12') == -1 and ff.find('2017-') == -1:
 #                continue
 #            if ff.find('2017-02-07') == -1:
 #                continue
                 else:
-                    sKey, lines = BKFonResultsParser.parse('data/bkfon/results/' + ff, mode='old')
-                print(sKey)
+                    sKey, lines = BKFonResultsParser.parse('data/bkfon/results/' + ff, logger, mode='old')
+                logger.print(sKey)
                 with open('data/bkfon/results_parsed/' + sKey + '.txt', 'w', encoding='utf-8') as fout:
                     fout.write(lines)
 
     @staticmethod
-    def parse(filename, mode='new'):
+    def parse(filename, logger, mode='new'):
         if mode == 'new':
-            return BKFonResultsParser.processNew(filename)
+            return BKFonResultsParser.processNew(filename, logger)
         else:
-            return BKFonResultsParser.processOld(filename)
+            return BKFonResultsParser.processOld(filename, logger)
 
     @staticmethod
-    def processNew(filename):
+    def processNew(filename, logger):
         lines = []
         tid = filename.split('/')[-1][:-4]
         with open(filename, 'r', encoding='utf-8') as fin:
             for line in fin:
                 table = html.fromstring(line)
                 trs = table.xpath("//tr")
-                print(len(trs))
+                logger.print(len(trs))
                 compName = ''
                 for itr, tr in enumerate(trs):
+                    s = etree.tostring(tr, pretty_print=True, encoding='unicode')
+                    if s.find('Нет событий') != -1:
+                        continue
                     if tr.get('class').find('table__row _type_segment _sport_3088') != -1:
-                        s = re.sub(r'\<\!--[^>]*--\>', '', etree.tostring(tr, pretty_print=True, encoding='unicode'))
+                        s = re.sub(r'\<\!--[^>]*--\>', '', s)
                         #print(s)
                         compName = s.split('"table__title-text">')[1].split('<')[0]
-    #                    print(compName)
+                        #print(compName)
                     else:
-#                        if compName.find('TT-CUP') != -1:
-#                            continue
+                        #if compName.find('TT-CUP') != -1:
+                        #    continue
                         tds = tr.xpath('//tr[' + str(itr + 1) + ']/td')
-                        s = re.sub(r'\<\!--[^>]*--\>', '', etree.tostring(tds[0], pretty_print=True, encoding='unicode'))
-    #                    print(s.strip())
-                        timeArr = s.split('"table__time-icon')[1].split('<span>')[1].split('<')[0].split(' в ')
+                        s = re.sub(r'\<\!--[^>]*--\>', '', s)
+                        #print(s.strip())
+                        try:
+                            timeArr = s.split('"table__time-icon')[1].split('<span>')[1].split('<')[0].split(' в ')
+                        except:
+                            logger.print(s)
+                            raise
                         matchTime = timeArr[1]
                         try:
                             month = str(monthname2Num[timeArr[0].split()[1][:3]]).zfill(2)
                         except:
-                            print(timeArr)
+                            logger.print(timeArr)
                             continue
                         dt = tid[:4] + '-' + month + '-' + timeArr[0].split()[0].zfill(2)
-    #                    print(timeArr)
-    #                    print(dt)
+                        #print(timeArr)
+                        #print(dt)
                         names = s.split('"table__event-number">')[1].split('</span>')[1].split('<')[0].strip()
 
                         names = re.sub(' +', ' ', names.replace(u'\xa0', ' '))
@@ -75,23 +85,23 @@ class BKFonResultsParser:
                         names = names.strip().split(' - ')
 
                         matchId = s.split('"table__event-number">')[1].split('</span>')[0].strip()
-    #                    print(matchId)
+                        #print(matchId)
                         setsScore = ''
                         try:
                             setsScore = s.split('"table__score">')[1].split('<')[0]
                         except:
                             pass
-    #                    print(setsScore)
+                        #print(setsScore)
                         pointsScore = ''
                         try:
                             pointsScore = s.split('"table__score-more">')[1].split('<')[0]
                             pointsScore = pointsScore.replace('(', '').replace(')', '').replace('\xa0', ';').replace('-', ':')
                         except:
                             pass
-    #                    print(pointsScore)
+                        #print(pointsScore)
 
-#                        if names[0].lower().find('game') != -1:
-#                            continue
+                        #if names[0].lower().find('game') != -1:
+                        #    continue
 
                         lines.append('\t'.join([dt, matchTime, compName, matchId,
                                                 ';'.join([e.strip() for e in names[0].strip().split('/')]),
@@ -100,7 +110,7 @@ class BKFonResultsParser:
         return tid, '\n'.join(lines)
 
     @staticmethod
-    def processOld(filename):
+    def processOld(filename, logger):
         lines = []
         tid = filename.split('/')[-1][:-4]
         with open(filename, 'r', encoding='utf-8') as fin:
@@ -145,7 +155,7 @@ class BKFonResultsParser:
 
                             names = arr[2].strip().split(' - ')
                             if len(names) != 2:
-                                print(arr)
+                                logger.print(arr)
                                 continue
 #                            if names[0].lower().find('game') != -1:
 #                                continue
@@ -162,7 +172,8 @@ class BKFonResultsParser:
         return tid, '\n'.join(lines)
 
 def main():
-    BKFonResultsParser.run()
+    #BKFonResultsParser.processNew('data/bkfon/results/2017-07-05_new.txt')
+    BKFonResultsParser.run(logger=Logger('BKFonResultsParser.txt'))
 
 if __name__ == "__main__":
     main()

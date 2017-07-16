@@ -2,19 +2,22 @@ import os
 import requests
 from bs4 import BeautifulSoup
 import datetime
+from Logger import Logger
 
 
 class RttfScraper:
     @staticmethod
-    def run():
+    def run(logger=Logger()):
+        print('RttfScraper')
+        logger.print('RttfScraper')
         for year in range(2017, datetime.datetime.now().year + 1):
             for month in range(1, 13):
-                RttfScraper.scrapMonth(str(year) + '-' + str(month).zfill(2))
+                RttfScraper.scrapMonth(str(year) + '-' + str(month).zfill(2), logger)
                 if year == datetime.datetime.now().year and month == datetime.datetime.now().month:
                     break
 
     @staticmethod
-    def scrapMonth(month):
+    def scrapMonth(month, logger):
         url = 'http://or.rttf.ru/tournaments/' + month
         result = requests.get(url)
         soup = BeautifulSoup(result.content, "lxml")
@@ -31,7 +34,7 @@ class RttfScraper:
             dirname = 'data/rttf/tournaments/' + dt
             if not os.path.exists(dirname):
                 os.mkdir(dirname)
-            print([s, href])
+            logger.print([s, href])
 
             compId = href.split('/')[-1]
             compName = s.split(' ', 1)[-1].replace('"', '')
@@ -46,7 +49,7 @@ class RttfScraper:
 
 
 def main():
-    RttfScraper.run()
+    RttfScraper.run(logger=Logger('RttfScraper.txt'))
 
 if __name__ == "__main__":
     main()
