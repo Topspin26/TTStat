@@ -415,8 +415,8 @@ def calcRankingsProcess(mw):
     print(len(matchesStorage.matches))
 
     rankings = dict()
-#    startDate = '2015-12-31'
-    startDate = '2017-04-20'
+    startDate = '2015-12-31'
+#    startDate = '2017-04-20'
     today = datetime.datetime.now().strftime("%Y-%m-%d")
     curDate = startDate
     rankingsParams = []

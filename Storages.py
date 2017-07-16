@@ -125,14 +125,18 @@ class RankingsStorage:
 
     @staticmethod
     def readPlayersRankings(filename):
+        filenames = [filename]
+        if isinstance(filename, list):
+            filenames = filename
         playersRankings = dict()
-        with open(filename, 'r', encoding='utf-8') as fin:
-            for line in fin:
-                tokens = line.split('\t')
-                tokens = [e.strip() for e in tokens]
-                if len(tokens[0]) == 7:
-                    tokens[0] += '-01'
-                if not(tokens[1] in playersRankings):
-                    playersRankings[tokens[1]] = dict()
-                playersRankings[tokens[1]][tokens[0]] = tokens[2:]
+        for filename in filenames:
+            with open(filename, 'r', encoding='utf-8') as fin:
+                for line in fin:
+                    tokens = line.split('\t')
+                    tokens = [e.strip() for e in tokens]
+                    if len(tokens[0]) == 7:
+                        tokens[0] += '-01'
+                    if not(tokens[1] in playersRankings):
+                        playersRankings[tokens[1]] = dict()
+                    playersRankings[tokens[1]][tokens[0]] = tokens[2:]
         return playersRankings

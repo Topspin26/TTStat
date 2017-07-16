@@ -5,6 +5,7 @@ import datetime
 
 from Entity import *
 
+
 class BetsStorage:
     def __init__(self):
         self.bets = dict()
