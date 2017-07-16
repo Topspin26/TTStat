@@ -78,3 +78,23 @@ data/propingpong_2017_07_06/*
 logs/*
 Dota.ipynb
 /error.txt
+/bets.txt
+/bets_all.txt
+.idea/misc.xml
+.idea/modules.xml
+.idea/TTStat.iml
+.idea/vcs.xml
+.idea/workspace.xml
+.project
+.pydevproject
+.settings/org.eclipse.core.resources.prefs
+debug.log
+prepared_data/rankings/*
+ttstat/static/images/check@2x.png
+ttstat/static/images/spinner.gif
+ttstat/static/images/bg.png
+ttstat/static/images/repo-forked.png
+ttstat/static/images/repo-source.png
+prepared_data/players_men - копия (3).txt
+prepared_data/players_women - копия (3).txt
+prepared_data/liga_pro/ranking_liga_pro.txt

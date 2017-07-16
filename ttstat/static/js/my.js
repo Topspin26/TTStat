@@ -57,7 +57,7 @@ $(document).ready(function(){
         }
     });
 
-    $('#match_bets_table').DataTable({
+   $('#match_bets_table').DataTable({
         "sScrollY": "300px",
         "bScrollCollapse": true,
         "sScrollX": "100%",
@@ -81,6 +81,36 @@ $(document).ready(function(){
         "aoColumnDefs": [{"aTargets": [0,1,2,3,4,5,6], "orderable": false}],
         "order": [[ 0, "asc" ]]
     });
+
+    var betsLiveTable = $('#match_live_bets_table').DataTable({
+        "sScrollY": "300px",
+        "bScrollCollapse": true,
+        "sScrollX": "100%",
+        "sScrollXInner": "100%",
+        "scrollCollapse": false,
+        "fixedHeader": true,
+        "bProcessing": true,
+        "bServerSide": true,
+        "sPaginationType": "full_numbers",
+        "bjQueryUI": true,
+        "searching": false,
+        "paging": false,
+        "sAjaxSource": "/_retrieve_match_bets_data",
+        "fnServerParams": function ( aoData ) {
+            //alert($("#matchHash"));
+            if ($("#matchHash")) {
+                matchHash = $("#matchHash").attr("hash");
+            }
+            aoData.push( { "name":"matchHash", "value": matchHash});
+        },
+        "aoColumnDefs": [{"aTargets": [0,1,2,3,4,5,6], "orderable": false}],
+        "order": [[ 0, "desc" ]]
+    });
+
+    setInterval( function () {
+            betsLiveTable.ajax.reload();
+        }, 15000);
+
 
 /*    $('a.playerSearchIcon').click(function(event) {
         alert($this.html());
@@ -152,7 +182,7 @@ $(document).ready(function(){
         "fnServerParams": function ( aoData ) {
             //aoData.push( { "name":"mySelect", "value": $('#mySelect').find("option:selected").val()});
         },
-        "order": [[ 2, "desc" ]]
+        "order": [[ 3, "desc" ]]
     });
 
     $('#competitions_table').DataTable({
@@ -425,7 +455,7 @@ $(document).ready(function(){
 
     $("#live_table tbody").on('click', 'td', function(event){
         if ($(this).index() >= 5) {
-            var mHash = $('#live_table').DataTable().row(this).data()[7];
+            var mHash = liveTable.row(this).data()[7];
             window.open(document.location.href.split("?")[0] + "/" + mHash, '_blank');
         }
     });
@@ -453,6 +483,13 @@ $(document).ready(function(){
     setInterval( function () {
             liveFinishedTable.ajax.reload();
         }, 15000);
+
+    $("#live_finished_table tbody").on('click', 'td', function(event){
+        if ($(this).index() >= 5) {
+            var mHash = liveFinishedTable.row(this).data()[7];
+            window.open(document.location.href.split("/live")[0] + "/matches/" + mHash, '_blank');
+        }
+    });
 
     /*
     $('.selectPlayer').selectize({

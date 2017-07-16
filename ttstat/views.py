@@ -31,7 +31,7 @@ def matches():
 def match_info(matchId):
     filters = dict()
     match = ttModel.getMatch(matchId).toDict()
-    match['players'] = [ttModel.getPlayersHrefs(e) for e in match['players']]
+    match['players'] = [ttModel.getPlayersHrefsByIdsNames(e1, e2) for e1, e2 in zip(match['ids'], match['names'])]
     return render_template('match_info.html', bets_columns=ttModel.bets_columns, match=match, filters=filters)
 
 
@@ -69,7 +69,7 @@ def competitions():
     return render_template('competitions.html', competitions_columns=ttModel.competitions_columns, filters=filters)
 
 
-@ttstat.route('/competitions/<copmId>')
+@ttstat.route('/competitions/<compId>')
 def competition_info(compId):
     filters = dict()
     filters['compId'] = compId
@@ -111,7 +111,8 @@ def live():
 def live_match_info(matchId):
     filters = dict()
     match = ttModel.getLiveBet(matchId).toDict()
-    #match['players'] = [ttModel.getPlayersHrefs(e) for e in match['players']]
+    match['players'] = [ttModel.getPlayersHrefsByIdsNames(e1, e2) for e1, e2 in zip(match['ids'], match['names'])]
+    match['hash'] = match['key']
     return render_template('live_match_info.html', bets_columns=ttModel.bets_columns, match=match, filters=filters)
 
 
@@ -141,7 +142,7 @@ def retrieve_live_data():
 @ttstat.route("/_retrieve_live_finished_data")
 def retrieve_live_finished_data():
     aaData_rows = ttModel.getBetsTable()
-    print(aaData_rows)
+    #print(aaData_rows)
     output = dict()
     output['iTotalRecords'] = str(len(aaData_rows))
     sortInd = int(request.values['iSortCol_0'])
@@ -233,33 +234,43 @@ def get_matches_data():
     elif compIdFilter is not None:
         matchesList = ttModel.competitionsStorage.getComp(compIdFilter).matches
     output['iTotalRecords'] = str(len(matchesList))
-    for match in matchesList:
-        if compIdFilter:
-            if str(match.compId) != str(compIdFilter):
+    if playerIdFilter or player0IdFilter or compIdFilter or sourceIdFilter or text != '':
+        for match in matchesList:
+            if compIdFilter:
+                if str(match.compId) != str(compIdFilter):
+                    continue
+            if sourceIdFilter and sourceIdFilter not in match.sources:
                 continue
-        if sourceIdFilter and sourceIdFilter not in match.sources:
-            continue
-        flMatch = 0
-        for i in range(2):
-            for player in match.players[i]:
-                if ttModel.players[player].findString(text) is True:
-                    flMatch = 1
-#        if (' - '.join(ttModel.getNames(match.players[0]))).lower().find(text) != -1 or (' - '.join(ttModel.getNames(match.players[1]))).lower().find(text) != -1:
-        if request.values['playerInfo'] == '1' and player0IdFilter not in match.players[0]:
-            match = match.reverse()
-        if player0IdFilter:
-            if playerIdFilter and playerIdFilter not in match.players[1]:
-                continue
-        else:
-            if playerIdFilter and playerIdFilter not in (match.players[0] + match.players[1]):
-                continue
-        if flMatch == 1:
-            matches.append(match)
-            c += 1
-    sortInd = int(request.values['iSortCol_0'])
-    sortAsc = request.values['sSortDir_0']
-    print([sortInd, ttModel.matches_dtypes[sortInd]])
-    aaData_rows = ttModel.getMatchesTable(matches, sortInd, int(sortAsc == 'asc'), filterFlag=True)
+            flMatch = 0
+            for i in range(2):
+                for playerId, playerName in zip(match.ids[i], match.names[i]):
+                    if playerId != '':
+                        for plId in playerId.split(','):
+                            if ttModel.players[plId].findString(text) is True:
+                                flMatch = 1
+                    else:
+                        if playerName.find(text) != -1:
+                            flMatch = 1
+    #        if (' - '.join(ttModel.getNames(match.ids[0]))).lower().find(text) != -1 or (' - '.join(ttModel.getNames(match.ids[1]))).lower().find(text) != -1:
+            if request.values['playerInfo'] == '1' and player0IdFilter not in match.ids[0]:
+                match = match.reverse()
+            if player0IdFilter:
+                if playerIdFilter and playerIdFilter not in match.ids[1]:
+                    continue
+            else:
+                if playerIdFilter and playerIdFilter not in (match.ids[0] + match.ids[1]):
+                    continue
+            if flMatch == 1:
+                matches.append(match)
+                c += 1
+    else:
+        print('NO filters')
+        matches = matchesList
+        c = len(matches)
+#    sortInd = int(request.values['iSortCol_0'])
+#    sortAsc = request.values['sSortDir_0']
+#    print([sortInd, ttModel.matches_dtypes[sortInd]])
+    aaData_rows = ttModel.getMatchesTable(matches[leftInd:rightInd], filterFlag=True)
 
 #    if ttModel.matches_dtypes[sortInd] == 'string':
 #        aaData_rows = sorted(aaData_rows, key = lambda x: x[sortInd], reverse=(sortAsc!='asc'))
@@ -268,7 +279,7 @@ def get_matches_data():
 
     output['iTotalDisplayRecords'] = str(c)
 
-    output['aaData'] = aaData_rows[leftInd:rightInd]
+    output['aaData'] = aaData_rows
 
     results = output
     return json.dumps(results)
@@ -365,7 +376,7 @@ def get_rankings_data():
 
     leftInd = int(request.values['iDisplayStart'])
     rightInd = leftInd + int(request.values['iDisplayLength'])
-    output = {}
+    output = dict()
     output['sEcho'] = str(int(request.values['sEcho']))
 
     text = request.values['sSearch'].lower()
@@ -380,7 +391,7 @@ def get_rankings_data():
     aaData_rows = []
     for k,player in ttModel.players.items():
         if player.mw == mw:
-            if player.findString(text) == True:
+            if player.findString(text) is True:
                 r = ttModel.getRankings(player.id, dt, 100)
                 aaData_rows.append(['0', player.id, player.name, r['rus'], r['ittf'], format(float(r['my']),'.3f'), r['liga_pro']])
                 c += 1
@@ -428,7 +439,7 @@ def get_players_data():
     sortInd = int(request.values['iSortCol_0'])
     sortAsc = request.values['sSortDir_0']
     if ttModel.players_dtypes[sortInd] == 'string':
-        aaData_rows = sorted(aaData_rows, key = lambda x: x[sortInd], reverse=(sortAsc!='asc'))
+        aaData_rows = sorted(aaData_rows, key=lambda x: x[sortInd], reverse=(sortAsc != 'asc'))
     else:
         aaData_rows = sorted(aaData_rows, key=lambda x: float(x[sortInd]), reverse=(sortAsc != 'asc'))
 

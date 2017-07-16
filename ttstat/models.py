@@ -19,8 +19,8 @@ class TTModel:
         self.bets_columns = ['Дата', 'Турнир', 'id1', 'id2', 'Счет', 'К1', 'К2']
         self.bets_dtypes = ['string'] * 7
 
-        self.players_columns = ['id', 'Игрок', 'Матчи']
-        self.players_dtypes = ['string'] * 2 + ['number']
+        self.players_columns = ['id', 'Игрок', 'LP', 'Матчи']
+        self.players_dtypes = ['string'] * 3 + ['number']
 
         self.player_rankings_columns = ['Дата', 'Источник', 'Рейтинг', 'Ранг']
         self.player_rankings_dtypes = ['string'] * 2 + ['number'] * 2
@@ -40,21 +40,29 @@ class TTModel:
 
         self.players = dict()
         #self.playersDict = dict()
-        for k,v in sorted(self.playersDict.id2names.items(), key = lambda x: x[0]):
+        for k, v in sorted(self.playersDict.id2names.items(), key=lambda x: x[0]):
             #self.playersDict[k] = len(self.players)
             self.players[k] = Player(k, v, k[0])
 
-        sources = []
+        with open(dirname + '/prepared_data/liga_pro/players_liga_pro.txt', encoding='utf-8') as fin:
+            for line in fin:
+                tokens = line.strip().split('\t')
+                self.players[tokens[0]].addHref('liga_pro', tokens[2])
+
+        sources = list()
         sources.append(['master_tour', dirname + '/prepared_data/master_tour/all_results.txt'])
         sources.append(['liga_pro', dirname + '/prepared_data/liga_pro/all_results.txt'])
         sources.append(['challenger_series', dirname + '/prepared_data/challenger_series/all_results.txt'])
         sources.append(['bkfon', dirname + '/prepared_data/bkfon/all_results.txt'])
         sources.append(['local', dirname + '/prepared_data/local/kchr_results.txt'])
-        # sources.append(['ittf', dirname + '/prepared_data/ittf/all_results.txt'])
-        # sources.append(['rttf', dirname + '/prepared_data/rttf/all_results.txt'])
+        sources.append(['ittf', dirname + '/prepared_data/ittf/all_results.txt'])
+        sources.append(['rttf', dirname + '/prepared_data/rttf/all_results.txt'])
 
         self.matchesStorage = MatchesStorage(sources)
+        self.matchesStorage.matches = list(sorted(self.matchesStorage.matches,
+                                                  key=lambda x: x.date + ', ' + (x.time if x.time else '-'), reverse=1))
         self.matches = self.matchesStorage.matches
+        self.matchesStorage.buildHash2MatchInd()
         self.hash2matchInd = self.matchesStorage.hash2matchInd
 
         self.competitionsStorage = CompetitionsStorage()
@@ -64,19 +72,19 @@ class TTModel:
             self.competitionsStorage.getComp(compId).addMatch(match)
 
         for match in self.matches:
-            for e in match.players[0]:
-                self.players[e].matches.append(match)
-            for e in match.players[1]:
-                self.players[e].matches.append(match)
+            for i in range(2):
+                for e in match.ids[i]:
+                    self.players[e].matches.append(match)
 
         self.betsStorage = BetsStorage()
         self.betsStorage.loadFromFile(dirname + '/prepared_data/bkfon/live/tail.txt')
         # self.betsStorage.loadFromFile(dirname + '/prepared_data/bkfon/live/all_bets_prepared.txt')
 #        self.matchesBetsStorage = MatchesBetsStorage(self.hash2matchInd,filename=)
 
-        self.bets = self.betsStorage.bets
+#        self.bets = self.betsStorage.bets
 
         self.lastUpdateTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')[:10] + ' 00:00:00'
+        self.lastUpdateTime = '2017-06-12 13:53:00'
 
         self.n = len(self.matches)
         '''
@@ -85,9 +93,9 @@ class TTModel:
                                   'rus1', 'ittf1', 'my1', 'rus2', 'ittf2', 'my2', 'y']) + '\n')
             for match in self.matches:
                 if match.date >= '2015':
-                    if len(match.players[0]) == 1 and not (match.wins is None):
-                        r1 = self.getFeatures(match.players[0][0], match.date)
-                        r2 = self.getFeatures(match.players[1][0], match.date)
+                    if len(match.ids[0]) == 1 and not (match.wins is None):
+                        r1 = self.getFeatures(match.ids[0][0], match.date)
+                        r2 = self.getFeatures(match.ids[1][0], match.date)
                         r1 = [str(e) for e in [r1['rus'], r1['ittf'], r1['my']]]
                         r2 = [str(e) for e in [r2['rus'], r2['ittf'], r2['my']]]
                         fout.write('\t'.join(match.toArr() + r1 + r2 + [str(match.wins[0])]) + '\n')
@@ -96,46 +104,68 @@ class TTModel:
             self.model = pickle.load(fin)
         '''
 
+    def addMatch(self, match):
+        self.matchesStorage.addMatch(match)
+        for i in range(2):
+            for e in match.ids[i]:
+                if e in self.players:
+                    self.players[e].matches.append(match)
+
     def update(self, rows):
         lastTime = None
         block = []
         rowNames = dict(zip(['id', 'datetime', 'eventId', 'compName', 'info'], range(5)))
         for row in rows:
             row = [str(e) for e in row]
-            print(row)
+            # print(row)
             curTime = str(row[1])
             if lastTime is not None and curTime != lastTime:
-                self.betsStorage.update(block)
+                finished = self.betsStorage.update(block)
+                for finishedMatch in finished:
+                    print('FINISHED')
+                    print(finishedMatch.toStr())
+                    self.addMatch(finishedMatch)
                 block = []
             tokens = row[rowNames['info']].split('\t')
             dt = row[rowNames['datetime']]
             eventsInfo = json.loads(tokens[2])
-            players = [tokens[0].split(';'), tokens[1].split(';')]
-            ids = self.getMatchPlayersIds(players)
+            # Старый формат в базе
+            if len(eventsInfo) > 1:
+                eventsInfo = [eventsInfo]
+            names = [tokens[0].split(';'), tokens[1].split(';')]
+            ids = self.getMatchPlayersIds(names)
             block.append(MatchBet(row[rowNames['eventId']], dt, row[rowNames['compName']],
-                                  ids, [eventsInfo], players=players))
+                                  ids, eventsInfo, names=names))
             self.lastUpdateTime = max(self.lastUpdateTime, curTime)
             lastTime = curTime
         if lastTime is not None:
-            self.betsStorage.update(block)
+            finished = self.betsStorage.update(block)
+            for finishedMatch in finished:
+                print('FINISHED')
+                print(finishedMatch.toStr())
+                self.addMatch(finishedMatch)
 
         print(self.lastUpdateTime)
 
     def getHref(self, playerId, playerName, filterFlag=False):
-        hr = '<a href=/players/' + playerId + ' target="blank">' + playerName + '</a>'
-        if filterFlag:
-            return '<a class="matchFilter" playerId="' + playerId + \
-                   '"><span class="glyphicon glyphicon-search"></span></a>' + hr
-        else:
-            return hr
+        if (playerId is not None) and playerId != '':
+            hr = '<a href=/players/' + playerId + ' target="blank">' + str(playerName) + '</a>'
+            if filterFlag:
+                return '<a class="matchFilter" playerId="' + playerId + \
+                       '"><span class="glyphicon glyphicon-search"></span></a>' + hr
+            else:
+                return hr
+        return str(playerName)
 
     def getCompHref0(self, id, name):
         return '<a href=/competitions/' + str(id) + ' target="_blank">' + name + '</a>'
 
-    def getCompHref(self, id, name):
-        return '<a class="matchFilter" compId="' + str(id) + '">' + \
-               '<span class="glyphicon glyphicon-search"></span></a>' + \
-               '<a href=/competitions/' + str(id) + ' target="_blank">' + name + '</a>'
+    def getCompHref(self, compId, name):
+        if compId is not None:
+            return '<a class="matchFilter" compId="' + str(compId) + '">' + \
+                   '<span class="glyphicon glyphicon-search"></span></a>' + \
+                   '<a href=/competitions/' + str(compId) + ' target="_blank">' + name + '</a>'
+        return name
 
     def getSourceHref(self, name):
 #        return '<a class="matchFilter" sourceId="' + str(name) + '">' + '<span class="glyphicon glyphicon-search"></span></a>' + \
@@ -143,12 +173,15 @@ class TTModel:
         return '<a class="matchFilter" sourceId="' + str(name) + '">' + \
                '<span class="glyphicon glyphicon-search"></span></a>' + name
 
-    def getPlayerNames(self, id):
-        return self.playersDict.getNames(id)
-    def getPlayerName(self, id):
-        return self.playersDict.getName(id)
+    def getPlayerNames(self, playerId):
+        return self.playersDict.getNames(playerId)
+
+    def getPlayerName(self, playerId):
+        return self.playersDict.getName(playerId)
+
     def getMatchPlayersNames(self, ids):
         return [self.playersDict.getName(id) for id in ids]
+
     def getMatchPlayersIds(self, players):
         # for i in range(2):
         #    for playerName in players[i]:
@@ -166,8 +199,19 @@ class TTModel:
             return self.betsStorage.liveBets[matchId]
         return None
 
-    def getPlayersHrefs(self, ids, filterFlag=False):
-        return ' - '.join([self.getHref(e, self.playersDict.getName(e), filterFlag=filterFlag) for e in ids])
+    def getPlayersHrefsByIds(self, ids, filterFlag=False):
+        return ' - '.join([self.getHref(e, self.playersDict.getName(e, fl=1), filterFlag=filterFlag) for e in ids])
+
+    def getPlayersHrefsByIdsNames(self, ids, names, filterFlag=False):
+        arr = []
+        for e1, e2 in zip(ids, names):
+            name = self.playersDict.getName(e1, fl=1)
+            playerId = e1
+            if name is None:
+                name = e2
+                playerId = None
+            arr.append(self.getHref(playerId, name, filterFlag=filterFlag))
+        return ' - '.join(arr)
 
     def getPlayersIdsHrefs(self, players, ids, filterFlag=False):
         arr = []
@@ -180,32 +224,33 @@ class TTModel:
 
     def getLiveBetsTable(self):
         data = []
-        for key,matchBet in sorted(self.betsStorage.liveBets.items(), key=lambda x: x[1].dt, reverse=1):
-            names1 = self.getPlayersIdsHrefs(matchBet.players[0], matchBet.ids[0])
-            names2 = self.getPlayersIdsHrefs(matchBet.players[1], matchBet.ids[1])
+        for key, matchBet in sorted(self.betsStorage.liveBets.items(), key=lambda x: x[1].dt, reverse=1):
+            names1 = self.getPlayersIdsHrefs(matchBet.names[0], matchBet.ids[0])
+            names2 = self.getPlayersIdsHrefs(matchBet.names[1], matchBet.ids[1])
             data.append([matchBet.dt, matchBet.eventId, matchBet.compName,
                         names1, names2, matchBet.getLastScore(), str(matchBet.eventsInfo[-1]), matchBet.getKey()])
         return data
 
     def getBetsTable(self):
         data = []
-        for key,matchBet in sorted(self.betsStorage.bets.items(), key=lambda x: x[1].dt, reverse=1):
-            names1 = self.getPlayersIdsHrefs(matchBet.players[0], matchBet.ids[0])
-            names2 = self.getPlayersIdsHrefs(matchBet.players[1], matchBet.ids[1])
-            data.append([matchBet.dt, matchBet.eventId, matchBet.compName,
-                        names1, names2, matchBet.getLastScore(), str(matchBet.eventsInfo[-1]), ''])
+        for mKey, matchBet in sorted(self.betsStorage.bets.items(), key=lambda x: x[1].dt, reverse=1):
+            if mKey[0] != 'l':
+                names1 = self.getPlayersIdsHrefs(matchBet.names[0], matchBet.ids[0])
+                names2 = self.getPlayersIdsHrefs(matchBet.names[1], matchBet.ids[1])
+                data.append([matchBet.dt, matchBet.eventId, matchBet.compName,
+                            names1, names2, matchBet.getLastScore(), str(matchBet.eventsInfo[-1]), mKey])
         return data
 
-    def getMatchesTable(self, matches, sortInd=0, sortAsc=1, filterFlag=False):
+    def getMatchesTable(self, matches, filterFlag=False):
         data = []
-        for i,match in enumerate(sorted(matches, key=lambda x: x.date + ', ' + (x.time if x.time else '-'), reverse=1)):
-            #id1 = ' - '.join(match.players[0])
-            names1 = self.getPlayersHrefs(match.players[0], filterFlag = filterFlag)
-            #' - '.join(self.getMatchPlayersNames(match.players[0]))
-            #id2 = ' - '.join(match.players[1])
-            names2 = self.getPlayersHrefs(match.players[1], filterFlag = filterFlag)
-            #names2 = ' - '.join(self.getMatchPlayersNames(match.players[1]))
-            flBet = '+' if match.hash in self.bets else ''
+        for i, match in enumerate(matches):
+            #id1 = ' - '.join(match.ids[0])
+            names1 = self.getPlayersHrefsByIdsNames(match.ids[0], match.names[0], filterFlag=filterFlag)
+            #' - '.join(self.getMatchPlayersNames(match.ids[0]))
+            #id2 = ' - '.join(match.ids[1])
+            names2 = self.getPlayersHrefsByIdsNames(match.ids[1], match.names[1], filterFlag=filterFlag)
+            #names2 = ' - '.join(self.getMatchPlayersNames(match.ids[1]))
+            flBet = '+' if match.hash in self.betsStorage.bets else ''
             data.append([match.date + ', ' + (match.time if match.time else '-'), self.getCompHref(match.compId, match.compName),
                          names1, names2, match.setsScore + ', (' + match.pointsScore + ')',
                          '; '.join([self.getSourceHref(e) for e in match.sources]), flBet, match.hash])
@@ -220,22 +265,41 @@ class TTModel:
 
     def getMatchBetsTable(self, matchHash, sortInd=0, sortAsc=1):
         data = []
-        if not (matchHash in self.bets):
-            return data
-        matchBet = self.bets[matchHash]
-        id1 = ' - '.join(matchBet.players[0])
-        id2 = ' - '.join(matchBet.players[1])
-        for i in range(len(matchBet.eventsInfo)):
-            print(matchBet.eventsInfo[i])
-            mb = matchBet.eventsInfo[i][1].get('match', dict())
-            data.append([matchBet.eventsInfo[i][0][:10] + ', ' + matchBet.eventsInfo[i][0][11:],
-                         matchBet.compName, id1, id2, mb.get('score', ''), mb.get('win1', ''), mb.get('win2', '')])
+        if matchHash[0] != 'l':
+            if not (matchHash in self.betsStorage.bets):
+                return data
+            matchBet = self.betsStorage.bets[matchHash]
+            id1 = ' - '.join(matchBet.names[0])
+            id2 = ' - '.join(matchBet.names[1])
+            for i in range(len(matchBet.eventsInfo)):
+                print(matchBet.eventsInfo[i])
+                mb = matchBet.eventsInfo[i][1].get('match', dict())
+                data.append([matchBet.eventsInfo[i][0][:10] + ', ' + matchBet.eventsInfo[i][0][11:],
+                             matchBet.compName, id1, id2, mb.get('score', ''), mb.get('win1', ''), mb.get('win2', '')])
+        else:
+            if not (matchHash in self.betsStorage.liveBets):
+                return data
+            matchBet = self.betsStorage.liveBets[matchHash]
+            id1 = ' - '.join(matchBet.names[0])
+            id2 = ' - '.join(matchBet.names[1])
+            for i in range(len(matchBet.eventsInfo) - 1, -1, -1):
+                print(matchBet.eventsInfo[i])
+                mb = matchBet.eventsInfo[i][1].get('match', dict())
+                data.append([matchBet.eventsInfo[i][0][:10] + ', ' + matchBet.eventsInfo[i][0][11:],
+                             matchBet.compName, id1, id2, mb.get('score', ''), mb.get('win1', ''), mb.get('win2', '')])
+
         return data
 
     def getPlayersTable(self, players):
         data = []
         for player in players:
-            data.append([player.id, self.getHref(player.id, player.name), len(player.matches)])
+            href = player.hrefs.get('liga_pro', '')
+            if href != '':
+                href = '<a href=' + href + ' target="_blank">' + href + '</a>'
+            data.append([player.id,
+                         self.getHref(player.id, player.name),
+                         href,
+                         len(player.matches)])
         return data
 
     def getCompetitionsTable(self, competitions):

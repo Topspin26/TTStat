@@ -2,7 +2,7 @@
 {% block content %}
     <!--<h2 id="playerName" playerId="{{id}}">Игроки: {{ name }}</h2>-->
     <div id="main">
-        {{match['ids'][0]|safe}} &nbsp;-&nbsp; {{match['ids'][1]|safe}}
+<!--        {match['ids'][0]|safe} &nbsp;-&nbsp; {match['ids'][1]|safe}-->
         {{match['players'][0]|safe}} &nbsp;-&nbsp; {{match['players'][1]|safe}}
         <div id="matchHash" hash="{{match['hash']}}"></div>
 
@@ -11,7 +11,7 @@
 
         <!--
         <h3>Личные встречи</h3>
-
+        -->
         <h3>Ставки</h3>
         <table id="match_bets_table" class="table table-striped table-bordered">
             <thead>
@@ -24,6 +24,5 @@
             <tbody>
             </tbody>
         </table>
-        -->
     </div>
 {% endblock %}
