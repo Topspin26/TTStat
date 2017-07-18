@@ -82,18 +82,16 @@ def main():
     playersDict = GlobalPlayersDict()
 
     idLinks = {'rus': dict(), 'ittf': dict()}
-    idLinks['rus']['121'] = 'm249'
-    idLinks['rus']['1820'] = 'm323'
-    idLinks['rus']['599'] = 'm256'
-    idLinks['rus']['14286'] = 'm502'
-    idLinks['rus']['3857'] = 'm577'
-    idLinks['rus']['3808'] = 'm251'
-    idLinks['rus']['2262'] = 'm267'
-    idLinks['rus'][''] = 'm421'
-    idLinks['rus'][''] = 'm279'
-    idLinks['rus'][''] = 'w185'
-    idLinks['rus']['1630'] = 'm2803'
-    idLinks['rus']['1576'] = 'm38'
+
+    idLinks['rus']['121'] = 'm249' # Анисимов Антон
+    idLinks['rus']['1820'] = 'm323' # Коротков Александр
+    idLinks['rus']['599'] = 'm256' # Виноградов Алексей
+    idLinks['rus']['14286'] = 'm502' # Соколов Юрий
+    idLinks['rus']['3857'] = 'm577' # Федоров Дмитрий
+    idLinks['rus']['3808'] = 'm251' # Уланов Алексей
+    idLinks['rus']['2262'] = 'm267' # Уланов Алексей
+    idLinks['rus']['1630'] = 'm2803' # Кирсанов Сергей
+    idLinks['rus']['1576'] = 'm38' # Карпов Андрей
     idLinks['rus']['177'] = None # Архипов Иван
     idLinks['rus']['17185'] = None # Морозов Александр
     idLinks['rus']['9703'] = None # Игорь Егоров
@@ -102,13 +100,69 @@ def main():
     idLinks['rus']['1413'] = 'm284' # Иванов Михаил
     idLinks['rus']['1412'] = None # Иванов Михаил
     idLinks['rus']['15288'] = 'm2853'# Савельев Алексей
-    idLinks['rus']['3211'] = None # Савельев Алексей, по идее объединить надо с предыдущим
+    idLinks['rus']['3211'] = None # Савельев Алексей, по идее надо объединить с предыдущим
     idLinks['rus']['8288'] = None # Савельев Алексей
     idLinks['rus']['20152'] = None # Воробьев Сергей
 
     idLinks['rus']['1477'] = 'm231' # Исмаилов Саади
     idLinks['rus']['20166'] = 'm231' # Исмаилов Саъди
     idLinks['rus']['19370'] = 'm231' # Исмаилов Саъди
+
+    idLinks['rus']['13855'] = None # Попов Дмитрий
+    idLinks['rus']['7516'] = None # Попов Дмитрий
+    idLinks['rus']['2990'] = 'm279' # Попов Дмитрий
+
+    idLinks['rus']['4959'] = None # Гусева Екатерина
+    idLinks['rus']['8624'] = None # Гусева Екатерина
+    idLinks['rus']['4958'] = 'w54' # Гусева Екатерина
+
+    idLinks['rus']['14458'] = None # Степанов Иван
+    idLinks['rus']['18224'] = None # Степанов Иван
+    idLinks['rus']['3559'] = 'm292' # Степанов Иван
+
+    idLinks['rus']['8901'] = None # Резниченко Александр
+    idLinks['rus']['3097'] = 'm311' # Резниченко Александр
+
+    idLinks['rus']['8747'] = None # Макаров Денис
+    idLinks['rus']['19039'] = 'm16244' # Макаров Денис
+
+    idLinks['rus']['10003'] = None # Мельников Алексей
+    idLinks['rus']['17831'] = 'm9198' # Мельников Алексей
+
+    idLinks['rus']['2775'] = None # Осипов Дмитрий
+    idLinks['rus']['2773'] = None # Осипов Дмитрий
+    idLinks['rus']['2774'] = None # Осипов Дмитрий
+
+    idLinks['rus']['9414'] = None # Маслов Даниил
+    idLinks['rus']['12153'] = None # Маслов Даниил
+    idLinks['rus']['2359'] = None # Маслов Даниил
+    idLinks['rus']['2358'] = 'm421' # Маслов Даниил
+
+    idLinks['rus']['6713'] = None # Фомина Анастасия
+    idLinks['rus']['6712'] = 'w185' # Фомина Анастасия
+
+    idLinks['rus']['7340'] = None # Овчаров Дмитрий
+    idLinks['rus']['2722'] = 'm226' # Овчаров Дмитрий
+
+    idLinks['rus']['4888'] = None # Голубева Анастасия
+    idLinks['rus']['4886'] = None # Голубева Анастасия (1992, нужно объединить со след)
+    idLinks['rus']['15645'] = 'w9' # Голубева Анастасия
+    idLinks['rus']['4887'] = 'w11133' # Голубева Анастасия
+
+    idLinks['rus']['8893'] = None # Мошков Никита
+    idLinks['rus']['8239'] = 'm306' # Мошков Никита
+
+    idLinks['rus']['14596'] = None # Иванов Виктор
+
+    idLinks['rus']['14669'] = None # Крылов Александр
+    idLinks['rus']['18872'] = None # Крылов Александр
+
+    idLinks['rus']['11187'] = None # Попов Олег
+    idLinks['rus']['20143'] = None # Попов Олег
+
+    idLinks['rus']['18136'] = None # Макаров Сергей
+    idLinks['rus']['2274'] = None # Макаров Сергей
+    idLinks['rus']['10285'] = 'm2856' # Макаров Сергей
 
     prefix = 'prepared_data/propingpong/'
     for rt in ['rus', 'ittf']:
@@ -139,6 +193,8 @@ def main():
                 else:
                     id = ittfName2Id[playerName]
                 if playerName == 'Исмаилов Саади' or playerName == 'Саъди Исмаилов':
+                    print(dt, playerName, id, playerId, v)
+                if playerName == 'Старостин Александр' or playerName == 'Александр Старостин':
                     print(dt, playerName, id, playerId, v)
 
                 id = [e for e in id if idLinks[rt].get(e, 1) is not None]

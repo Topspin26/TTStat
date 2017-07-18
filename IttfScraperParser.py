@@ -6,6 +6,7 @@ import os
 from os import walk
 import requests
 from bs4 import BeautifulSoup
+from Logger import Logger
 
 
 class IttfScraper:
@@ -20,8 +21,26 @@ class IttfScraper:
 
 
 class IttfParser:
+
     @staticmethod
-    def parse(s):
+    def run(pages=list(range(1, 101)), logger=Logger()):
+        print('IttfParser')
+        logger.print('IttfParser')
+        url = 'http://www.old.ittf.com/competitions/matches_per_player_all.asp?P_ID=&Formrnd64_Page='
+        unchanged = 0
+
+        for page in pages:
+            logger.print([page, unchanged])
+            if unchanged == 20:
+                break
+            flPage = IttfParser.parse(IttfScraper.scrap(url + str(page)), logger)
+            if flPage == 1:
+                unchanged = 0
+            else:
+                unchanged += 1
+
+    @staticmethod
+    def parse(s, logger):
         flPage = 0
         soup = BeautifulSoup(s, "lxml")
         trs = soup.select('table[bordercolor="#000080"]')[0].find_all('tr')
@@ -68,16 +87,16 @@ class IttfParser:
                         for ir,row in enumerate(rows):
                             if row[0] == s[0] and row[1] == s[1] and row[3] == s[3]:
                                 if '\t'.join(row) != '\t'.join(s):
-                                    print('CHANGE')
-                                    print(row)
-                                    print(s)
+                                    logger.print('CHANGE')
+                                    logger.print(row)
+                                    logger.print(s)
                                     rows[ir] = s
                                     flChange = 1
                                 fl = 1
                                 break
                         if fl == 0:
-                            print('NEW')
-                            print(s)
+                            logger.print('NEW')
+                            logger.print(s)
                             flChange = 1
                             rows.append(s)
                 else:
@@ -89,27 +108,12 @@ class IttfParser:
                         for s in rows:
                             fout.write('\t'.join(s) + '\n')
             except Exception as ex:
-                print(str(ex))
+                logger.print(str(ex))
         return flPage
-
-    @staticmethod
-    def run(pages=list(range(1, 101))):
-        url = 'http://www.old.ittf.com/competitions/matches_per_player_all.asp?P_ID=&Formrnd64_Page='
-        unchanged = 0
-
-        for page in pages:
-            print([page, unchanged])
-            if unchanged == 20:
-                break
-            flPage = IttfParser.parse(IttfScraper.scrap(url + str(page)))
-            if flPage == 1:
-                unchanged = 0
-            else:
-                unchanged += 1
 
 
 def main():
-    IttfParser.run(list(range(1, 101)))
+    IttfParser.run(list(range(1, 101)), logger=Logger('IttfParser.txt'))
 
 
 if __name__ == "__main__":

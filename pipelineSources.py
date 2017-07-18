@@ -7,6 +7,7 @@ from MasterTourPreparator import MasterTourPreparator
 from LigaProScraper import LigaProScraper
 from LigaProParser import LigaProParser
 from LigaProPreparator import LigaProPreparator
+from LigaProChecker import LigaProChecker
 
 from ChallengerSeriesScraper import ChallengerSeriesScraper
 from ChallengerSeriesParser import ChallengerSeriesParser
@@ -23,6 +24,7 @@ from RttfPreparator import RttfPreparator
 from IttfScraperParser import IttfParser
 from IttfPreparator import *
 
+import kchr_prepare
 
 def scrap():
     #LigaProScraper.run(logger=Logger('LigaProScraper.txt'))
@@ -37,8 +39,8 @@ def parse():
     MasterTourParser.run(logger=Logger('MasterTourParser.txt'))
     ChallengerSeriesParser.run(logger=Logger('ChallengerSeriesParser.txt'))
     BKFonResultsParser.run(logger=Logger('BKFonResultsParser.txt'))
-    RttfParser.run()
-    IttfParser.run()
+    RttfParser.run(logger=Logger('RttfParser.txt'))
+    IttfParser.run(logger=Logger('IttfParser.txt'))
 
 
 def prepare():
@@ -48,13 +50,17 @@ def prepare():
     BKFonResultsPreparator.run()
     RttfPreparator.run()
     IttfPreparator.run()
+    # kchr_prepare.main()
 
+def check():
+    LigaProChecker.run(logger=Logger('LigaProChecker.txt'))
 
 def main():
 #    IttfParser.run()
 #    scrap()
-    parse()
-    prepare()
+#    parse()
+#    prepare()
+    check()
 
 if __name__ == "__main__":
     main()

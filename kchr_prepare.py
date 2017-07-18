@@ -172,6 +172,7 @@ def main():
                             if flError == 0:
                                 matches.append(Match(compDate,
                                                      ids,
+                                                     names=ids,
                                                      setsScore=setsScore,
                                                      time='',
                                                      compName=compName + ', ' + compPlace))

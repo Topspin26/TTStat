@@ -3,29 +3,32 @@ import random
 import os
 from os import walk
 from bs4 import BeautifulSoup
+from Logger import Logger
 
 
 class RttfParser:
 
     @staticmethod
-    def run():
+    def run(logger=Logger()):
+        print('RttfParser')
+        logger.print('RttfParser')
         dirname = 'data/rttf/tournaments/'
         dirnameOut = 'data/rttf/results_new/'
         for f in walk(dirname):
             for fd in f[1]:
-                print(fd)
+                logger.print(fd)
                 for ff in walk(dirname + fd):
                     for filename in ff[2]:
-                        print(filename)
+                        logger.print(filename)
 
                         sKey = filename[:-4]
                         if os.path.exists(dirnameOut + fd + '/' + sKey + '.txt') and \
                                 os.path.exists(dirnameOut + fd + '/' + sKey + '_rankings.txt'):
                             continue
                         _, lines = RttfParser.parse(dirname + fd + '/' + filename)
-                        print(sKey)
-                        print(lines['games'])
-                        print(lines['rankings'])
+                        logger.print(sKey)
+                        logger.print(lines['games'])
+                        logger.print(lines['rankings'])
                         if not os.path.exists(dirnameOut + fd):
                             os.mkdir(dirnameOut + fd)
                         with open(dirnameOut + fd + '/' + sKey + '.txt', 'w', encoding='utf-8') as fout:
@@ -81,7 +84,7 @@ class RttfParser:
 
 
 def main():
-    RttfParser.run()
+    RttfParser.run(logger=Logger('RttfParser.txt'))
 
 if __name__ == "__main__":
     main()
