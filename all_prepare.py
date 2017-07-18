@@ -1,24 +1,24 @@
-import liga_pro_prepare
-import master_tour_prepare
-import challenger_series_prepare
-import bkfon_results_prepare
-import ittf_prepare
+import LigaProPreparator
+import MasterTourPreparator
+import ChallengerSeriesPreparator
+import BKFonResultsPreparator
+import IttfPreparator
 import kchr_prepare
 import propingpong_prepare
-import rttf_prepare
+import RttfPreparator
 
 from common import *
 from Entity import *
 
 def prepareSources():
-    master_tour_prepare.main()
-    liga_pro_prepare.main()
-    challenger_series_prepare.main()
-    bkfon_results_prepare.main()
+    MasterTourPreparator.main()
+    LigaProPreparator.main()
+    ChallengerSeriesPreparator.main()
+    BKFonResultsPreparator.main()
     propingpong_prepare.main()
-    ittf_prepare.main()
+    IttfPreparator.main()
     kchr_prepare.main()
-    rttf_prepare.main()
+    RttfPreparator.main()
 
 def main():
     prepareSources()

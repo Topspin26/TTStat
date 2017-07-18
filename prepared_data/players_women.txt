@@ -6,7 +6,7 @@ w5	Александра Ушакова
 w6	Александра Чернова;CHERNOVA Alexandra
 w7	Алина Шворак
 w8	Алла Потапова
-w9	Анастасия Голубева;GOLUBEVA Anastasiya;GOLUBEVA Anastasiia
+w9	Анастасия Голубева;GOLUBEVA Anastasiya
 w10	Анастасия Ефимова
 w11	Анастасия Колиш;KOLISH Anastasia
 w12	Анастасия Комова;Komova Anastasiia
@@ -11121,3 +11121,4 @@ w11129	Tee Ai Xin
 w11130	Sanchez Mileysha
 w11131	Cai Fong-En
 w11132	Xu Jiarui
+w11133	Анастасия Голубева;GOLUBEVA Anastasiia
