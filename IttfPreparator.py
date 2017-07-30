@@ -5,12 +5,16 @@ import os
 from os import walk
 from common import *
 from Entity import *
+from Logger import Logger
 
 
 class IttfPreparator:
 
     @staticmethod
-    def run():
+    def run(logger):
+        print('IttfPreparator')
+        logger.print('IttfPreparator')
+
         playersDict = GlobalPlayersDict("filtered")
 
         #    readPlayer2Id(filename)
@@ -23,7 +27,7 @@ class IttfPreparator:
                 if len(tokens[1].split(';')) == 1 and len(tokens[1].strip()) > 0:
                     player2id[tokens[0]] = tokens[1].strip()
                     id2player[tokens[1].strip()] = tokens[0]
-        print(player2id['ZHUKOV Aleksei'])
+        logger.print(player2id['ZHUKOV Aleksei'])
 
         id2info = dict()
 
@@ -32,7 +36,7 @@ class IttfPreparator:
         for f in os.listdir(dirname):
             if f.find('error') != -1:
                 continue
-            print([f, len(matches)])
+            logger.print([f, len(matches)])
             with open(dirname + '/' + f, 'r', encoding='utf-8') as fin:
                 for line in fin:
                     tokens = line.replace('&nbsp;', '').replace('&amp;', '').split('\t')
@@ -61,7 +65,7 @@ class IttfPreparator:
                                          pointsScore=pointsScore,
                                          time=time,
                                          compName=tokens[0].split(';')[0]))
-        print(len(player2id))
+        logger.print(len(player2id))
 
         prefix = 'prepared_data/ittf/'
 
@@ -99,8 +103,7 @@ class IttfPreparator:
                                     multiple[fl_mw + ' ' + player] = 0
                                 multiple[fl_mw + ' ' + player] += 1
 
-                    if flError == 0 and len(ids[0]) > 0 and len(
-                            ids[1]) > 0 and match.date >= '2015' and match.date < '2018':
+                    if flError == 0 and len(ids[0]) > 0 and len(ids[1]) > 0 and '2015' <= match.date < '2018':
                         resTokens = match.toArr()
                         resTokens.append(';'.join(players[0]))
                         resTokens.append(';'.join(players[1]))
@@ -108,12 +111,12 @@ class IttfPreparator:
                         resTokens[4] = ';'.join(ids[1])
                         fout.write('\t'.join(resTokens) + '\n')
 
-        print('\nMULTIPLE')
+        logger.print('\nMULTIPLE')
         for k, v in sorted(multiple.items(), key=lambda x: -x[1]):
-            print([k, v])
-        print('\nUNKNOWN')
+            logger.print([k, v])
+        logger.print('\nUNKNOWN')
         for k, v in sorted(unknown.items(), key=lambda x: -x[1]):
-            print([k, v])
+            logger.print([k, v])
 
     @staticmethod
     def readIttfPlayers():
@@ -125,8 +128,9 @@ class IttfPreparator:
                 playersDict[tokens[1]] = tokens[0]
         return playersDict
 
+    '''
     @staticmethod
-    def getIttfMatches(driver, url, pages):
+    def getIttfMatches(driver, url, pages, logger):
         playersDict = IttfPreparator.readIttfPlayers()
 
         for page in pages:
@@ -170,7 +174,6 @@ class IttfPreparator:
                             fout.write('\t'.join(s) + '\n')
                 except Exception as ex:
                     print(str(ex))
-    '''
     @staticmethod
     def getMW(s):
         arr = s.replace('&amp;', '').split(';')
@@ -186,7 +189,7 @@ class IttfPreparator:
 
 
 def main():
-    IttfPreparator.run()
+    IttfPreparator.run(logger=Logger('IttfPreparator.txt'))
 
     return
 

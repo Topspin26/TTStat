@@ -27,9 +27,9 @@ from IttfPreparator import *
 import kchr_prepare
 
 def scrap():
-    #LigaProScraper.run(logger=Logger('LigaProScraper.txt'))
-    #MasterTourScraper.run(logger=Logger('MasterTourScraper.txt'))
-    #ChallengerSeriesScraper.run(logger=Logger('ChallengerSeriesScraper.txt'))
+    LigaProScraper.run(logger=Logger('LigaProScraper.txt'))
+    MasterTourScraper.run(logger=Logger('MasterTourScraper.txt'))
+    ChallengerSeriesScraper.run(logger=Logger('ChallengerSeriesScraper.txt'))
     BKFonResultsScraper.run(logger=Logger('BKFonResultsScraper.txt'))
     RttfScraper.run(logger=Logger('RttfScraper.txt'))
 
@@ -46,10 +46,10 @@ def parse():
 def prepare():
     LigaProPreparator.run(logger=Logger('LigaProPreparator.txt'))
     MasterTourPreparator.run(logger=Logger('MasterTourPreparator.txt'))
-    ChallengerSeriesPreparator.run()
-    BKFonResultsPreparator.run()
-    RttfPreparator.run()
-    IttfPreparator.run()
+    ChallengerSeriesPreparator.run(logger=Logger('ChallengerSeriesPreparator.txt'))
+    BKFonResultsPreparator.run(logger=Logger('BKFonResultsPreparator.txt'))
+    RttfPreparator.run(logger=Logger('RttfPreparator.txt'))
+    IttfPreparator.run(logger=Logger('IttfPreparator.txt'))
     # kchr_prepare.main()
 
 def check():
@@ -57,9 +57,9 @@ def check():
 
 def main():
 #    IttfParser.run()
-#    scrap()
-#    parse()
-#    prepare()
+    scrap()
+    parse()
+    prepare()
     check()
 
 if __name__ == "__main__":

@@ -7,6 +7,8 @@ import time
 import datetime as datetime
 import random
 import re
+from Logger import Logger
+
 
 lpCorr = []
 chsCorr = []
@@ -58,13 +60,16 @@ fillMTCorr(mtCorr)
 class BKFonResultsPreparator:
 
     @staticmethod
-    def run():
+    def run(logger):
+        print('BKFonResultsPreparator')
+        logger.print('BKFonResultsPreparator')
+
         playersDict = GlobalPlayersDict("filtered")
 
         corrections = readCorrectionsList('data/bkfon/corrections.txt')
         wrongLines = []
-        matches = BKFonResultsPreparator.getMatches(corrections, wrongLines)
-        print(len(matches))
+        matches = BKFonResultsPreparator.getMatches(corrections, wrongLines, logger)
+        logger.print(len(matches))
         players = BKFonResultsPreparator.getMatchesPlayers(matches)
 
         m = dict()
@@ -130,7 +135,7 @@ class BKFonResultsPreparator:
             for e in sorted(playersMW.items(), key=lambda x: -x[1][2]):
                 #        for e in sorted(playersMW.items(), key = lambda x: (x[1][0] + 1) / (x[1][2] + 2)):
                 if (e[0] in unknown) and e[1][2] > 0:
-                    print(e)
+                    logger.print(e)
                     fout.write(e[0] + '\t' + str(e[1]) + '\t' + '\t'.join(playersMatches[e[0]]) + '\n')
 
         with open(prefix + 'bkfon_players_men.txt', 'w', encoding='utf-8') as fout:
@@ -154,7 +159,7 @@ class BKFonResultsPreparator:
             for match in matches:
                 flError = 0
                 if match.flError == 0:
-                    #                print(match.toStr())
+                    #print(match.toStr())
                     ids = [[], []]
                     for i in range(2):
                         for player in match.names[i]:
@@ -178,7 +183,7 @@ class BKFonResultsPreparator:
                                     multiple[fl_mw + ' ' + player] = 0
                                 multiple[fl_mw + ' ' + player] += 1
                                 fout1.write('MANY ' + player + ' ' + str(id) + ' ' + match.toStr() + '\n')
-                                # print('MANY ' + player + ' ' + str(id) + ' ' + match.toStr())
+                                #print('MANY ' + player + ' ' + str(id) + ' ' + match.toStr())
 
                     if flError == 0:
                         resTokens = match.toArr()
@@ -188,9 +193,8 @@ class BKFonResultsPreparator:
                         resTokens[4] = ';'.join(ids[1])
                         resTokens.append(match.matchId)
                         fout.write('\t'.join(resTokens) + '\n')
-                if (match.flError != 0 or flError != 0) and match.compName.lower().replace('-', '').find(
-                        'лига про') != -1:
-                    print('LIGA PRO error ' + str(match.flError) + ' ' + str(flError) + ' ' + match.toStr())
+                if (match.flError != 0 or flError != 0) and match.compName.lower().replace('-', '').find('лига про') != -1:
+                    logger.print('LIGA PRO error ' + str(match.flError) + ' ' + str(flError) + ' ' + match.toStr())
 
         with open(prefix + 'bkfon_players_multiple.txt', 'w', encoding='utf-8') as fout:
             for e in sorted(multiple.items(), key=lambda x: -x[1]):
@@ -200,7 +204,7 @@ class BKFonResultsPreparator:
                 fout.write(e[0] + '\t' + str(e[1]) + '\n')
 
     @staticmethod
-    def process(filename, matches, matchesHashes, corrections):
+    def process(filename, matches, matchesHashes, corrections, logger):
         with open(filename, 'r', encoding='utf-8') as fin:
             for line in fin:
                 dt, matchTime, compName, matchId, names1, names2, setsScore, pointsScore = line.rstrip('\n').split('\t')
@@ -214,8 +218,8 @@ class BKFonResultsPreparator:
                 if compName.replace('Жен. ', '').find('Мастер-Тур') != -1:
                     tcorr += mtCorr
 
-    #            names = re.sub(' +', ' ', names.replace(u'\xa0', ' '))
-    #            names = names.strip().split(' - ')
+                #names = re.sub(' +', ' ', names.replace(u'\xa0', ' '))
+                #names = names.strip().split(' - ')
 
                 for k, v in tcorr:
                     if k.find(';') != -1:
@@ -223,10 +227,10 @@ class BKFonResultsPreparator:
                             names = [e.replace(k.split(';')[1], v) for e in names]
                     else:
                         names = [e.replace(k, v) for e in names]
-                        #                    print(names)
+                        #print(names)
 
-    #            if (names[0] + names[1]).find('Харимото') != -1:
-    #                print(filename, line)
+                #if (names[0] + names[1]).find('Харимото') != -1:
+                #    print(filename, line)
                 names = [names[0].split(';'), names[1].split(';')]
                 if pointsScore != 'отмена' and pointsScore != 'прерван' and len(setsScore) > 0:
                     match = Match(dt,
@@ -240,25 +244,26 @@ class BKFonResultsPreparator:
                     try:
                         mHash = calcHash([match.date, match.time] + match.names[0] + match.names[1] + match.sets)
                     except:
-                        print(line)
+                        logger.print(line)
                         raise
                     if mHash not in matchesHashes:
                         matches.append(match)
                         matchesHashes[mHash] = [len(matches) - 1, filename + '\t' + line.rstrip()]
                     else:
                         matches[matchesHashes[mHash][0]] = match
-                        print(matchesHashes[mHash])
-                        print(filename + '\t' + line.rstrip())
-                        print()
+                        logger.print(matchesHashes[mHash])
+                        logger.print(filename + '\t' + line.rstrip())
+                        logger.print()
 
 
     @staticmethod
-    def getMatches(corrections, wrongLines):
+    def getMatches(corrections, wrongLines, logger):
         matches = list()
         matchesHashes = dict()
         for f in walk('data/bkfon/results_parsed'):
             for ff in f[2]:
-                BKFonResultsPreparator.process('data/bkfon/results_parsed' + '/' + ff, matches, matchesHashes, corrections)
+                BKFonResultsPreparator.process('data/bkfon/results_parsed' + '/' + ff,
+                                               matches, matchesHashes, corrections, logger)
     #            if ff.find('new') != -1:
     #                processNew(ff, matches, corrections)
     #            else:
@@ -276,7 +281,7 @@ class BKFonResultsPreparator:
 
 
 def main():
-    BKFonResultsPreparator.run()
+    BKFonResultsPreparator.run(logger=Logger('BKFonResultsPreparator.txt'))
 
 if __name__ == "__main__":
     main()

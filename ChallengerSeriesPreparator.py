@@ -1,12 +1,16 @@
 from os import walk
 import re
 from Entity import *
+from Logger import Logger
 
 
 class ChallengerSeriesPreparator:
 
     @staticmethod
-    def run():
+    def run(logger=Logger()):
+        print('ChallengerSeriesPreparator')
+        logger.print('ChallengerSeriesPreparator')
+
         playersDict = GlobalPlayersDict("filtered")
 
         corrections = dict()
@@ -15,9 +19,9 @@ class ChallengerSeriesPreparator:
         corrections['MÖregardh Malte'] = 'Moregard Malte'
         wrongLines = list()
         matches = ChallengerSeriesPreparator.getMatches(corrections, wrongLines)
-        print(len(matches))
+        logger.print(len(matches))
         for line in wrongLines:
-            print(line, end=' ')
+            logger.print(line, end=' ')
 
         multiple = dict()
         solved = dict()
@@ -58,16 +62,16 @@ class ChallengerSeriesPreparator:
                         resTokens[4] = ';'.join(ids[1])
                         fout.write('\t'.join(resTokens) + '\n')
                     else:
-                        print('flError ' + match.toStr())
+                        logger.print('flError ' + match.toStr())
                 else:
-                    print('match.flError ' + match.toStr())
+                    logger.print('match.flError ' + match.toStr())
 
-        print('\nMULTIPLE')
+        logger.print('\nMULTIPLE')
         for k, v in sorted(multiple.items(), key=lambda x: -x[1]):
-            print([k, v])
-        print('\nUNKNOWN')
+            logger.print([k, v])
+        logger.print('\nUNKNOWN')
         for k, v in sorted(unknown.items(), key=lambda x: -x[1]):
-            print([k, v])
+            logger.print([k, v])
 
     @staticmethod
     def getMatches(corrections, wrongLines):
@@ -99,7 +103,7 @@ class ChallengerSeriesPreparator:
         return matches
 
 def main():
-    ChallengerSeriesPreparator.run()
+    ChallengerSeriesPreparator.run(logger=Logger('ChallengerSeriesPreparator.txt'))
 
 if __name__ == "__main__":
     main()

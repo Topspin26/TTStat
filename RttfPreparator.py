@@ -2,12 +2,16 @@ import os
 from os import walk
 import datetime
 from Entity import *
+from Logger import Logger
 
 
 class RttfPreparator:
     @staticmethod
-    def run():
-        matches, player2id, id2player = RttfPreparator.getMatches()
+    def run(logger=Logger()):
+        print('RttfPreparator')
+        logger.print('RttfPreparator')
+
+        matches, player2id, id2player = RttfPreparator.getMatches(logger)
         playersDict = GlobalPlayersDict("filtered")
 
         idLinks = dict()
@@ -94,10 +98,10 @@ class RttfPreparator:
             for player, playerId in sorted(player2id.items(), key=lambda x: x[0]):
                 playerId = [e for e in playerId if idLinks.get(e, 1) is not None]
                 if len(playerId) > 1:
-                    print('multiple rttf players', player, playerId)
+                    logger.print('multiple rttf players', player, playerId)
                     continue
                 if len(playerId) == 0:
-                    print('ignore rttf player', player, playerId)
+                    logger.print('ignore rttf player', player, playerId)
                     continue
                 ids = playersDict.getId(player)
                 if len(ids) == 1:
@@ -105,22 +109,22 @@ class RttfPreparator:
                 elif len(ids) == 0:
                     idLinked = idLinks.get(playerId[0])
                     if idLinked in playersDict.id2names:
-                        print('solved unknown player', player, playerId, idLinked, playersDict.getNames(idLinked))
+                        logger.print('solved unknown player', player, playerId, idLinked, playersDict.getNames(idLinked))
                         fout.write('\t'.join([idLinked, player, 'http://or.rttf.ru/players/' + playerId[0]]) + '\n')
                     else:
-                        print('unknown player', player, playerId, idLinked)
+                        logger.print('unknown player', player, playerId, idLinked)
                 elif len(ids) > 1:
                     idLinked = idLinks.get(playerId[0])
                     if idLinked in playersDict.id2names:
                         if not (idLinked in ids):
-                            print('strange id')
+                            logger.print('strange id')
                             raise
-                        print('solved multiple players', player, playerId, idLinked, playersDict.getNames(idLinked))
+                        logger.print('solved multiple players', player, playerId, idLinked, playersDict.getNames(idLinked))
                         fout.write('\t'.join([idLinked, player, 'http://or.rttf.ru/players/' + playerId[0]]) + '\n')
                     else:
-                        print('multiple players', player, playerId, ids, idLinked)
+                        logger.print('multiple players', player, playerId, ids, idLinked)
 
-        rankings = RttfPreparator.getRankings()
+        rankings = RttfPreparator.getRankings(logger)
         with open('prepared_data/rttf/ranking_rttf.txt', 'w', encoding='utf-8') as fout:
             for e, ranking in sorted(rankings.items()):
                 dt, player = e.split('\t')
@@ -132,7 +136,7 @@ class RttfPreparator:
                 if len(id) == 1 and id[0] is not None:
                     fout.write(dt + '\t' + id[0] + '\t' + ranking + '\n')
                 else:
-                    print('Ranking error ', playerName, playerId, id)
+                    logger.print('Ranking error ', playerName, playerId, id)
 
         multiple = dict()
         unknown = dict()
@@ -191,7 +195,7 @@ class RttfPreparator:
                 fout.write(e[0] + '\t' + str(e[1]) + '\n')
 
     @staticmethod
-    def getRankings():
+    def getRankings(logger):
         rankings = dict()
         dirname = 'data/rttf/results_new'
         for f in walk(dirname):
@@ -200,7 +204,7 @@ class RttfPreparator:
                 if fp.find('_rankings.txt') == -1:
                     continue
                 if fp.lower().find('artt-про') != -1 or fp.lower().find('ttleader-pro') != -1:
-                    print(fp)
+                    logger.print(fp)
                     continue
                 with open(fp, encoding='utf-8') as fin:
                     for line in fin:
@@ -217,7 +221,7 @@ class RttfPreparator:
         return rankings
 
     @staticmethod
-    def getMatches():
+    def getMatches(logger):
         player2id = dict()
         id2player = dict()
         matches = []
@@ -230,7 +234,7 @@ class RttfPreparator:
                 if fp.find('_rankings.txt') != -1:
                     continue
                 if fp.lower().find('artt-про') != -1 or fp.lower().find('ttleader-pro') != -1:
-                    print(fp)
+                    logger.print(fp)
                     continue
                 with open(fp, encoding='utf-8') as fin:
                     for line in fin:
@@ -260,8 +264,8 @@ class RttfPreparator:
                                     ids[ii].append(id)
                                     names[ii].append(name)
                                     if id in id2player and id2player[id] != name:
-                                        print([id, id2player[id], name])
-                                        print('error')
+                                        logger.print([id, id2player[id], name])
+                                        logger.print('error')
                                         #raise
                                     else:
                                         id2player[id] = name
@@ -282,18 +286,18 @@ class RttfPreparator:
                 filenames.append(fp)
     #        if len(filenames) == 100:
     #            break
-        print(len(filenames))
-        print(len(matches))
+        logger.print(len(filenames))
+        logger.print(len(matches))
 
         with open('data/rttf/player2id.txt', 'w', encoding='utf-8') as fout:
-            for name,ids in sorted(player2id.items(), key = lambda x: -len(x[1])):
+            for name, ids in sorted(player2id.items(), key=lambda x: -len(x[1])):
                 fout.write(name + '\t' + ';'.join(ids) + '\n')
 
         return matches, player2id, id2player
 
 
 def main():
-    RttfPreparator.run()
+    RttfPreparator.run(logger=Logger('RttfPreparator.txt'))
 
 if __name__ == "__main__":
     main()
