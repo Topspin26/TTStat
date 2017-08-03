@@ -38,7 +38,7 @@ class MatchesStorage:
                 self.matchesDict[match.hash] = []
             self.matchesDict[match.hash].append(match)
             self.matches.append(match)
-            #self.hash2matchInd[match.hash] = len(self.matches) - 1
+            self.hash2matchInd[match.hash] = len(self.matches) - 1
             if match.isPair == 0:
                 pp = min(match.ids[0][0], match.ids[1][0]) + '\t' + max(match.ids[0][0], match.ids[1][0])
                 if not (pp in self.oneVSone):

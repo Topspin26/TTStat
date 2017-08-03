@@ -25,12 +25,13 @@ class TTModel:
         self.player_rankings_columns = ['Дата', 'Источник', 'Рейтинг', 'Ранг']
         self.player_rankings_dtypes = ['string'] * 2 + ['number'] * 2
 
-        self.playersDict = GlobalPlayersDict(dirname=dirname + '/')
+        self.playersDict = GlobalPlayersDict(mode='filtered', dirname=dirname + '/')
 
         self.rankingSources = []
         self.rankingSources.append(['ttfr', dirname + '/prepared_data/propingpong/ranking_rus.txt'])
         self.rankingSources.append(['ittf', dirname + '/prepared_data/propingpong/ranking_ittf.txt'])
-        self.rankingSources.append(['my', dirname + '/prepared_data/rankings/all_rankings_mw_fresh_sets_1.txt'])
+        #self.rankingSources.append(['my', dirname + '/prepared_data/rankings/all_rankings_mw_fresh_sets_1.txt'])
+        self.rankingSources.append(['my', ['prepared_data/rankings/rankings_m_sets_0.txt', 'prepared_data/rankings/rankings_w_sets_0.txt']])
         self.rankingSources.append(['liga_pro', dirname + '/prepared_data/liga_pro/ranking_liga_pro.txt'])
 
         self.rankingStorage = RankingsStorage(self.rankingSources)
