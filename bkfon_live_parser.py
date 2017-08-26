@@ -108,6 +108,7 @@ def main():
     segments1['master_tour_men_spb'] = 'Наст. теннис. Мастер-Тур. С-Петербург.txt'
     segments1['master_tour_women'] = 'Наст. теннис. Жен. Мастер-Тур. С-Петербург.txt'
     segments1['master_tour_men_isr'] = 'Наст. теннис. Мастер-Тур. Израиль.txt'
+    #мастер-тур Китай женщины - склеить
 #    segments1['ittf'] = 'Международный турнир.'
 
     parseDirs(segments, segments1)

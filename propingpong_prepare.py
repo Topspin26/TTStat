@@ -164,6 +164,12 @@ def main():
     idLinks['rus']['2274'] = None # Макаров Сергей
     idLinks['rus']['10285'] = 'm2856' # Макаров Сергей
 
+    idLinks['rus']['19283'] = None # Винокуров Александр
+    idLinks['rus']['605'] = 'm261' # Винокуров Александр
+
+    idLinks['rus']['5121'] = None # Анастасия Ефимова
+
+
     prefix = 'prepared_data/propingpong/'
     for rt in ['rus', 'ittf']:
         collisions = dict()
