@@ -1063,7 +1063,7 @@ m1074	WATANABE Takashi
 m1075	Максим Максимов
 m1076	KAI Yoshikazu
 m1077	DA COSTA Deddy
-m1078	Bai He;Бай Хэ
+m1078	Bai He;Бай Хэ;Бай Хе
 m1079	SEN Yew Fai
 m1080	EL-DEMERDASH Mohsen
 m1081	DAVIS Kyle
@@ -3138,7 +3138,6 @@ m6385	Мухин Максим
 m6408	Дерен Станислав
 m6420	Османов Роман
 m6427	Самохин Алексей
-m6453	Козлов Александр
 m6458	Светличный Иван
 m6460	Аветов Армен
 m6462	Захаров Александр
@@ -3325,7 +3324,6 @@ m9294	Гусаров Дмитрий
 m9305	Кожемякин Михаил
 m9327	Юдин Артем
 m9342	Каверин Петр
-m9378	Макаров Денис
 m9385	Горбунов Владислав
 m9392	Галочкин Андрей
 m9424	Инназаров Алексей
@@ -3363,6 +3361,7 @@ m9866	Мухортов Андрей
 m9881	Мартюков Сергей;MARTYUKOV Sergey
 m9894	Иванов Виктор
 m9898	Микрюков Юрий
+m9930	Кешишян Артур
 m9953	Андреев Андрей
 m9960	Лапшин Юрий
 m9992	Борисов Никита
@@ -3493,6 +3492,7 @@ m12015	Цховребадзе Важа
 m12022	Фоменко Доброслав
 m12027	Ревин Евгений
 m12033	Киров Александр
+m12038	Борисов Георгий
 m12053	Боев Николай
 m12058	Ланин Александр
 m12065	Брусникин Денис
@@ -3871,7 +3871,7 @@ m13322	WATTHANASIRICHAIPORN Suppakorn
 m13323	KORSGARD Pal
 m13324	SHIH Andy
 m13325	KHUDENKO Oleksandr
-m13326	BROIAKOVSKYI Vsevolod
+m13326	Всеволод Брояковский;BROIAKOVSKYI Vsevolod
 m13327	ISSAM Mostafa
 m13328	MISAK Mikhalai
 m13329	AMAYA Osmar
@@ -6882,3 +6882,21 @@ m17057	Григорий Парсегов
 m17058	Владимир Ашихмин
 m17059	Сергей Плешивцев
 m17061	Дмитрий Родионов
+m17077	Steif Noah
+m17078	Correia Ricardo
+m17079	Shams Navid
+m17080	Ojala Matias
+m17081	Ocak Yucel
+m17082	Johansson Karl
+m17083	Nagy Norbert
+m17084	Hardmeier Elias
+m17085	Peng Chih
+m17086	Tomica Andrei
+m17087	Lin Yen-Chun
+m17088	Perez Gabriel
+m17089	Jain Anukram
+m17090	Grujic Nikola
+m17091	Сергей Стебунов
+m17092	Михаил Рубцов
+m17093	Александр Козлов
+m17094	Амит Горен;Амит Горан

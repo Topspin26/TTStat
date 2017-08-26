@@ -1065,7 +1065,7 @@ m1074	WATANABE Takashi
 m1075	Максим Максимов
 m1076	KAI Yoshikazu
 m1077	DA COSTA Deddy
-m1078	Bai He;Бай Хэ
+m1078	Bai He;Бай Хэ;Бай Хе
 m1079	SEN Yew Fai
 m1080	EL-DEMERDASH Mohsen
 m1081	DAVIS Kyle
@@ -13307,7 +13307,7 @@ m13322	WATTHANASIRICHAIPORN Suppakorn
 m13323	KORSGARD Pal
 m13324	SHIH Andy
 m13325	KHUDENKO Oleksandr
-m13326	BROIAKOVSKYI Vsevolod
+m13326	Всеволод Брояковский;BROIAKOVSKYI Vsevolod
 m13327	ISSAM Mostafa
 m13328	MISAK Mikhalai
 m13329	AMAYA Osmar
@@ -17072,3 +17072,7 @@ m17087	Lin Yen-Chun
 m17088	Perez Gabriel
 m17089	Jain Anukram
 m17090	Grujic Nikola
+m17091	Сергей Стебунов
+m17092	Михаил Рубцов
+m17093	Александр Козлов
+m17094	Амит Горен;Амит Горан

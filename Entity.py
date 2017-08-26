@@ -222,6 +222,13 @@ class Match:
         if not (source in self.sources):
             self.sources.append(source)
 
+    def getMW(self):
+        fl_mw = ''
+        for e in self.ids[0] + self.ids[1]:
+            fl_mw += e[0]
+        fl_mw = ''.join(sorted(set(list(fl_mw))))
+        return fl_mw
+
     def getHash(self):
         if self.sets is None:
             sets = []
@@ -248,8 +255,11 @@ class Match:
         return '\t'.join([self.date, self.time, self.compName, ';'.join(self.ids[0]), ';'.join(self.ids[1]),
                           str(self.setsScore), str(self.pointsScore), self.hash])
 
-    def toArr(self):
-        return [self.date, self.time, self.compName, ';'.join(self.ids[0]), ';'.join(self.ids[1]), str(self.setsScore), str(self.pointsScore)]
+    def toArr(self, round=False):
+        arr = [self.date, self.time, self.compName, ';'.join(self.ids[0]), ';'.join(self.ids[1]), str(self.setsScore), str(self.pointsScore)]
+        if round is True:
+            arr += [self.round]
+        return arr
 
     def toDict(self):
         res = dict()

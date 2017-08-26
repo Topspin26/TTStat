@@ -15,6 +15,8 @@ def main():
 
     id2names_filtered = dict()
 
+    #!!! Сейчас попадают коллизии из propingpong-а, т.к. у них НЕ записывается российский рейтинг (Тихонов Александр)
+
     for id, names in playersDict.id2names.items():
         r = rankingStorage.getPlayerAllRankings(id, 'ttfr')
         if len(r) == 0 or max([int(e[0]) for e in r.values()]) > 400 or \
@@ -29,9 +31,12 @@ def main():
                         names[0] == 'Минченко Сергей' or \
                         names[0] == 'Фомин Константин' or \
                         names[0] == 'Данилович Игорь' or \
+                        names[0] == 'Кешишян Артур' or \
                         id == 'm16244' or \
-                        id == 'm2781': #Макаров Денис, Федоров Владислав
-            id2names_filtered[id] = names
+                        id == 'm12038' or \
+                        id == 'm2781': #Макаров Денис, Борисов Георгий, Федоров Владислав
+            if id != 'm9378' and id != 'm6453':
+                id2names_filtered[id] = names
     with open('prepared_data/players_men_filtered.txt', 'w', encoding='utf-8') as fout_men, \
          open('prepared_data/players_women_filtered.txt', 'w', encoding='utf-8') as fout_women:
         for id,names in sorted(id2names_filtered.items(), key=lambda x: int(x[0][1:])):

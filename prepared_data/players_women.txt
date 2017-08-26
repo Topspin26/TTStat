@@ -653,7 +653,7 @@ w655	CICHOCKA Magdalena
 w656	CHEN Diane Dongye
 w657	Xian Yifang;Сянь Йи Фан
 w658	ROTARU-BOGOSLOV Maria
-w659	KIM Regina
+w659	Регина Ким;KIM Regina
 w660	Lin Chia-Hui;Линь Чиа Хуэй
 w661	Santos Marta;Марта Сантос
 w662	PRONSKAYA Tatyana
@@ -11144,3 +11144,4 @@ w11152	Gryko Kamila
 w11153	Melaikaite Auguste
 w11154	Duvivier Estelle
 w11155	Sciglaite Kornelija
+w11156	Екатерина Кизюк

@@ -149,6 +149,10 @@ class LigaProChecker:
         checkedRttf.add('Валерия Щетинкина')
         checkedRttf.add('Евгений Груздов')
         checkedRttf.add('Павел Перов')
+        checkedRttf.add('Александр Каракашевич')
+        checkedRttf.add('Скачкова Ирина')
+        checkedRttf.add('Владислав Сорбало')
+        checkedRttf.add('Сергей Мокрополов')
 
         checkedTtfr = set()
         checkedTtfr.add('Григорий Парсегов')
@@ -209,6 +213,10 @@ class LigaProChecker:
         checkedTtfr.add('Иванов Виктор')
         checkedTtfr.add('Крылов Александр')
         checkedTtfr.add('Олег Попов')
+        checkedTtfr.add('Михаил Рубцов')
+        checkedTtfr.add('Сергей Стебунов')
+        checkedTtfr.add('Александр Каракашевич')
+        checkedTtfr.add('Александр Козлов')
 
         for playerId, player in sorted(players.items(), key=lambda x: x[1].name):
             flLP = 0

@@ -5,6 +5,7 @@ w6	Александра Чернова;CHERNOVA Alexandra
 w7	Алина Шворак
 w8	Алла Потапова
 w9	Анастасия Голубева;GOLUBEVA Anastasiya
+w10	Анастасия Ефимова
 w11	Анастасия Колиш;KOLISH Anastasia
 w12	Анастасия Комова;Komova Anastasiia
 w13	Анастасия Панова
@@ -525,7 +526,7 @@ w655	CICHOCKA Magdalena
 w656	CHEN Diane Dongye
 w657	Xian Yifang;Сянь Йи Фан
 w658	ROTARU-BOGOSLOV Maria
-w659	KIM Regina
+w659	Регина Ким;KIM Regina
 w660	Lin Chia-Hui;Линь Чиа Хуэй
 w661	Santos Marta;Марта Сантос
 w662	PRONSKAYA Tatyana
@@ -4927,3 +4928,13 @@ w11130	Sanchez Mileysha
 w11131	Cai Fong-En
 w11132	Xu Jiarui
 w11133	Анастасия Голубева;GOLUBEVA Anastasiia
+w11147	Hursey Anna
+w11148	Ghosh Swastika
+w11149	Grein Lena
+w11150	Jorguseska Dobrila
+w11151	Van Lierop Karlijn
+w11152	Gryko Kamila
+w11153	Melaikaite Auguste
+w11154	Duvivier Estelle
+w11155	Sciglaite Kornelija
+w11156	Екатерина Кизюк
