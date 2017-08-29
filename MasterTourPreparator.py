@@ -46,6 +46,14 @@ class MasterTourPreparator:
                     for i in range(2):
                         for player in match.names[i]:
                             id = playersDict.getId(player)
+
+                            if player == 'Анастасия Голубева':
+                                if match.compName == 'Мастер-тур, 2014-05-12' or \
+                                   match.compName == 'Мастер-тур, 2014-08-11':
+                                    id = ['w11133']
+                                elif match.date <= '2017':
+                                    id = ['w9']
+
                             if len(id) == 1:
                                 ids[i].append(id[0])
                             elif len(id) == 0:
