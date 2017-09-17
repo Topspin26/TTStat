@@ -1,5 +1,6 @@
 import hashlib
 import json
+import re
 import numpy as np
 from common import *
 
@@ -19,6 +20,40 @@ class MatchBet:
 
     def getKey(self):
         return 'l' + calcHash([self.compName, str(self.eventId)])
+
+    def getDate(self):
+        return self.dt[:10]
+
+    def checkOnMerge(self, matchBet):
+        if self.getDate() == matchBet.getDate() and \
+           ' '.join([';'.join(self.names[i]) for i in range(2)]) == ' '.join([';'.join(matchBet.names[i]) for i in range(2)]):
+            sets1, points1 = MatchBet.parseScore(self.getLastScore())
+            sets2, points2 = MatchBet.parseScore(matchBet.getLastScore())
+            if sets1[0] <= sets2[0] and sets1[1] <= sets2[1]:
+                for i in range(2):
+                    for j in range(min(len(points1[i]), len(points2[i])) - 1):
+                        if points1[i][j] != points2[i][j]:
+                            return False
+                return True
+        return False
+
+    @staticmethod
+    def parseScore(score):
+        sets = [0, 0]
+        points = [[0], [0]]
+        if score is None:
+            return [sets, points]
+        score = score.replace('*', '')
+        pattern = r"\(([A-Za-z0-9- ]+)\)"
+        pointsScore = re.search(pattern, score)
+        if pointsScore is not None:
+            pointsScore = pointsScore.group(0).replace('(', '').replace(')', '').replace(' ', ';').replace('-', ':') + ';'
+            _, points = Match.getPointsScoreInfo(pointsScore)
+        try:
+            sets = [int(e) for e in score.split(' ')[0].split(':')]
+        except:
+            pass
+        return [sets, points]
 
     def toDict(self):
         res = dict()
@@ -180,7 +215,7 @@ class Match:
         self.pointsScore = pointsScore.rstrip(';') if pointsScore else pointsScore
         self.points = None
 
-        if (self.setsScore is None) and not (self.pointsScore is None):
+        if (self.setsScore is None) and (self.pointsScore is not None):
             self.sets, self.points = Match.getPointsScoreInfo(self.pointsScore)
             self.setsScore = str(self.sets[0]) + ':' + str(self.sets[1])
         if (self.setsScore is not None) and (self.sets is None):
@@ -274,7 +309,7 @@ class Match:
     @staticmethod
     def getPointsScoreInfo(pointsScore):
         sets = [0, 0]
-        points = [[],[]]
+        points = [[], []]
         for e in pointsScore.replace(':;', '').strip().strip(';').split(';'):
             if e == ':':
                 continue

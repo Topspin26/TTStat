@@ -138,7 +138,7 @@ class LigaProPreparator:
         with open('prepared_data/liga_pro/all_results.txt', 'w', encoding='utf-8') as fout:
             fout.write('date\ttime\tcompName\tid1\tid2\t')
             fout.write('setsScore\tpointsScore\tname1\tname2\tround\n')
-            for match in matches:
+            for match in sorted(matches, key=lambda x: x.date + ' ' + x.time):
                 if match.flError == 0:
                     flError = 0
                     ids = [[], []]

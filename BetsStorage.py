@@ -13,16 +13,27 @@ class BetsStorage:
         self.lastUpdate = dict()
         self.counter = 0
 
-    def loadFromFile(self, filename):
+    def loadFromFile(self, filename, isPrepared=1):
         with open(filename, encoding='utf-8') as fin:
             for line in fin:
                 tokens = line.rstrip('\n').split('\t')
+                if isPrepared == 0:
+                    eventId = tokens[0]
+                    dt = tokens[1]
+                    compName = tokens[2]
+                    ids = None
+                    names = [tokens[3].split(';'), tokens[4].split(';')]
+                    info = json.loads(tokens[5])
+                    self.update([MatchBet(eventId, dt, compName, None, info, names=names)])
+                    continue
+
                 eventId = tokens[1]
                 dt = tokens[2]
                 compName = tokens[3]
                 ids = [tokens[4].split(';'), tokens[5].split(';')]
                 names = [tokens[6].split(';'), tokens[7].split(';')]
                 info = json.loads(tokens[8])
+
                 pattern = r"\(([A-Za-z0-9- ]+)\)"
 
                 lastMatchInd = len(info) - 1
@@ -107,6 +118,13 @@ class BetsStorage:
             if mKey in self.liveBets:
                 self.liveBets[mKey] = self.liveBets[mKey].merge(matchBet)
             else:
+                for mCurKey in self.liveBets:
+                    curBet = self.liveBets[mCurKey]
+                    if curBet.checkOnMerge(matchBet):
+                        print(self.liveBets.keys(), mKey)
+                        print('potential merge\n' +
+                              matchBet.getLastScore() + ' ' + str(matchBet) + '\n' +
+                              curBet.getLastScore() + ' ' + str(curBet) + '\n')
                 self.liveBets[mKey] = matchBet
             self.lastUpdate[mKey] = self.counter
         liveBetsNew = dict()

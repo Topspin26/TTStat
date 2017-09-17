@@ -107,6 +107,8 @@ class GlobalPlayersDict:
 
     def getId(self, name, fl=1):
         name = name.lower().replace('ё', 'е').replace('ö', 'o').replace('^', '').replace(',', '').strip()
+        if len(name) > 0 and not ('a' <= name[0] <= 'z'):
+            name = name.replace('c', 'с') #russian c
         if fl == 1:
             return self.name2id2.get(name, [])
         return self.name2id.get(name, None)
