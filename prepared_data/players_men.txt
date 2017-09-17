@@ -1706,7 +1706,7 @@ m1718	MORIN Robin
 m1719	Лоренцио Лупулеску;Lupulesku Lorencio
 m1720	Kang Dongsoo;Кан Дон Су
 m1721	GIANNINI Antonio
-m1722	Хунор Сеч;Szocs Hunor
+m1722	Хунор Сеч;Хунор Шоч;Szocs Hunor
 m1723	RAISON Jerome
 m1724	GENG Shupeng
 m1725	BISRETH Pierre-Richard
@@ -1919,7 +1919,7 @@ m1931	NOH Jemin
 m1932	FITZGERALD Brian
 m1933	SEIBOT Petr
 m1934	RAMIREZ Jose Miguel
-m1935	Дарко Йоргич;Jorgic Darko
+m1935	Дарко Йоргич;Дарко Ергич;Jorgic Darko
 m1936	Gardos Robert;Роберт Гардош;Роберт Гардос
 m1937	Койо Канамитсу;Kanamitsu Koyo
 m1938	Figel Jakub;Якуб Фигель
@@ -2353,7 +2353,7 @@ m2367	SCHLICHTER Jorg
 m2368	TAKAHASHI Toru
 m2369	ZHANG Yong
 m2370	Lee Yat Hin;Ли Ят Хинь
-m2371	ABIODUN Bode;Абиодун Боде
+m2371	ABIODUN Bode;Абиодун Боде;Боде Абидан
 m2372	CHIANG Peng-Lung
 m2373	PANAGITGUN Yanapong
 m2374	LEVIS Bruno
@@ -15070,7 +15070,7 @@ m15085	GAMBINA Andrew
 m15086	KOUAKOU Coba
 m15087	MAREK David
 m15088	GRAU Sergi
-m15089	CAVAILLE Jules
+m15089	CAVAILLE Jules;Жюль Кавайе
 m15090	PINKA Jan
 m15091	SHEN Yang
 m15092	MUZYCHENKO Aleksandr
@@ -15475,7 +15475,7 @@ m15490	SIMOES Guilherme
 m15491	LI YI Long
 m15492	ZHIOUA Rached
 m15493	LEBEDA Michal
-m15494	RINDERER Daniel
+m15494	RINDERER Daniel;Даниэль Риндерер
 m15495	AL-ANBAR Bandar
 m15496	THILLEN Eric
 m15497	ZINE EL ABIDINE Saad
@@ -15633,7 +15633,7 @@ m15648	SUY Leon
 m15649	HE Jiaming
 m15650	JOHNSON Ben
 m15651	NAKASHIMA Enzo
-m15652	TURCEK Peter
+m15652	TURCEK Peter;Петер Турчек
 m15653	MOLNAR David
 m15654	KATUNGU Kennedy
 m15655	LKHAGVADORJ Altantulga
@@ -17076,3 +17076,16 @@ m17091	Сергей Стебунов
 m17092	Михаил Рубцов
 m17093	Александр Козлов
 m17094	Амит Горен;Амит Горан
+m17095	Jiang Kenny
+m17096	Cheung Yin To
+m17097	Pau Yik Man
+m17098	Chanpen Chetthanabodi
+m17099	Sanglertsilpachai Thyme
+m17100	Li Yijie
+m17101	Dalgleish Colin
+m17102	Михаил Вальков
+m17103	Руслан Дудников
+m17104	Александр Накозин
+m17105	Сергей Кукин
+m17106	Гавриил Абориев
+m17107	Дмитрий Нескин

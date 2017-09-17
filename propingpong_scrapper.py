@@ -507,8 +507,8 @@ def main():
     #parseAllRusPlayers(10106, 10106)
 #    getIttfRankings('men', 2005, 5)
 
-    updateIttfRanking()
-    #updateRusRanking(2017, 8)
+    #updateIttfRanking()
+    updateRusRanking(2017, 9)
 
 
 '''

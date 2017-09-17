@@ -235,5 +235,8 @@ def main():
             for e in sorted(badIds.items(), key=lambda x: -x[1]):
                 fout.write(e[0] + '\t' + str(e[1]) + '\n')
 
+    playersDict = GlobalPlayersDict('filtered')
+
+
 if __name__ == "__main__":
     main()

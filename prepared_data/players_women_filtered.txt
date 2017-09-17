@@ -599,7 +599,7 @@ w728	WU Jiamuwa
 w729	Таня Крамер;Kramer Tanja;Kraemer Tanja
 w730	HAN Yichen
 w731	VERONIK Zala
-w732	SUN Chen
+w732	SUN Chen;Чен Сун
 w733	MOSKAL Agnieszka
 w734	Lin Ye;Лин Ые
 w735	LIU Tianyu
@@ -984,7 +984,7 @@ w1116	WU Xianjing
 w1117	Hsing Ariel;Ариель Син
 w1118	VARGAS Francesca
 w1119	KIM Mun Yong
-w1120	Бернадетт Сеч;Бернадетт Сеч;Szocs Bernadette;Бернадетт Шоц
+w1120	Бернадетт Сеч;Бернадетт Сеч;Szocs Bernadette;Бернадетт Шоц;Бернадетт Шоч
 w1121	CHOW Wai Yeung
 w1122	STROFOVA Tereza
 w1123	WONG Iok Sim
@@ -1392,7 +1392,7 @@ w1526	Красимира Йовкова;Yovkova Krasimira
 w1527	SUK Solji
 w1528	YAMAMOTO Rei
 w1529	NAGATA Ayaka
-w1530	SEVCIKOVA Marketa
+w1530	SEVCIKOVA Marketa;Маркета Севчикова
 w1531	TANAKA Ayano
 w1532	Клаудия Кусинска;Kusinska Klaudia
 w1533	GONCALVES Mariana
@@ -1452,7 +1452,7 @@ w1586	YUHARA Miho
 w1587	STESHENKO Aida
 w1588	LIENSTROMBERG Christina
 w1589	LI Nan
-w1590	BARDSLEY Charlotte
+w1590	BARDSLEY Charlotte;Шарлотта Бердсли
 w1591	REPP Svetlana
 w1592	ILCIKOVA Anezka
 w1593	GWAK Sumin
@@ -2064,7 +2064,7 @@ w2203	BANOV Judit
 w2204	KETSKO Olesja
 w2205	Ана Гарсия;Garcia Ana
 w2206	MOHAMED Aia
-w2207	SAEGER Luisa
+w2207	SAEGER Luisa;Луиза Зегер
 w2208	DURAK Mirela;Мирела Дурак
 w2209	Мария Михайлова
 w2210	MOREL Silvia
@@ -2380,7 +2380,7 @@ w2520	OH Haesun
 w2522	So Eka;Эка Со
 w2523	DINCSEVEN Ozlem
 w2524	VILLADA Jennifer
-w2525	LEE Yu-Peng
+w2525	LEE Yu-Peng;Юй-Пэн Ли
 w2526	BATSAIKHAN Batkhishig
 w2527	Paranang Orawan;Ораван Парананг
 w2528	OZTURK Bilgen
@@ -2777,6 +2777,7 @@ w2920	Ольга Шрамко
 w2921	Мария Войтехова
 w2922	Анита Лиссовенко
 w2923	Юлия Гулевская
+w2944	Лола Баротова
 w2965	Анна Буланкина
 w2976	Анастасия Савина
 w2989	Анастасия Сизова
@@ -4922,7 +4923,7 @@ w11069	Lyne Karen
 w11070	I Ayano
 w11071	Kuan E Xian
 w11072	Цзин-Цзин Лян;Liang Jing-Jing
-w11073	Sasao Asuka
+w11073	Sasao Asuka;Асука Сасао
 w11129	Tee Ai Xin
 w11130	Sanchez Mileysha
 w11131	Cai Fong-En
@@ -4939,3 +4940,7 @@ w11154	Duvivier Estelle
 w11155	Sciglaite Kornelija
 w11156	Екатерина Кизюк
 w11157	Mitsuki Yoshida
+w11158	Hui Wai Phoebe
+w11159	Lee Hoi Man Karen
+w11160	Diaz Fabiola
+w11161	Kim Sol Song
