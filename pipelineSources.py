@@ -26,6 +26,7 @@ from IttfPreparator import *
 
 import kchr_prepare
 
+
 def scrap():
     LigaProScraper.run(logger=Logger('LigaProScraper.txt'))
     MasterTourScraper.run(logger=Logger('MasterTourScraper.txt'))

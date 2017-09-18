@@ -39,7 +39,7 @@ class LigaProChecker:
 
         checkedRttf = set()
         checkedRttf.add('Алексей Головинский')
-        checkedRttf.add('Алан Заикин')
+        checkedRttf.add('Михаил Бутылев')
         checkedRttf.add('Александр Винокуров')
         checkedRttf.add('Дмитрий Овчаров')
         checkedRttf.add('Джун Мизутани')

@@ -145,14 +145,14 @@ def main():
     segments['master_tour_women_chn'] = 'segment18054.txt'
     segments['master_tour_men_chn'] = 'segment34654.txt'
 
-    #segments['liga_pro_men'] = 'segment37716.txt'
-    #segments['liga_pro_women'] = 'segment37984.txt'
+    segments['liga_pro_men'] = 'segment37716.txt'
+    segments['liga_pro_women'] = 'segment37984.txt'
     segments['challenger_series_men'] = 'segment13574.txt'
     segments['challenger_series_women'] = 'segment19423.txt'
 
     segments1 = dict()
-    #segments1['liga_pro_men'] = 'Наст. теннис. Лига Про. Москва.txt'
-    #segments1['liga_pro_women'] = 'Наст. теннис. Жен. Лига Про. Москва.txt'
+    segments1['liga_pro_men'] = 'Наст. теннис. Лига Про. Москва.txt'
+    segments1['liga_pro_women'] = 'Наст. теннис. Жен. Лига Про. Москва.txt'
     segments1['challenger_series_men'] = 'Наст. теннис. Челленджер серия.txt'
     segments1['challenger_series_women'] = 'Наст. теннис. Жен. Челленджер серия.txt'
     segments1['master_tour_men_spb'] = 'Наст. теннис. Мастер-Тур. С-Петербург.txt'
