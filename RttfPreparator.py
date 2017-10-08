@@ -198,12 +198,20 @@ class RttfPreparator:
     def getRankings(logger):
         rankings = dict()
         dirname = 'data/rttf/results_new'
+        processedId = dict()
         for f in walk(dirname):
             for ff in sorted(f[2]):
                 fp = os.path.abspath(os.path.join(f[0], ff))
                 if fp.find('_rankings.txt') == -1:
                     continue
-                if fp.lower().find('artt-про') != -1 or fp.lower().find('ttleader-pro') != -1:
+
+                fId = ff.split('_')[0]
+                if fId in processedId:
+                    logger.print(['Дубль', processedId[fId], ff])
+                    continue
+                processedId[fId] = ff
+
+                if fp.lower().find('artt-про') != -1 or fp.lower().find('arttt-про') != -1 or fp.lower().find('ttleader-pro') != -1:
                     logger.print(fp)
                     continue
                 with open(fp, encoding='utf-8') as fin:
@@ -225,7 +233,7 @@ class RttfPreparator:
         player2id = dict()
         id2player = dict()
         matches = []
-
+        processedId = dict()
         dirname = 'data/rttf/results_new'
         filenames = []
         for f in walk(dirname):
@@ -233,7 +241,14 @@ class RttfPreparator:
                 fp = os.path.abspath(os.path.join(f[0], ff))
                 if fp.find('_rankings.txt') != -1:
                     continue
-                if fp.lower().find('artt-про') != -1 or fp.lower().find('ttleader-pro') != -1:
+
+                fId = ff.split('_')[0]
+                if fId in processedId:
+                    logger.print(['Дубль', processedId[fId], ff])
+                    continue
+                processedId[fId] = ff
+
+                if fp.lower().find('artt-про') != -1 or fp.lower().find('arttt-про') != -1 or fp.lower().find('ttleader-pro') != -1:
                     logger.print(fp)
                     continue
                 with open(fp, encoding='utf-8') as fin:

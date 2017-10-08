@@ -76,6 +76,8 @@ class LigaProPreparator:
         idLinks['495'] = 'm16244'
         idLinks['500'] = 'm17093'
         idLinks['544'] = 'm6638'
+        idLinks['652'] = 'm521'
+        idLinks['665'] = 'w11'
 
         #enrich and check idLinks
         for player, playerId in sorted(player2id.items(), key=lambda x: x[0]):
@@ -112,9 +114,9 @@ class LigaProPreparator:
                     if len(ids) == 1:
                         fout.write('\t'.join([ids[0], player, 'http://tt-liga.pro/players/' + playerId[-1]]) + '\n')
                     elif len(ids) > 1:
-                        logger.print('multiple players', player, playerId, ids, idLinked)
+                        logger.print('multiple players', player, playerId, ids)
                     else:
-                        logger.print('unknown player', player, playerId, idLinked)
+                        logger.print('unknown player', player, playerId)
 
         rankings = LigaProPreparator.getRankings()
         with open('prepared_data/liga_pro/ranking_liga_pro.txt', 'w', encoding='utf-8') as fout:
@@ -187,6 +189,18 @@ class LigaProPreparator:
                 logger.print(k, v)
 
     @staticmethod
+    def correctDate(matchDate, round):
+        arr = round.split(' ')
+        month2num = dict(zip(['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'], range(12)))
+        if len(arr) >= 2:
+            if arr[0].isdigit() and arr[1] in month2num:
+                print(round, matchDate)
+                matchDate = matchDate[:4] + '-' + str(month2num[arr[1]] + 1).zfill(2) + '-' + arr[0].zfill(2)
+                print(matchDate)
+
+        return matchDate
+
+    @staticmethod
     def getMatches(corrections, wrongLines):
         pattern = re.compile('|'.join(corrections.keys()))
         matches = []
@@ -208,6 +222,9 @@ class LigaProPreparator:
                         time = tokens[1]
                         setsScore = tokens[-2].strip().replace(' ', '')
                         compName = 'Лига-Про (' + tokens[2].split(';')[0].replace('лига ', '') + '), ' + tokens[0]
+
+                        round = tokens[4]
+                        matchDate = LigaProPreparator.correctDate(tokens[0], round)
 
                         if compName == 'Лига-Про (500-550), 2017-06-02':
                             if names[0][0] == 'Гречаников С;234' and names[1][0] == 'Заргарян М;209':
@@ -245,14 +262,14 @@ class LigaProPreparator:
                                 pointsScore = '4:11;11:9;7:11;13:15'
                                 print(tokens, setsScore, pointsScore)
 
-                        match = Match(tokens[0],
+                        match = Match(matchDate,
                                       names,
                                       names=names,
                                       setsScore=setsScore,
                                       pointsScore=pointsScore,
                                       time=time,
                                       compName=compName,
-                                      round=tokens[4])
+                                      round=round)
                         matches.append(match)
         return matches
 
@@ -271,14 +288,16 @@ class LigaProPreparator:
                         if tokens[0] == '2017-04-20' and tokens[1] == '20:00':
                             pointsScore = None
                         names = [[tokens[5]], [tokens[8]]]
-                        match = Match(tokens[0],
+                        round = tokens[4]
+                        matchDate = LigaProPreparator.correctDate(tokens[0], round)
+                        match = Match(matchDate,
                                 names,
                                 names=names,
                                 setsScore=tokens[-2].strip().replace(' ', ''),
                                 pointsScore=pointsScore,
                                 time=tokens[1],
                                 compName='Лига-Про, ' + tokens[2].split(';')[0],
-                                round=tokens[4])
+                                round=round)
                         id1 = tokens[5]
                         id2 = tokens[8]
                         r1 = tokens[6]

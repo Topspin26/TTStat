@@ -13,7 +13,7 @@ class LigaProScraper:
         for f in walk('data/liga_pro/tours'):
             for ff in f[2]:
                 curId = max(curId, int(ff.split('_')[1][:-4]))
-        curId = max(1, curId - 2)
+        curId = max(1, curId - 4)
         logger.print(curId)
         fl = 0
         for tid in range(curId, 1000):

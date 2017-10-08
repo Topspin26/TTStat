@@ -45,7 +45,11 @@ class LigaProParser:
 #        print(st)
         place = ''
         try:
-            place = soup.find_all('div', class_="desc")[1].find('div', class_="desc-item").find('a').getText()
+            descs = soup.find_all('div', class_="desc")
+            if len(descs) == 3:
+                place = descs[1].find('div', class_="desc-item").find('a').getText()
+            else:
+                place = descs[0].find('div', class_="desc-item").find('a').getText()
         except:
             logger.print('no place')
             pass

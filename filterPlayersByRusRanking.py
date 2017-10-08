@@ -32,9 +32,13 @@ def main():
                         names[0] == 'Фомин Константин' or \
                         names[0] == 'Данилович Игорь' or \
                         names[0] == 'Кешишян Артур' or \
+                        names[0] == 'Демид Любезнов' or \
+                        names[0] == 'Старкова Лидия' or \
                         id == 'm16244' or \
                         id == 'm12038' or \
-                        id == 'm2781': #Макаров Денис, Борисов Георгий, Федоров Владислав
+                        id == 'm9611' or \
+                        id == 'm8983' or \
+                        id == 'm2781': #Макаров Денис, Малышев Константин, Борисов Георгий, Киселев Виктор, Федоров Владислав
             if id != 'm9378' and id != 'm6453':
                 id2names_filtered[id] = names
     with open('prepared_data/players_men_filtered.txt', 'w', encoding='utf-8') as fout_men, \

@@ -508,7 +508,7 @@ def main():
 #    getIttfRankings('men', 2005, 5)
 
     #updateIttfRanking()
-    updateRusRanking(2017, 9)
+    updateRusRanking(2017, 10)
 
 
 '''

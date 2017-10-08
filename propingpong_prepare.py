@@ -169,6 +169,10 @@ def main():
 
     idLinks['rus']['5121'] = None # Анастасия Ефимова
 
+    idLinks['rus']['5016'] = None # Дмитриева Анна
+    idLinks['rus']['12761'] = None # Дмитриева Анна
+    idLinks['rus']['5015'] = 'w209' # Дмитриева Анна
+
 
     prefix = 'prepared_data/propingpong/'
     for rt in ['rus', 'ittf']:

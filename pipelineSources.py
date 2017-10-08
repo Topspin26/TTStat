@@ -41,7 +41,7 @@ def parse():
     ChallengerSeriesParser.run(logger=Logger('ChallengerSeriesParser.txt'))
     BKFonResultsParser.run(logger=Logger('BKFonResultsParser.txt'))
     RttfParser.run(logger=Logger('RttfParser.txt'))
-    IttfParser.run(logger=Logger('IttfParser.txt'))
+    #IttfParser.run(logger=Logger('IttfParser.txt'))
 
 
 def prepare():
