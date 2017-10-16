@@ -2643,7 +2643,7 @@ w2782	KISIAKOVA Madina
 w2783	LUDVIK Jana
 w2784	JI Sooran
 w2785	GOGORITA Ana
-w2786	SILVA Yadira
+w2786	SILVA Yadira;Ядира Сильва
 w2787	PAN Chun-Chu
 w2788	KUDUSOVA Saida
 w2789	Matsuzawa Marina;Марина Мацузава
@@ -4950,3 +4950,25 @@ w11160	Diaz Fabiola
 w11161	Kim Sol Song
 w11211	Марина Ефремова
 w11240	Анастасия Яблонская
+w11246	Tolgyes Dorottya
+w11247	Grammatopoulou Daniela
+w11248	Camerlynck Chiara
+w11249	Chen Ci-Xuan
+w11250	Kim Nayeong
+w11251	Sommerova Helena
+w11252	Fadol Rose Jean
+w11253	Dael Emy Rose
+w11254	Andronova Miroslava
+w11255	Echeverry Manuela
+w11256	Kovacek Tena
+w11257	Vasendova Jana
+w11258	Novak Tjasa
+w11259	Trbuscic Ana
+w11260	Hrabicova Klara
+w11261	Sazimova Terezie
+w11262	Ianau Patricia
+w11263	Stanisa Ziva
+w11264	Trelec Spela
+w11265	Laskai Irisz
+w11266	Saparova Alsu
+w11267	Yepifantseva Anastasiya

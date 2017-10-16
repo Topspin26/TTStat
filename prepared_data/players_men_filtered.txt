@@ -2235,7 +2235,7 @@ m2251	FRANZ Peter
 m2252	Андрей Путунтика;Putuntica Andrei
 m2253	Kulpa Konrad;Конрад Кульпа
 m2254	QUENTEL Dorian
-m2255	Алескандр Кассин;Cassin Alexandre
+m2255	Алескандр Кассин;Cassin Alexandre;Александр Кассен
 m2256	TRAN Tuan Quynh
 m2257	LEE Seungjun
 m2258	VON SCHEELE Thomas
@@ -6035,7 +6035,7 @@ m15480	RUIZ Diego
 m15481	ABICH Leon
 m15482	SOOKPRASERD Kotcharuk
 m15483	AKOMOLAFE Sunday
-m15484	ZANDECKI Jan
+m15484	ZANDECKI Jan;Ян Зандеки
 m15485	AGAMYAN Erik
 m15486	COUFAL Derek
 m15487	AHMED Moosa
@@ -6917,3 +6917,67 @@ m17100	Li Yijie
 m17101	Dalgleish Colin
 m17103	Руслан Дудников
 m17105	Сергей Кукин
+m17230	Hoek Jean-Claude
+m17231	Sofia Simone
+m17232	Malik Yashansh
+m17233	Rondon Juan Damian
+m17234	Esther Nicholas
+m17235	Drame Abdoulaye
+m17236	Alhourani Hasan
+m17237	Albornoz Fabian
+m17238	Erjavec Nejc
+m17239	Petrov Martin
+m17240	Stalzer Adam
+m17241	Jang Seongil
+m17242	Milohanovic Andrea
+m17243	Drazic Dominik
+m17244	Delincak Filip
+m17245	Chung Benny
+m17246	Li Hsin-Yu
+m17247	Stach Matej
+m17248	Mongiusti Mattias
+m17249	Stacey Joshua
+m17250	Sadigov Sadikh
+m17251	Rosca Mihai
+m17252	Santek Leon
+m17253	Amiri Arya
+m17254	Ivanco Felix
+m17255	Segula Marsel
+m17256	Ziller Thomas
+m17257	Lavric Taj
+m17258	Trtnik Rok
+m17259	Breznik Luka
+m17260	Pindura Tobias
+m17261	Huzsvar Erik
+m17262	Cyprich Radovan
+m17263	Doan Ba Tuan Anh
+m17264	Kenzhigulov Aidos
+m17265	Jevsnik Jan
+m17266	Chirita Iulian
+m17267	Kassag Gedeon
+m17268	Luu Finn
+m17269	Khayyam Radin
+m17270	Alvarado Francisco
+m17271	Klajber Adam
+m17272	Martinek Mislav
+m17273	Godec Aljaz
+m17274	Mathilda Jeandry
+m17275	Tsyhanouski Mikhail
+m17276	Laffineur Louis
+m17277	Giovannetti Tommaso
+m17278	Nettarp Bruno
+m17279	Zigon Ziga
+m17280	Huberty Dennis
+m17281	Vekic Leo
+m17282	Iacob Bogdan
+m17283	John Marek
+m17284	Oo Soe Min
+m17285	Kveton Ondrej
+m17286	Oroszlan Richard-Lorand
+m17287	Djamal Ahmed
+m17288	Borovnjak Filip
+m17289	Pinter Matjaz
+m17290	Kases Andre Pierre
+m17291	Vybiral Filip
+m17292	Godhwani Aditya
+m17293	Cappuccio Marco
