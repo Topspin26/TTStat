@@ -421,6 +421,7 @@ w468	Елизавета Лисова
 w469	Зинаида Москалева
 w471	Ева Нечипоренко
 w473	Таисия Денисова
+w476	Рената Дебетеева
 w477	Арина Казанцева
 w478	Алина Барабанщикова
 w491	Юлия Голендухина
@@ -445,6 +446,7 @@ w565	Екатерина Ситникова
 w566	Галина Бурова
 w567	Мария Петракова
 w568	Людмила Сухановская
+w570	Мария Тарасова
 w571	Анастасия Степанова
 w574	Анна Степанова;STEPANOVA Anna
 w576	CHEONG Cheng I
@@ -479,6 +481,7 @@ w604	Никита Петровова;Petrovova Nikita
 w605	MIZOBUCHI Livia
 w606	Ингрида Прейджюте;Preidziute Ingrida
 w607	YOSHIKUNI Yuka
+w608	Дарья Зюзина
 w609	JIANG Diane
 w610	SILLUS Nadine
 w611	OHATA Nahoko
@@ -1674,6 +1677,7 @@ w1807	STENQVIST Madeleine
 w1808	MARCH-RADFORD Linda
 w1809	KLIMANOVA Natalija
 w1810	DERMASTIJA Petra
+w1811	Анастасия Шанина
 w1812	HUNG Jenny
 w1813	FAGANELJ Lorena
 w1814	GOLOTA Marta
@@ -2781,6 +2785,7 @@ w2921	Мария Войтехова
 w2922	Анита Лиссовенко
 w2923	Юлия Гулевская
 w2944	Лола Баротова
+w2949	София Уманец
 w2952	Анастасия Кременецкая
 w2965	Анна Буланкина
 w2976	Анастасия Савина
@@ -4972,3 +4977,10 @@ w11264	Trelec Spela
 w11265	Laskai Irisz
 w11266	Saparova Alsu
 w11267	Yepifantseva Anastasiya
+w11337	Виктория Майорова
+w11364	Наталья Мякинина
+w11370	Наталия Волненко
+w11378	Сабина Мусаева
+w11384	Abdelfattah Nour
+w11385	Azhari Hani Tri
+w11386	Yehia Alaa

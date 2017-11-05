@@ -753,7 +753,7 @@ m762	Ким Хек Бон;Kim Hyok Bong
 m763	TSE Ka Chun
 m764	LUGINGER Christian
 m765	LEE Sangjoon
-m767	DOSZ Adam
+m767	DOSZ Adam;Адам Дош
 m768	SONBOL Islam
 m769	BHURTUN Ravi
 m770	Жоао Монтейро;Monteiro Joao
@@ -1307,7 +1307,7 @@ m1318	Tran Anthony;Энтони Тран
 m1319	YEO Inho
 m1320	Lam Siu Hang;Лам Сю Хан
 m1321	KIM Minho
-m1322	PETO Zsolt
+m1322	PETO Zsolt;Жолт Пето
 m1323	BIRLAN Laurentiu
 m1324	IGNJATOVIC Sasa
 m1325	MAMIA Thameur
@@ -2741,6 +2741,7 @@ m2760	Иван Коротяев
 m2762	Игорь Разумов
 m2763	Заур Темирканов
 m2766	Семен Мелкуев;MELKUEV Semen
+m2767	Марат Султанов
 m2768	Александр Терехов
 m2769	Константин Сергеев
 m2770	Максим Смышников
@@ -3024,6 +3025,7 @@ m4694	Денисов Илья
 m4701	Попов Александр
 m4709	Калмыков Александр
 m4713	Варфоломеев Сергей
+m4737	Ращукин Александр
 m4741	Болоцков Денис
 m4754	Бобков Алексей
 m4755	Коновалов Александр
@@ -3220,7 +3222,6 @@ m7361	Абрамов Дмитрий
 m7364	Волков Сергей
 m7365	Козлов Дмитрий
 m7378	Лопатин Александр
-m7396	Борисов Дмитрий
 m7421	Федоров Николай
 m7480	Харитонов Константин
 m7515	Новиков Владислав
@@ -3505,6 +3506,7 @@ m12065	Брусникин Денис
 m12077	Орбакас Антон
 m12099	Фесак Денис
 m12105	Сапрыкин Артем
+m12107	Пономаренко Евгений
 m12143	Бузина Юрий
 m12185	Ванеш Марик
 m12191	Тимергазин Руслан
@@ -3514,12 +3516,14 @@ m12245	Ижиков Николай
 m12253	Служенко Григорий
 m12256	Мелихов Никита
 m12278	Зеленов Максим
+m12303	Попков Арсений
 m12367	Скородилов Никита
 m12399	Юшков Антон
 m12404	Ота Рики
 m12405	Леонтьев А.
 m12406	Дема Константин
 m12432	Санейко Дмитрий
+m12443	Батурин Дмитрий
 m12474	Харламов Руслан
 m12486	Коврижников Максим
 m12523	Патрушев Илья
@@ -3715,7 +3719,7 @@ m13160	VALERIO Anthony
 m13161	BOUBAKA Different
 m13162	WANG Chenxi
 m13163	ALIM Azzam
-m13164	RASSENFOSSE Adrien
+m13164	RASSENFOSSE Adrien;Адриен Рассенфоссе
 m13165	VAN HOVEN Vincent
 m13166	CHUANG Cheng-Hsuan
 m13167	PAN Chang Ip
@@ -6661,7 +6665,7 @@ m16106	OGUSHI Haruhumi
 m16107	WELSCHBILLIG Louis
 m16108	GAMBANDE Lucio
 m16109	ZHIOUA Mourad
-m16110	WAHID Habibie
+m16110	WAHID Habibie;Хабиби Вахид
 m16111	HAN James
 m16112	KARAS David
 m16113	SPORSHEIM Andreas
@@ -6981,3 +6985,34 @@ m17290	Kases Andre Pierre
 m17291	Vybiral Filip
 m17292	Godhwani Aditya
 m17293	Cappuccio Marco
+m17297	Евгений Туник
+m17315	Андрей Чемиртан
+m17335	Александр Герасименко
+m17336	Данил Черкес
+m17362	Валерий Горелов
+m17364	Кэйян Цзян
+m17365	Сергей Свеклов
+m17411	Дашицырен Цыбенов
+m17417	Bessa David
+m17418	Tutura Marek
+m17419	Sariev Stoyan
+m17420	Znika Petar
+m17421	Oliyavong Phonepaseud
+m17422	Razafindrakoto Amboara
+m17423	Bringaud Andy
+m17424	Morri Andrea
+m17425	Bucci Valerio
+m17426	Elmahdy Ahmed
+m17427	Luu Skyy
+m17428	Barrios Leonel
+m17429	Mosangsinh Sonpasith
+m17430	Hristev Hristo
+m17431	Soeung Tola
+m17432	Alkhamis Sultan
+m17433	Kocjancic Daniel
+m17434	Mati Taiwo
+m17435	Dragun Luka
+m17436	Ramsl Erik
+m17437	Jacolo Ryan Rodney
+m17438	Meter Roko
+m17439	Omerzel Mitja

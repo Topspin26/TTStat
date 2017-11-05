@@ -286,7 +286,12 @@ def getIttfRankings(mw, year, month):
 #                    print(s)
                     playerId = s.split('ittfid=')[1].split('">')[0]
                     playerName = s.split('ittfid=')[1].split('>')[1].split('<')[0]
-                    playerRating = int(s.split('country=')[1].split('</div>')[1].split('>')[-1])
+                    arr = s.split('country=')
+                    if len(arr) != 1:
+                        playerRating = int(arr[1].split('</div>')[1].split('>')[-1])
+                    else:
+                        playerRating = int(s.split('<div class="cell-val">')[-1].split('</div>')[1].split('>')[-1])
+                        print('No country', playerName, playerRating)
                     #print([playerId, playerName, playerRating])
                     rankings[playerId] = playerRating
                     if not (playerId in ittfid2names):
@@ -508,7 +513,7 @@ def main():
 #    getIttfRankings('men', 2005, 5)
 
     updateIttfRanking()
-    #updateRusRanking(2017, 10)
+    #updateRusRanking(2017, 11)
 
 
 '''
