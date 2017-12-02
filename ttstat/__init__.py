@@ -3,6 +3,7 @@ import psycopg2
 # from flask_sqlalchemy import SQLAlchemy
 from flask_apscheduler import APScheduler
 from .models import TTModel
+from config import *
 
 ttstat = Flask(__name__)
 ttstat.config.from_object('config')

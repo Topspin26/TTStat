@@ -13,6 +13,8 @@ import psycopg2
 from BKFonLiveParser import *
 import json
 
+import config as config
+
 chrome_options = Options()
 #chrome_options.add_extension('chromedriver_win32/extension_2_0_327.crx')
 #chrome_options.add_extension('chromedriver_win32/extension_3_0_0.crx')
@@ -150,8 +152,9 @@ def main():
 
         driver = initDriver(url, driver)
 
-        #con = psycopg2.connect("host='postgresql-test.cmigtzxeaopd.us-east-2.rds.amazonaws.com' dbname='ttstat' user='topspin26' password='aws_postgres_test_Topspin26'")
-        con = psycopg2.connect("dbname='fonbet' user='postgres' password='topspin_postgres'")
+        con = psycopg2.connect("dbname='{}' user='{}' password='{}'".format(config.DB_NAME,
+                                                                            config.DB_USER,
+                                                                            config.DB_PASSWORD))
         cur = con.cursor()
 
         tg = 60 * 60
