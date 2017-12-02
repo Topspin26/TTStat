@@ -69,7 +69,7 @@ class LigaProParser:
                 #print(stage)
             else:
                 s = tr.find('td').getText()
-                tt = s#.split('>')[1][:5]
+                tt = s.strip()#.split('>')[1][:5]
 #                print(tt)
 
                 s = str(tr.find('td', class_="right").contents[0])

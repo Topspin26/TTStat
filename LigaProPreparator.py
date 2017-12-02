@@ -218,7 +218,12 @@ class LigaProPreparator:
                         pointsScore = tokens[-1].strip().replace('(', '').replace(')', '').replace(' ', ';').replace('-', ':')
                         if tokens[0] == '2017-04-20' and tokens[1] == '20:00':
                             pointsScore = None
-                        names = [[tokens[5]], [tokens[8]]]
+                        try:
+                            names = [[tokens[5]], [tokens[8]]]
+                        except:
+                            print(ff)
+                            print(line)
+                            raise
                         time = tokens[1]
                         setsScore = tokens[-2].strip().replace(' ', '')
                         compName = 'Лига-Про (' + tokens[2].split(';')[0].replace('лига ', '') + '), ' + tokens[0]
