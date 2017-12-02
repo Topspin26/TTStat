@@ -68,8 +68,13 @@ class BKFonResultsScraper:
                             pass
                         if tt is None:
                             logger.print('try click')
-                            driver.find_element_by_xpath(
-                                '//div[@class="events__filter _type_sport"]/*/span[@class="events__filter-text"]').click()
+                            try:
+                                driver.find_element_by_xpath(
+                                    '//div[@class="events__filter _type_sport"]/*/span[@class="events__filter-text"]').click()
+                            except:
+                                time.sleep(2)
+                                driver.find_element_by_xpath(
+                                    '//div[@class="events__filter _type_sport"]/*/span[@class="events__filter-text"]').click()
                             logger.print('click')
                             try:
                                 tt = driver.find_element_by_xpath(
