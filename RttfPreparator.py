@@ -94,6 +94,13 @@ class RttfPreparator:
         idLinks['3613'] = None
         idLinks['4331'] = 'm421'
 
+        # Киселев Максим
+        idLinks['10332'] = None
+
+        # Комаров Денис
+        idLinks['1580'] = 'm17661'
+        idLinks['5388'] = None
+
         with open('prepared_data/rttf/players_rttf.txt', 'w', encoding='utf-8') as fout:
             for player, playerId in sorted(player2id.items(), key=lambda x: x[0]):
                 playerId = [e for e in playerId if idLinks.get(e, 1) is not None]

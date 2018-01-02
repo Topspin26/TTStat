@@ -319,7 +319,7 @@ def updateIttfRanking():
                 tokens = line.split('\t')
                 ittfId2names[tokens[0]] = tokens[1].strip().split(';')
 
-        for year in range(2001,2018):
+        for year in range(2001, 2019):
             for month in range(1, 13):
                 if str(year) + '-' + str(month).zfill(2) > curDate:
                     break
@@ -513,7 +513,7 @@ def main():
 #    getIttfRankings('men', 2005, 5)
 
     #updateIttfRanking()
-    updateRusRanking(2017, 12)
+    updateRusRanking(2018, 1)
 
 
 '''
