@@ -136,7 +136,7 @@ class BKFonLiveParserNew:
                 events[name]['score'] = ''
 
             tds = tr.xpath('//td')
-            columns = ['', '', 'win1', 'win2', 'fora1', 'win_f1', 'fora2', 'win_f2', 'total', 'total_l', 'total_g']
+            columns = ['', '', 'win1', 'win2', 'fora1', 'win_f1', 'fora2', 'win_f2', 'total', 'total_g', 'total_l']
             for i in [2, 3]:
                 fl = (tds[i].get('class').find('blocked') == -1)
                 if not (tds[i].text is None):
@@ -158,7 +158,12 @@ class BKFonLiveParserNew:
                     events[name][columns[i]] = [0, 0, -1]
 
         eventsInfo = events.copy()
-        return MatchBet(eventId, dt, compName, None, [[dt, eventsInfo]], names=players)
+        try:
+            matchBet = MatchBet(eventId, dt, compName, None, [[dt, eventsInfo]], names=players)
+        except Exception as ex:
+            print(ex)
+            raise
+        return matchBet
 
 # self.createMatchesDict()
 #    def createMatchesDict(self):

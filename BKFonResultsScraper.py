@@ -42,13 +42,13 @@ class BKFonResultsScraper:
                     '//td[contains(@class, "ui-calendar__col") and not (contains(@class, "_state_off"))]/a')
                 nd = len(active_days)
                 logger.print(len(active_days))
-                if year == str(datetime.now().year):
+                if year == str(datetime.now().year) or year == str(datetime.now().year - 1):
                     for i in range(nd - flLast):
                         #if month == 4:
                         #    continue
                         #if i < 7:
                         #    continue
-                        if month != datetime.now().month and (datetime.now().day > 14 or month != datetime.now().month - 1):
+                        if month != datetime.now().month and (datetime.now().day > 14 or (month - 1) % 12 + 1 != (datetime.now().month - 1 - 1) % 12 + 1):
                             flExit = 1
                             continue
                         curDate = year + '-' + str(month).zfill(2) + '-' + str(i + 1).zfill(2)

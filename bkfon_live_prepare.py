@@ -10,71 +10,21 @@ from Storages import *
 import json
 import re
 
+
 def main():
     playersDict = GlobalPlayersDict("filtered")
-
-    activePlayers = set()
-
-    matchesDict = dict()
-
-    bkfonMatchesDict = dict()
-
-    with open('prepared_data/bkfon/all_results.txt', encoding='utf-8') as fin:
-        headerTokens = next(fin).strip().split('\t')
-        headerDict = dict(zip(headerTokens, range(len(headerTokens))))
-        for line in fin:
-            tokens = line.rstrip().split('\t')
-            ids = [tokens[headerDict['id1']].split(';'), tokens[headerDict['id2']].split(';')]
-            names = [tokens[headerDict['name1']].split(';'), tokens[headerDict['name2']].split(';')]
-            dt = tokens[headerDict['date']]
-
-            match = Match(dt,
-                          ids,
-                          names=names,
-                          setsScore=tokens[headerDict['setsScore']],
-                          pointsScore=tokens[headerDict['pointsScore']],
-                          time=tokens[headerDict['time']],
-                          compName=tokens[headerDict['compName']],
-                          source='bkfon',
-                          matchId=tokens[headerDict['matchId']])
-            print(dt + '\t' + tokens[headerDict['compName']] + '\t' + tokens[headerDict['matchId']])
-            bkfonMatchesDict[dt + '\t' + tokens[headerDict['compName']] + '\t' + tokens[headerDict['matchId']]] = match
 
     sources = []
     sources.append(['master_tour', 'prepared_data/master_tour/all_results.txt'])
     sources.append(['liga_pro', 'prepared_data/liga_pro/all_results.txt'])
     sources.append(['bkfon', 'prepared_data/bkfon/all_results.txt'])
 
-#    matchesStorage = MatchesStorage(sources) #заменить кусок кода ниже
+    matchesStorage = MatchesStorage(sources)
+    matchesDict = matchesStorage.matchesDict
 
-    for source, filename in sources:
-        print(filename)
-        with open(filename, encoding='utf-8') as fin:
-            headerTokens = next(fin).strip().split('\t')
-            headerDict = dict(zip(headerTokens, range(len(headerTokens))))
-            for line in fin:
-                tokens = line.split('\t')
-                ids = [tokens[headerDict['id1']].split(';'), tokens[headerDict['id2']].split(';')]
-                names = [tokens[headerDict['name1']].split(';'), tokens[headerDict['name2']].split(';')]
-                dt = tokens[headerDict['date']]
-                for id in ids[0] + ids[1]:
-                    activePlayers.add(source + '\t' + dt + '\t' + id)
-
-                match = Match(tokens[headerDict['date']],
-                              ids,
-                              names=names,
-                              setsScore=tokens[headerDict['setsScore']],
-                              pointsScore=tokens[headerDict['pointsScore']],
-                              time=tokens[headerDict['time']],
-                              compName=tokens[headerDict['compName']],
-                              source=source)
-                matchHash = match.getHash()
-                if not (matchHash in matchesDict) and match.date >= '2014':
-                    if not matchHash in matchesDict:
-                        matchesDict[matchHash] = []
-                    matchesDict[matchHash].append(match)
-                elif matchHash in matchesDict:
-                    matchesDict[matchHash][0].addSource(source)
+    bkfonMatchesDict = dict()
+    for match in matchesStorage.getMatches(source='bkfon'):
+        bkfonMatchesDict[match.date + '\t' + match.compName + '\t' + match.matchId] = match
 
     multiple = dict()
     unknown = dict()
@@ -124,6 +74,7 @@ def main():
                                     #    player = 'Желубенков Александр'
                                     if player == 'Какунина Я':
                                         player = 'Кокунина Я'
+
                                     id = playersDict.getId(player)
                                     if len(id) == 1:
                                         ids[i].append(id[0])
@@ -141,12 +92,12 @@ def main():
                                             source = 'liga_pro'
 
                                         for e in id:
-                                            if (source + '\t' + dt[:10] + '\t' + e) in activePlayers:
+                                            if matchesStorage.isActive(e, source, dt[:10]):
                                                 idGood.append(e)
 
                                         if len(idGood) == 1:
                                             ids[i].append(idGood[0])
-                                            if not (player in solved):
+                                            if player not in solved:
                                                 solved[player] = 0
                                             solved[player] += 1
                                         else:
@@ -158,6 +109,7 @@ def main():
                                             if not (fl_mw + ' ' + player in multiple):
                                                 multiple[fl_mw + ' ' + player] = 0
                                             multiple[fl_mw + ' ' + player] += 1
+
                             if flError == 0:
                                 if segment not in sourcesCount:
                                     sourcesCount[segment] = 0
@@ -171,26 +123,16 @@ def main():
 
                                 fout.write('\t'.join([segment] + tokens[:3] + [';'.join(ids[0]), ';'.join(ids[1])] +
                                                      tokens[3:] + [finalScore]) + '\n')
-                                pattern = r"\(([A-Za-z0-9- ]+)\)"
                 #                print(info)
                 #                print(info[-1])
-                                lastMatchInd = len(info) - 1
-                                while not ('match' in info[lastMatchInd][1]):
-                                    lastMatchInd -= 1
-                                    if lastMatchInd == -1:
-                                        break
-                                if lastMatchInd == -1:
-                                    print('bad info')
-                                    raise
-                                    continue
-                                pointsScore = re.search(pattern, info[lastMatchInd][1]['match']['score'])
-                                points = None
-                                if not (pointsScore is None):
-                                    pointsScore = pointsScore.group(0).replace('(', '').replace(')', '').replace(' ', ';').replace('-', ':') + ';'
-                                    _, points = Match.getPointsScoreInfo(pointsScore)
-                                setsScore = info[lastMatchInd][1]['match']['score'].split(' ')[0]
-                                if setsScore != '' and setsScore.replace('5сетов', '').replace('7сетов', '') != '':
-                                    matchHash = calcHash([dt[:10]] + ids[0] + ids[1] + [int(e) for e in setsScore.split(':')] + [e * i for i, e in enumerate(Match.getSetSumPoints(points))])
+
+
+                                matchBet = MatchBet(eventId, dt, compName, ids, info, names=players)
+                                match = matchBet.buildMatch()
+                                setsScore, pointsScore = match.setsScore, match.pointsScore
+
+                                if setsScore != '':
+                                    matchHash = match.getHash()
                                     if matchHash in matchesDict:
                                         mbCnt += 1
                                 else:

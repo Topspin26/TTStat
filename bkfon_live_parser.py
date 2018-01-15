@@ -57,7 +57,7 @@ def parseDirs(segments, segments1):
             for line in fin:
                 parsed.append(line.strip())
 
-        if len(parsed) != 0:
+        if len(parsed) != 0 and os.path.exists(dirname_parsed_segment + '/' + parsed[-1].split('\\')[-2] + '.txt'):
             copyfile(dirname_parsed_segment + '/' + parsed[-1].split('\\')[-2] + '.txt',
                      dirname_parsed_segment + '/' + parsed[-1].split('\\')[-2] + '_last.txt')
             betsStorage.loadFromFile(dirname_parsed_segment + '/' + parsed[-1].split('\\')[-2] + '.txt', isPrepared=0)
@@ -161,6 +161,10 @@ def main():
     #мастер-тур Китай женщины - склеить
 #    segments1['ittf'] = 'Международный турнир.'
 
+    segments1['kchr'] = 'Континентальный чемпионат России'
+    segments1['rus'] = 'Первенство России'
+
+    #parseDirs(dict(), {'liga_pro_women': 'Наст. теннис. Жен. Лига Про. Москва.txt'})
     parseDirs(segments, segments1)
 
 if __name__ == "__main__":
