@@ -13,10 +13,10 @@ class LigaProScraper:
         for f in walk('data/liga_pro/' + mode):
             for ff in f[2]:
                 curId = max(curId, int(ff.split('_')[1][:-4]))
-        curId = max(1, curId - 4)
+        curId = max(1, curId - 4) if mode == 'tours' else max(1, curId - 200)
         logger.print(curId)
         fl = 0
-        for tid in range(curId, 11000):
+        for tid in range(curId, 15000):
             #if tid % 2 == 0:
             #    time.sleep(1)
             logger.print(tid)

@@ -29,6 +29,7 @@ import kchr_prepare
 
 def scrap():
     LigaProScraper.run(logger=Logger('LigaProScraper.txt'))
+    LigaProScraper.run(logger=Logger('LigaProScraper.txt'), mode='games')
     MasterTourScraper.run(logger=Logger('MasterTourScraper.txt'))
     ChallengerSeriesScraper.run(logger=Logger('ChallengerSeriesScraper.txt'))
     BKFonResultsScraper.run(logger=Logger('BKFonResultsScraper.txt'))
@@ -58,6 +59,8 @@ def check():
 
 def main():
 #    IttfParser.run()
+#    RttfScraper.run(logger=Logger('RttfScraper.txt'))
+
     scrap()
     parse()
     prepare()

@@ -65,7 +65,7 @@ class LigaProParser:
         for tr in trs[1:]:
             tds = tr.findChildren('td', class_='center')
             if len(tds) == 1:
-                stage = tds[0].getText().replace('<b>', '').replace('</b>', '').strip()
+                stage = tds[0].getText().replace('<b>', '').replace('</b>', '').strip().replace('\t', ' ')
                 #print(stage)
             else:
                 s = tr.find('td').getText()

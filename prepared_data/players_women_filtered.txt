@@ -134,7 +134,7 @@ w137	Яна Носкова;Noskova Yana
 w138	Юлия Прохорова;Prokhorova Yulia
 w139	Маргарита Песоцкая;Pesotska Margaryta
 w140	Александра Привалова;Privalova Alexandra
-w141	Эльза Шарипова
+w141	Эльза Шибаева;Shibaeva Elza;Эльза Шарипова
 w142	Виктория Павлович;Pavlovich Viktoria
 w143	Валерия Щербатых;SHCHERBATYKH Valeria
 w144	Виктория Лебедева;LEBEDEVA Victoria
@@ -343,7 +343,7 @@ w348	Вероника Миллер
 w349	Юлия Пигалева
 w350	Даяна Губашиева
 w351	Вера Смирнова
-w352	Валерия Сафина
+w352	Валерия Сафина;Safina Valeria
 w353	Екатерина Ронзина
 w354	Анастасия Гранкина
 w355	Ирина Заярко
@@ -2757,7 +2757,6 @@ w2889	TSIUPKO Oleksandra
 w2890	Магдалена Сикорска;Sikorska Magdalena
 w2891	Kang Misoon;Канг Ми-Сун
 w2892	KATEVAITE Vaida
-w2893	Эльза Шибаева;Shibaeva Elza
 w2894	PAN Li-Chun
 w2895	HUBERT Martine
 w2896	WANG Chunling
@@ -4994,3 +4993,181 @@ w11378	Сабина Мусаева
 w11384	Abdelfattah Nour
 w11385	Azhari Hani Tri
 w11386	Yehia Alaa
+w11616	Fashola Aminat
+w11617	Azar Laetitia
+w11618	Gnjatic Marija
+w11619	Alam Moumita
+w11620	Barbosa Ariel
+w11621	Magdy Donia
+w11622	RAMY Nagham
+w11623	Garcia Nerea
+w11624	Rexhaj Liridona
+w11625	ABDO Zeina
+w11626	Rajaguru Bandara
+w11627	REHAN Habeba
+w11628	Adebayo Abimbola
+w11629	Zaki Roa
+w11630	LUO Yumo
+w11631	Abo-Yaman Taimmaa
+w11632	TAMER Jana
+w11633	Wang Lu
+w11634	Zakaria Rawan
+w11635	Ono Rizumu
+w11636	Leggett Faye
+w11637	Akter Rahima
+w11638	Nam Yunjung
+w11639	Abdelaal Farah
+w11640	Lazarkova Volha
+w11641	ABDELAZIZ Sahar
+w11642	Fonseca Carrazana Daniela
+w11643	Grigorjan Karina
+w11644	Rasheed Aishath Fadhuwa
+w11645	Nikolic Lenka
+w11646	Amro Roa
+w11647	Khurshid Maliha
+w11648	Oh Sue Bin
+w11649	Madalieva Sugdiyona
+w11650	ANTIC Jovana
+w11651	JARKOWSKA Aleksandra
+w11652	Menawi Ahd
+w11653	Skuba Emilia
+w11654	Nikolova Dimana
+w11655	Nikolic Sofija
+w11656	DOBO Anita
+w11657	Duncan Loata
+w11658	Modubashova Elina
+w11659	Karpova Anna
+w11660	Batmunkh Bolor-Erdene
+w11661	Mewouo Annissa Solail
+w11662	YEVTODII Iolanta
+w11663	Tao Chong
+w11664	IVANOVA Krastina
+w11665	Khaled Meral
+w11666	LYUBUSHKINA Julia
+w11667	Rajmil Muriel
+w11668	RUS Irina
+w11669	Nazim Aishath
+w11670	Mesetovic Harisa
+w11671	Alsowayigh Mayson
+w11672	Mou Sadia Rahman
+w11673	Aliou Awawou
+w11674	ABDELSALAM Hana
+w11675	Hoarakkit Papatchaya
+w11676	Ucima Vitoria
+w11677	Kelmenbetova Aiya
+w11678	Aiazbekova Zhyldyz
+w11679	Aulia Reza Amanda
+w11680	SLADECEK Svetlana
+w11681	Hussain Kholoud
+w11682	Hawwa Kharisma Nur
+w11683	Aiyelbegan Sukurat
+w11684	Fareid Menatalah
+w11685	Thalji Masa
+w11686	DUBAK Marija
+w11687	SHEVTCOVA Anastasiia
+w11688	EHAB Haba
+w11689	OJIO Haruna
+w11690	Taguercifi Houda Nourhane
+w11691	Infante Claudia
+w11692	Zhang Zhao
+w11693	SAAD Jana
+w11694	La Lorie
+w11695	Oros Nikolet
+w11696	Asel Al-Khawaldeh
+w11697	DYMYTRENKO Anastasiya
+w11698	Novakova Martina
+w11699	Scepanovic Sofija
+w11700	Murray Brittany
+w11701	Klempererova Anna
+w11702	Hasanova Dalma
+w11703	Pietrzak Agnieszka
+w11704	Falana Iyanu Oluwa
+w11705	Nazmi Aziza
+w11706	Vedelek Dora
+w11707	Pham Thi Thu Huong
+w11708	Tanska Caroline
+w11709	Mousa Batool
+w11710	Duncan Filomena
+w11711	Wagih Jana
+w11712	Granados Nicole
+w11713	Genovese Sascha
+w11714	De Armas Perez Thalia
+w11715	Kouadio Lisette
+w11716	Vallecillo Fiorella
+w11717	FAWZY Kanzy
+w11718	Freeman Angelisa
+w11719	BORDYUGOVSKAYA Daria
+w11720	PINKU Marina
+w11721	Janjeva Era
+w11722	SUN Jiayi
+w11723	FOTIADOU Chrysi
+w11724	LEONOWICZ Monika
+w11725	Bisola Asiaju
+w11726	ACEVES Marbella
+w11727	SOMA Yumeno
+w11728	Wrzosek Wiktoria
+w11729	ASHRAF Mariam
+w11730	Dinh Thi Hang
+w11731	Munkhbat Undram
+w11732	Dakova Tsveta
+w11733	Biogradlic Dzana
+w11734	Gonzalez Lety
+w11735	Yasin Sanam
+w11736	Titana Touea
+w11737	ITKINA Anastasiia
+w11738	GIRI Swathi
+w11739	TETUANUI Hinerava
+w11740	BANJAC Katarina
+w11741	MAIENBURG Aurelie
+w11742	Malseva Vilena
+w11743	Omuralieva Altynai
+w11744	HUSSEIN Mariam
+w11745	Jibric Ecaterina
+w11746	Hassan Arwa
+w11747	Jakobsen Louise
+w11748	ASADA Mai
+w11749	OSAMA Jana
+w11750	Naidoo Kiara
+w11751	Bayarsaikhan Urantogos
+w11752	FU Ava
+w11753	OSAMA Nagham
+w11754	Zhou Jiayi
+w11755	HINIC Tamara
+w11756	TENTSER Liubov
+w11757	Torres Kristie
+w11758	Turkonje Tamara
+w11759	Faryal Sobia
+w11760	Akadiri Ziadath
+w11761	Greaves Priscilla
+w11762	LOGINOVA Diana
+w11763	Skattet Rikke
+w11764	Assi Diana
+w11765	IVANOVA Gabriela
+w11766	IWAKOSHI Honoka
+w11767	Almagambetova Gaukhar
+w11768	SAID Nour
+w11769	VLADIMIROV Minja
+w11770	HASHEM Nada
+w11771	Medhat Sohaila
+w11772	Rojas Dahyana
+w11773	MIKHAILOVA Daria
+w11774	Kozokar Laura
+w11775	Morri Chiara
+w11776	OKUSHITA Akari
+w11777	Aiazbekova Nurkyz
+w11778	XU Nuo
+w11779	Cardenas Carolina
+w11780	FARAG Sondos
+w11781	Oppelz Tereza
+w11782	GUO Jiangshan
+w11783	Rodriguez Alanis
+w11784	Drame Akissi
+w11785	LONCAREVIC Hanna
+w11786	SEYAMA Saki
+w11787	Mito Farida
+w11788	CHEN Magali
+w11789	ABOUELEZZ Habeba
+w11790	MICHALAK Aleksandra
+w11791	Collier Evangeline
+w11792	YUAN Xuejiao
+w11793	TAMAS Aleksandra
