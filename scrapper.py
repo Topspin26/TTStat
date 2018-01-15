@@ -58,7 +58,9 @@ class ScrapperLive:
                 except:
                     tt = None
             if tt:
-                lineTable = self.driver.find_element_by_xpath('//div[@class="account__container"]/table[@class="table"]')
+                #print(self.driver.find_element_by_xpath("//*").get_attribute("outerHTML"))
+                #print(self.driver.find_element_by_xpath('//div[@class="account__container"]').get_attribute('outerHTML'))
+                lineTable = self.driver.find_element_by_xpath('//div[@class="table__flex-container"]/table[@class="table"]')
                 print('lineTable - ok')
                 sout = lineTable.get_attribute('outerHTML')
                 print(len(sout))
@@ -191,12 +193,12 @@ def main():
                         print('Error %s' % e)
                 con.commit()
             except Exception as ex:
+                print('writing error')
+                print(ex)
                 try:
                     fout.close()
                 except:
                     pass
-                print('writing error')
-                print(ex)
 
             time.sleep(scrapper.timeout + 10)
             tg += scrapper.timeout

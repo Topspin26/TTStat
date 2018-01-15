@@ -93,7 +93,7 @@ def main():
                 except:
                     tt = None
             if tt:
-                lineTable = driver.find_element_by_xpath('//div[@class="account__container"]/table[@class="table"]')
+                lineTable = driver.find_element_by_xpath('//div[@class="table__flex-container"]/table[@class="table"]')
                 print('lineTable - ok')
                 sout = lineTable.get_attribute('outerHTML')
                 print(len(sout))
@@ -187,7 +187,7 @@ def main():
                 if tt:
                     tt.click()
 
-                    lineTable = driver.find_element_by_xpath('//div[@class="account__container"]/table[@class="table"]')
+                    lineTable = driver.find_element_by_xpath('//div[@class="table__flex-container"]/table[@class="table"]')
                     print('lineTable - ok')
                     sout = lineTable.get_attribute('outerHTML')
                     print(len(sout))
