@@ -103,7 +103,7 @@ $(document).ready(function(){
             }
             aoData.push( { "name":"matchHash", "value": matchHash});
         },
-        "aoColumnDefs": [{"aTargets": [0,1,2,3,4,5,6], "orderable": false}],
+        "aoColumnDefs": [{"aTargets": [0,1,2,3,4,5,6,7,8,9], "orderable": false}],
         "order": [[ 0, "desc" ]]
     });
 
@@ -148,13 +148,9 @@ $(document).ready(function(){
     });
 
     $("#matches_table tbody").on('click', 'td', function(event){
-        if ($(this).index() == 6) {
-            matchHash = $('#matches_table').DataTable().row(this).data()[7];
-            //$('#match_bets_table').DataTable().ajax.reload();
-        }
-        if ($(this).index() == 4) {
-            var mHash = $('#matches_table').DataTable().row(this).data()[7];
-            window.open(document.location.href.split("?")[0] + "/" + mHash, '_blank');
+        if (event.target.nodeName == 'TD') {
+            var matchHash = $('#matches_table').DataTable().row(this).data()[7];
+            window.open(document.location.href.split("?")[0] + "/" + matchHash, '_blank');
         }
     });
 
@@ -253,21 +249,19 @@ $(document).ready(function(){
             */
         },
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-            if (aData[4][0] > aData[4][2])
-                $('td:eq(4)', nRow).addClass('winScore');//css('background-color', '#EFC');
-            if (aData[4][0] < aData[4][2])
-                $('td:eq(4)', nRow).addClass('loseScore');//css('background-color', '#FDC');
+            if (aData[4][0] >= '0' && aData[4][0] <= '9' && aData[4][2] >= '0' && aData[4][2] <= '9') {
+                if (aData[4][0] > aData[4][2])
+                    $('td:eq(4)', nRow).addClass('winScore');//css('background-color', '#EFC');
+                if (aData[4][0] < aData[4][2])
+                    $('td:eq(4)', nRow).addClass('loseScore');//css('background-color', '#FDC');
+            }
         },
         "aoColumnDefs": [{"aTargets": [7], "bVisible": false},{"aTargets": [0,1,2,3,4,5,6], "orderable": false}],
         "order": [[ 0, "desc" ]]
     });
 
     $("#player_matches_table tbody").on('click', 'td', function(event){
-        if ($(this).index() == 6) {
-            var matchHash = $('#player_matches_table').DataTable().row(this).data()[7];
-            $('#match_bets_table').DataTable().ajax.reload();
-        }
-        if ($(this).index() == 4) {
+        if (event.target.nodeName == 'TD') {
             var matchHash = $('#player_matches_table').DataTable().row(this).data()[7];
             window.open(document.location.href.split("/players")[0] + "/matches/" + matchHash, '_blank');
         }
@@ -445,8 +439,13 @@ $(document).ready(function(){
         "sPaginationType": "full_numbers",
         "bjQueryUI": true,
         "sAjaxSource": "/_retrieve_live_data",
-        "aoColumnDefs": [{"aTargets": [7], "bVisible": false}, {"aTargets": [0,1,2,3,4,5,6], "orderable": false}],
-        "order": [[ 0, "desc" ]]
+
+        "aoColumnDefs": [
+            {"aTargets": [0,1], "orderable": false, "width": "115px"},
+            {"aTargets": [9], "bVisible": false},
+            {"aTargets": [2,3,4,5,6,7,8], "orderable": false}
+        ],
+        "order": [[ 1, "desc" ]]
     });
 
     setInterval( function () {
@@ -454,9 +453,9 @@ $(document).ready(function(){
         }, 15000);
 
     $("#live_table tbody").on('click', 'td', function(event){
-        if ($(this).index() >= 5) {
-            var mHash = liveTable.row(this).data()[7];
-            window.open(document.location.href.split("?")[0] + "/" + mHash, '_blank');
+        if (event.target.nodeName == 'TD') {
+            var matchHash = liveTable.row(this).data()[9];
+            window.open(document.location.href.split("?")[0] + "/" + matchHash, '_blank');
         }
     });
 
@@ -476,7 +475,7 @@ $(document).ready(function(){
         "sPaginationType": "full_numbers",
         "bjQueryUI": true,
         "sAjaxSource": "/_retrieve_live_finished_data",
-        "aoColumnDefs": [{"aTargets": [7], "bVisible": false}, {"aTargets": [0,1,2,3,4,5,6], "orderable": false}],
+        "aoColumnDefs": [{"aTargets": [8], "bVisible": false}, {"aTargets": [0,1,2,3,4,5,6,7], "orderable": false}],
         "order": [[ 0, "desc" ]]
     });
 
@@ -485,9 +484,9 @@ $(document).ready(function(){
         }, 15000);
 
     $("#live_finished_table tbody").on('click', 'td', function(event){
-        if ($(this).index() >= 5) {
-            var mHash = liveFinishedTable.row(this).data()[7];
-            window.open(document.location.href.split("/live")[0] + "/matches/" + mHash, '_blank');
+        if (event.target.nodeName == 'TD') {
+            var matchHash = liveFinishedTable.row(this).data()[8];
+            window.open(document.location.href.split("/live")[0] + "/matches/" + matchHash, '_blank');
         }
     });
 

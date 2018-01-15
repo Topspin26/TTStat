@@ -5,7 +5,7 @@ class TTMatchModel:
         self.pWin = pWin
         self.setsCnt = setsCnt
         self.pSet = TTMatchModel.calcPSet(self.pWin, self.setsCnt)
-        self.pPointSet = TTMatchModel.calcPPoint(self.pSet)
+        self.pPoint = TTMatchModel.calcPPoint(self.pSet)
 
     @staticmethod
     def calcPSet(pWin, setsCnt):
@@ -94,4 +94,7 @@ class TTMatchModel:
 #        print(res)
         return res
 
-    #def predictTotal()
+    # @staticmethod
+    # def predictSetTotal(pPoint, points=[0, 0]):
+
+

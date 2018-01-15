@@ -1,5 +1,5 @@
 from flask import render_template, request, flash, redirect
-from ttstat import ttstat, ttModel, db
+from ttstat import ttstat, ttModel, db, ttPresenter
 import json
 
 
@@ -22,8 +22,8 @@ def matches():
     else:
         filters['playerName'] = None
     return render_template('matches.html',
-                           matches_columns=ttModel.matches_columns,
-                           bets_columns=ttModel.bets_columns,
+                           matches_columns=ttPresenter.matches_columns,
+                           bets_columns=ttPresenter.bets_columns,
                            filters=filters)
 
 
@@ -31,13 +31,22 @@ def matches():
 def match_info(matchId):
     filters = dict()
     match = ttModel.getMatch(matchId).toDict()
-    match['players'] = [ttModel.getPlayersHrefsByIdsNames(e1, e2) for e1, e2 in zip(match['ids'], match['names'])]
-    return render_template('match_info.html', bets_columns=ttModel.bets_columns, match=match, filters=filters)
+    match['players'] = [ttPresenter.getPlayersHrefsByIdsNames(e1, e2) for e1, e2 in zip(match['ids'], match['names'])]
+
+    matchBet = ttModel.getLiveBet(matchId)
+    dt = match['date'] + ' ' + (match['time'] if match['time'] else '')
+    if matchBet is not None:
+        dt = min(dt, matchBet.dt)
+    allFeatures = ttModel.getFeatures(matchBet, dt)
+    # match['hash'] = match['key']
+    match['features'] = allFeatures
+
+    return render_template('match_info.html', bets_columns=ttPresenter.bets_columns, match=match, filters=filters)
 
 
 @ttstat.route('/players')
 def players():
-    return render_template('players.html', columns=ttModel.players_columns)
+    return render_template('players.html', columns=ttPresenter.players_columns)
 
 
 @ttstat.route('/players/<playerId>')
@@ -53,9 +62,9 @@ def player_info(playerId):
     else:
         filters['playerName'] = None
     return render_template('player_info.html', playerId=playerId, name=ttModel.getPlayerNames(playerId),
-                           matches_columns=ttModel.matches_columns,
-                           rankings_columns=ttModel.player_rankings_columns,
-                           bets_columns=ttModel.bets_columns, filters=filters)
+                           matches_columns=ttPresenter.matches_columns,
+                           rankings_columns=ttPresenter.player_rankings_columns,
+                           bets_columns=ttPresenter.bets_columns, filters=filters)
 
 
 @ttstat.route('/competitions')
@@ -66,7 +75,7 @@ def competitions():
 #    if request.args.get('compId'):
 #    filters['compId'] = request.args.get('compId')
 #    filters['compName'] = ttModel.competitionsStorage.getCompName(request.args.get('compId'))
-    return render_template('competitions.html', competitions_columns=ttModel.competitions_columns, filters=filters)
+    return render_template('competitions.html', competitions_columns=ttPresenter.competitions_columns, filters=filters)
 
 
 @ttstat.route('/competitions/<compId>')
@@ -74,12 +83,12 @@ def competition_info(compId):
     filters = dict()
     filters['compId'] = compId
     filters['compName'] = ttModel.competitionsStorage.getCompName(filters['compId'])
-    return render_template('competitions.html', matches_columns=ttModel.matches_columns, bets_columns=ttModel.bets_columns, filters=filters)
+    return render_template('competitions.html', matches_columns=ttPresenter.matches_columns, bets_columns=ttPresenter.bets_columns, filters=filters)
 
 
 @ttstat.route('/rankings')
 def rankings():
-    return render_template('rankings.html', columns=ttModel.rankings_columns, sex='men')
+    return render_template('rankings.html', columns=ttPresenter.rankings_columns, sex='men')
 
 
 @ttstat.route('/sources')
@@ -94,26 +103,35 @@ def source_info(sourceId):
 
 @ttstat.route('/rankings/<sex>')
 def rankings1(sex):
-    return render_template('rankings.html', columns=ttModel.rankings_columns, sex=sex)
+    return render_template('rankings.html', columns=ttPresenter.rankings_columns, sex=sex)
 
 
 @ttstat.route('/prognosis')
 def prognosis():
-    return render_template('prognosis.html', columns=ttModel.players_columns)
+    return render_template('prognosis.html', columns=ttPresenter.players_columns)
 
 
 @ttstat.route('/live')
 def live():
-    return render_template('live.html', columns=['datettime', 'eventId', 'compname', 'Игрок1', 'Игрок2', 'Счет', 'info'])
+    return render_template('live.html',
+                           live_columns=['Время старта', 'Время обновления',
+                                         'Id события', 'Соревнование', 'Доп. информация',
+                                         'Игрок1', 'Игрок2', 'Счет', 'Ставки'],
+                           live_finished_columns=['Время старта', 'Время окончания',
+                                                  'Id события', 'Соревнование', 'Доп. информация',
+                                                  'Игрок1', 'Игрок2', 'Счет'])
 
 
 @ttstat.route('/live/<matchId>')
 def live_match_info(matchId):
     filters = dict()
-    match = ttModel.getLiveBet(matchId).toDict()
-    match['players'] = [ttModel.getPlayersHrefsByIdsNames(e1, e2) for e1, e2 in zip(match['ids'], match['names'])]
+    matchBet = ttModel.getLiveBet(matchId)
+    match = matchBet.toDict()
+    allFeatures = ttModel.getFeatures(matchBet, matchBet.dt)
+    match['players'] = [ttPresenter.getPlayersHrefsByIdsNames(e1, e2) for e1, e2 in zip(match['ids'], match['names'])]
     match['hash'] = match['key']
-    return render_template('live_match_info.html', bets_columns=ttModel.bets_columns, match=match, filters=filters)
+    match['features'] = allFeatures
+    return render_template('live_match_info.html', bets_columns=ttPresenter.bets_columns, match=match, filters=filters)
 
 
 @ttstat.route("/_retrieve_live_data")
@@ -121,7 +139,7 @@ def retrieve_live_data():
 #    cur = db.cursor()
 #    cur.execute("SELECT * FROM fonbet_live WHERE datetime = (SELECT MAX(datetime) FROM fonbet_live)")
 #    db.commit()
-    aaData_rows = ttModel.getLiveBetsTable()
+    aaData_rows = ttPresenter.getLiveBetsTable()
 #    for row in cur.fetchall():
 #        aaData_rows.append([str(e) for e in row])
 
@@ -141,7 +159,7 @@ def retrieve_live_data():
 
 @ttstat.route("/_retrieve_live_finished_data")
 def retrieve_live_finished_data():
-    aaData_rows = ttModel.getBetsTable()
+    aaData_rows = ttPresenter.getBetsTable()
     #print(aaData_rows)
     output = dict()
     output['iTotalRecords'] = str(len(aaData_rows))
@@ -244,12 +262,13 @@ def get_matches_data():
             flMatch = 0
             for i in range(2):
                 for playerId, playerName in zip(match.ids[i], match.names[i]):
-                    if playerId != '':
+                    if playerId not in {'', '-', '?'}:
                         for plId in playerId.split(','):
-                            if ttModel.players[plId].findString(text) is True:
-                                flMatch = 1
+                            if plId != player0IdFilter:
+                                if ttModel.players[plId].findString(text) is True:
+                                    flMatch = 1
                     else:
-                        if playerName.find(text) != -1:
+                        if playerName.lower().find(text.lower()) != -1:
                             flMatch = 1
     #        if (' - '.join(ttModel.getNames(match.ids[0]))).lower().find(text) != -1 or (' - '.join(ttModel.getNames(match.ids[1]))).lower().find(text) != -1:
             if request.values['playerInfo'] == '1' and player0IdFilter not in match.ids[0]:
@@ -270,7 +289,7 @@ def get_matches_data():
 #    sortInd = int(request.values['iSortCol_0'])
 #    sortAsc = request.values['sSortDir_0']
 #    print([sortInd, ttModel.matches_dtypes[sortInd]])
-    aaData_rows = ttModel.getMatchesTable(matches[leftInd:rightInd], filterFlag=True)
+    aaData_rows = ttPresenter.getMatchesTable(matches[leftInd:rightInd], filterFlag=True)
 
 #    if ttModel.matches_dtypes[sortInd] == 'string':
 #        aaData_rows = sorted(aaData_rows, key = lambda x: x[sortInd], reverse=(sortAsc!='asc'))
@@ -304,7 +323,7 @@ def get_match_bets_data():
 #    print([sortInd, ttModel.matches_dtypes[sortInd]])
     matchHash = request.values['matchHash']
     print(matchHash)
-    aaData_rows = ttModel.getMatchBetsTable(matchHash, sortInd, int(sortAsc == 'asc'))
+    aaData_rows = ttPresenter.getMatchBetsTable(matchHash)
 
     c = len(aaData_rows)
     output['iTotalRecords'] = str(c)
@@ -331,34 +350,34 @@ def get_player_rankings_data():
     c = 0
     output['iTotalRecords'] = 0
     aaData_rows = []
-    if playerIdFilter in ttModel.rankingStorage.rankings['ttfr']:
-        output['iTotalRecords'] += len(ttModel.rankingStorage.rankings['ttfr'][playerIdFilter])
-        for e in sorted(ttModel.rankingStorage.rankings['ttfr'][playerIdFilter].items(),
+    if playerIdFilter in ttModel.rankingsStorage.rankings['ttfr']:
+        output['iTotalRecords'] += len(ttModel.rankingsStorage.rankings['ttfr'][playerIdFilter])
+        for e in sorted(ttModel.rankingsStorage.rankings['ttfr'][playerIdFilter].items(),
                         key=lambda x: x[0], reverse=True):
             aaData_rows.append([e[0], 'TTFR', e[1][0], e[1][1]])
             c += 1
-    if playerIdFilter in ttModel.rankingStorage.rankings['ittf']:
-        output['iTotalRecords'] += len(ttModel.rankingStorage.rankings['ittf'][playerIdFilter])
-        for e in sorted(ttModel.rankingStorage.rankings['ittf'][playerIdFilter].items(),
+    if playerIdFilter in ttModel.rankingsStorage.rankings['ittf']:
+        output['iTotalRecords'] += len(ttModel.rankingsStorage.rankings['ittf'][playerIdFilter])
+        for e in sorted(ttModel.rankingsStorage.rankings['ittf'][playerIdFilter].items(),
                         key=lambda x: x[0], reverse=True):
             aaData_rows.append([e[0], 'ITTF', e[1][0], e[1][1]])
             c += 1
-    if playerIdFilter in ttModel.rankingStorage.rankings['my']:
-        output['iTotalRecords'] += len(ttModel.rankingStorage.rankings['my'][playerIdFilter])
-        for e in sorted(ttModel.rankingStorage.rankings['my'][playerIdFilter].items(),
+    if playerIdFilter in ttModel.rankingsStorage.rankings['ranking_my_730_4']:
+        output['iTotalRecords'] += len(ttModel.rankingsStorage.rankings['ranking_my_730_4'][playerIdFilter])
+        for e in sorted(ttModel.rankingsStorage.rankings['ranking_my_730_4'][playerIdFilter].items(),
                         key=lambda x: x[0], reverse=True):
             aaData_rows.append([e[0], 'MY', format(float(e[1][0]),'.3f'), e[1][1]])
             c += 1
-    if playerIdFilter in ttModel.rankingStorage.rankings['liga_pro']:
-        output['iTotalRecords'] += len(ttModel.rankingStorage.rankings['liga_pro'][playerIdFilter])
-        for e in sorted(ttModel.rankingStorage.rankings['liga_pro'][playerIdFilter].items(),
+    if playerIdFilter in ttModel.rankingsStorage.rankings['liga_pro']:
+        output['iTotalRecords'] += len(ttModel.rankingsStorage.rankings['liga_pro'][playerIdFilter])
+        for e in sorted(ttModel.rankingsStorage.rankings['liga_pro'][playerIdFilter].items(),
                         key=lambda x: x[0], reverse=True):
             aaData_rows.append([e[0], 'LIGA-PRO', e[1][0], 0])
             c += 1
     output['iTotalRecords'] = str(output['iTotalRecords'])
     sortInd = int(request.values['iSortCol_0'])
     sortAsc = request.values['sSortDir_0']
-    if ttModel.player_rankings_dtypes[sortInd] == 'string':
+    if ttPresenter.player_rankings_dtypes[sortInd] == 'string':
         aaData_rows = sorted(aaData_rows, key=lambda x: x[sortInd], reverse=(sortAsc != 'asc'))
     else:
         aaData_rows = sorted(aaData_rows, key=lambda x: float(x[sortInd]), reverse=(sortAsc != 'asc'))
@@ -393,20 +412,20 @@ def get_rankings_data():
         if player.mw == mw:
             if player.findString(text) is True:
                 r = ttModel.getRankings(player.id, dt, 100)
-                aaData_rows.append(['0', player.id, player.name, r['rus'], r['ittf'], format(float(r['my']),'.3f'), r['liga_pro']])
+                aaData_rows.append(['0', player.id, player.name, r['ttfr'], r['ittf'], format(float(r['ranking_my_730_4']),'.3f'), r['liga_pro']])
                 c += 1
             total += 1
     output['iTotalRecords'] = str(total)
 
     sortInd = int(request.values['iSortCol_0'])
     sortAsc = request.values['sSortDir_0']
-    if ttModel.rankings_dtypes[sortInd] == 'string':
+    if ttPresenter.rankings_dtypes[sortInd] == 'string':
         aaData_rows = sorted(aaData_rows, key=lambda x: x[sortInd], reverse=(sortAsc != 'asc'))
     else:
         aaData_rows = sorted(aaData_rows, key=lambda x: float(x[sortInd]), reverse=(sortAsc != 'asc'))
 
     for i,row in enumerate(aaData_rows):
-        row[2] = ttModel.getHref(row[1], row[2])
+        row[2] = ttPresenter.getHref(row[1], row[2])
         row[0] = (i + 1)
 
     output['iTotalDisplayRecords'] = str(c)
@@ -435,10 +454,10 @@ def get_players_data():
         if player.findString(text) is True:
             players.append(player)
         c += 1
-    aaData_rows = ttModel.getPlayersTable(players)
+    aaData_rows = ttPresenter.getPlayersTable(players)
     sortInd = int(request.values['iSortCol_0'])
     sortAsc = request.values['sSortDir_0']
-    if ttModel.players_dtypes[sortInd] == 'string':
+    if ttPresenter.players_dtypes[sortInd] == 'string':
         aaData_rows = sorted(aaData_rows, key=lambda x: x[sortInd], reverse=(sortAsc != 'asc'))
     else:
         aaData_rows = sorted(aaData_rows, key=lambda x: float(x[sortInd]), reverse=(sortAsc != 'asc'))
@@ -455,7 +474,7 @@ def get_players_data():
 
 @ttstat.route("/_retrieve_competitions_data")
 def get_competitions_data():
-    columns = ttModel.competitions_columns
+    columns = ttPresenter.competitions_columns
 
     sourceIdFilter = None
     if 'sourceId' in request.values:
@@ -480,10 +499,10 @@ def get_competitions_data():
         if comp.name.lower().find(text) != -1:
             competitions.append(comp)
         c += 1
-    aaData_rows = ttModel.getCompetitionsTable(competitions)
+    aaData_rows = ttPresenter.getCompetitionsTable(competitions)
     sortInd = int(request.values['iSortCol_0'])
     sortAsc = request.values['sSortDir_0']
-    if ttModel.competitions_dtypes[sortInd] == 'string':
+    if ttPresenter.competitions_dtypes[sortInd] == 'string':
         aaData_rows = sorted(aaData_rows, key = lambda x: x[sortInd], reverse=(sortAsc!='asc'))
     else:
         aaData_rows = sorted(aaData_rows, key=lambda x: float(x[sortInd]), reverse=(sortAsc != 'asc'))
@@ -503,91 +522,3 @@ def update(a, b):
     cur.execute("SELECT * FROM fonbet_live WHERE datetime > '{}' ORDER BY datetime ASC".format(ttModel.lastUpdateTime))
     db.commit()
     ttModel.update(cur.fetchall())
-
-'''
-@myfirst.route('/player/<id>')
-def player(id):
-    player = Player.query.get(id)
-    matches = player.matches1
-    for i in range(len(matches)):
-        matches[i].player2_name = Player.query.get(matches[i].player2_id).name
-
-    return render_template('player.html',
-                           title=None,
-                           player=player,
-                           matches=matches)
-
-
-@myfirst.route('/login', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        flash('Login requested for OpenID="%s", remember_me=%s' %
-              (form.openid.data, str(form.remember_me.data)))
-        return redirect('/index')
-    return render_template('login.html',
-                           title='Sign In',
-                           form=form)
-'''
-
-'''
-from flask import Flask
-app = Flask(__name__)
-
-@app.route('/')
-def index():
-    return 'Index1'
-
-@app.route('/hello')
-def hello_world():
-    return 'Hello, World!'
-
-@app.route('/user/<username>')
-def show_user_profile(username):
-    # show the user profile for that user
-    return 'User %s' % username
-
-
-
-from flask import render_template
-
-@app.route('/hello/')
-@app.route('/hello/<name>')
-def hello(name=None):
-    return render_template('myfirst.html', name=name)
-
-from flask import request
-
-def valid_login(user, login):
-    return (login == user)
-
-@app.route('/login', methods=['POST', 'GET'])
-def login():
-    error = None
-    username = request.args.get('username', '')
-    password = request.args.get('password', '')
-    if valid_login(username, password):
-        error = None
-        #return log_the_user_in(request.form['username'])
-    else:
-        error = 'Invalid username/password'
-#    if request.method == 'GET':
-#        username = request.args.get('username', '')
-#        password = request.args.get('password', '')
-#        if ~valid_login(username, password):
-#            error = None
-#            #return log_the_user_in(request.form['username'])
-#        else:
-#            error = 'Invalid username/password'
-    # the code below is executed if the request method
-    # was GET or the credentials were invalid
-    return render_template('login.html', error=error)
-
-
-@app.errorhandler(404)
-def not_found(error):
-    return render_template('error.html'), 404
-
-if __name__ == '__main__':
-    app.run(debug=True)
-'''

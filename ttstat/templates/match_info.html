@@ -12,6 +12,16 @@
         <!--
         <h3>Личные встречи</h3>
         -->
+
+        <h3>Факторы</h3>
+        {% for feature in match['features'] %}
+            {{feature}},
+            {{match['features'][feature]['1']}},
+            {{match['features'][feature]['2']}},
+            {{match['features'][feature]['v']}},
+            <br>
+        {% endfor %}
+
         <h3>Ставки</h3>
         <table id="match_bets_table" class="table table-striped table-bordered">
             <thead>

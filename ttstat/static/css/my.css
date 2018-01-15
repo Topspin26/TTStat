@@ -61,6 +61,11 @@ h2{
     //float: right;
 }
 
+.glyphicon:hover {
+    color: #d9534f;
+    font-size: 15px;
+}
+
 #prognosis_players {
     clear: both;
     height: 150px;

@@ -1,29 +1,11 @@
-# import pandas as pd
-# import xgboost as xgb
-# import pickle
-
 from Storages import *
 from BetsStorage import *
 from Entity import *
 from common import *
-from sklearn import linear_model
+
 
 class TTModel:
     def __init__(self, dirname):
-        self.matches_columns = ['Дата', 'Турнир', 'Игрок1', 'Игрок2', 'Счет', 'Источники', 'БК', 'Хеш']
-        self.matches_dtypes = ['string'] * 8
-
-        self.competitions_columns = ['Дата', 'Название', 'Игроки', 'Матчи', 'Источники']
-        self.competitions_dtypes = ['string'] * 2 + ['number'] * 2 + ['string']
-
-        self.bets_columns = ['Дата', 'Турнир', 'id1', 'id2', 'Счет', 'К1', 'К2']
-        self.bets_dtypes = ['string'] * 7
-
-        self.players_columns = ['id', 'Игрок', 'LP', 'Матчи']
-        self.players_dtypes = ['string'] * 3 + ['number']
-
-        self.player_rankings_columns = ['Дата', 'Источник', 'Рейтинг', 'Ранг']
-        self.player_rankings_dtypes = ['string'] * 2 + ['number'] * 2
 
         self.playersDict = GlobalPlayersDict(mode='filtered', dirname=dirname + '/')
 
@@ -31,13 +13,27 @@ class TTModel:
         self.rankingSources.append(['ttfr', dirname + '/prepared_data/propingpong/ranking_rus.txt'])
         self.rankingSources.append(['ittf', dirname + '/prepared_data/propingpong/ranking_ittf.txt'])
         #self.rankingSources.append(['my', dirname + '/prepared_data/rankings/all_rankings_mw_fresh_sets_1.txt'])
-        self.rankingSources.append(['my', ['prepared_data/rankings/rankings_m_sets_0.txt', 'prepared_data/rankings/rankings_w_sets_0.txt']])
+
+        for ws in [730]:
+            for matchesCntBorder in [4]:
+                # for ws in [365, 730]:
+                #    for matchesCntBorder in [1, 4]:
+                self.rankingSources.append(['ranking_my_' + str(ws) + '_' + str(matchesCntBorder),
+                                       ['prepared_data/rankings/rankings_m_sets_sources=0_ws=' + str(
+                                           ws) + '_matchesCntBorder=' + str(matchesCntBorder) + '.txt',
+                                        'prepared_data/rankings/rankings_w_sets_sources=0_ws=' + str(
+                                            ws) + '_matchesCntBorder=' + str(matchesCntBorder) + '.txt']])
+
         self.rankingSources.append(['liga_pro', dirname + '/prepared_data/liga_pro/ranking_liga_pro.txt'])
 
-        self.rankingStorage = RankingsStorage(self.rankingSources)
+        self.rankingsStorage = RankingsStorage(self.rankingSources)
 
-        self.rankings_columns = ['#', 'id', 'Игрок'] + [e[0] for e in self.rankingSources]
-        self.rankings_dtypes = ['number'] + ['string'] * 2 + ['number'] * len(self.rankingSources)
+        for ws in [730]:
+            for matchesCntBorder in [4]:
+                rName = 'my_' + str(ws) + '_' + str(matchesCntBorder)
+                self.rankingsStorage.readPlayersDayRankings('ranking_' + rName + '_day', 'test/dayRankings_m_' + rName + '.txt')
+                self.rankingsStorage.readPlayersDayRankings('ranking_' + rName + '_day', 'test/dayRankings_w_' + rName + '.txt')
+
 
         self.players = dict()
         #self.playersDict = dict()
@@ -60,11 +56,7 @@ class TTModel:
         sources.append(['rttf', dirname + '/prepared_data/rttf/all_results.txt'])
 
         self.matchesStorage = MatchesStorage(sources)
-        self.matchesStorage.matches = list(sorted(self.matchesStorage.matches,
-                                                  key=lambda x: x.date + ', ' + (x.time if x.time else '-'), reverse=1))
-        self.matches = self.matchesStorage.matches
-        self.matchesStorage.buildHash2MatchInd()
-        self.hash2matchInd = self.matchesStorage.hash2matchInd
+        self.sortMatches()
 
         self.competitionsStorage = CompetitionsStorage()
         for match in self.matches:
@@ -75,7 +67,8 @@ class TTModel:
         for match in self.matches:
             for i in range(2):
                 for e in match.ids[i]:
-                    self.players[e].matches.append(match)
+                    if e not in {'-', '?'}:
+                        self.players[e].matches.append(match)
 
         self.betsStorage = BetsStorage()
         self.betsStorage.loadFromFile(dirname + '/prepared_data/bkfon/live/tail.txt')
@@ -89,33 +82,44 @@ class TTModel:
 
         self.n = len(self.matches)
         '''
-        with open(r'D:\Programming\SportPrognoseSystem\TTStat\test\dataset.txt', 'w', encoding = 'utf-8') as fout:
-            fout.write('\t'.join(['date', 'time', 'compName', 'players1', 'players2', 'setsScore', 'pointsScore',
-                                  'rus1', 'ittf1', 'my1', 'rus2', 'ittf2', 'my2', 'y']) + '\n')
-            for match in self.matches:
-                if match.date >= '2015':
-                    if len(match.ids[0]) == 1 and not (match.wins is None):
-                        r1 = self.getFeatures(match.ids[0][0], match.date)
-                        r2 = self.getFeatures(match.ids[1][0], match.date)
-                        r1 = [str(e) for e in [r1['rus'], r1['ittf'], r1['my']]]
-                        r2 = [str(e) for e in [r2['rus'], r2['ittf'], r2['my']]]
-                        fout.write('\t'.join(match.toArr() + r1 + r2 + [str(match.wins[0])]) + '\n')
-
         with open(r'D:\Programming\SportPrognoseSystem\TTStat\test\model_3.pkl', 'rb') as fin:
             self.model = pickle.load(fin)
         '''
 
-    def addMatch(self, match):
-        self.matchesStorage.addMatch(match)
-        for i in range(2):
-            for e in match.ids[i]:
-                if e in self.players:
-                    self.players[e].matches.append(match)
+        self.predictionMachine = None
+
+    def setPredictionMachine(self, predictionMachine):
+        self.predictionMachine = predictionMachine
+        self.predictionMachine.setRankingsStorage(self.rankingsStorage)
+        self.predictionMachine.setMatchesStorage(self.matchesStorage)
+
+    def sortMatches(self):
+        self.matchesStorage.matches = list(sorted(self.matchesStorage.matches,
+                                                  key=lambda x: x.date + ', ' + (x.time if x.time else '-'), reverse=1))
+        self.matches = self.matchesStorage.matches
+        self.matchesStorage.buildHash2MatchInd()
+        self.hash2matchInd = self.matchesStorage.hash2matchInd
+
+    def addMatch(self, source, match):
+        if match.compName.find('TT-CUP') != -1:
+            return
+        # print('models.addMatch', match.hash)
+        isNew = self.matchesStorage.addMatch(source, match)
+        if isNew is True:
+            for i in range(2):
+                for e in match.ids[i]:
+                    if e in self.players:
+                        self.players[e].matches.append(match)
+                        self.players[e].matches = list(sorted(self.players[e].matches,
+                                                              key=lambda x: x.date + ', ' + (x.time if x.time else '-'), reverse=1))
+
+        self.rankingsStorage.addMatch(source, match)
 
     def update(self, rows):
         lastTime = None
         block = []
         rowNames = dict(zip(['id', 'datetime', 'eventId', 'compName', 'info'], range(5)))
+        isFinished = False
         for row in rows:
             row = [str(e) for e in row]
             # print(row)
@@ -125,7 +129,8 @@ class TTModel:
                 for finishedMatch in finished:
                     print('FINISHED')
                     print(finishedMatch.toStr())
-                    self.addMatch(finishedMatch)
+                    self.addMatch('bkfon_live', finishedMatch)
+                    isFinished = True
                 block = []
             tokens = row[rowNames['info']].split('\t')
             dt = row[rowNames['datetime']]
@@ -134,9 +139,27 @@ class TTModel:
             if len(eventsInfo) > 1:
                 eventsInfo = [eventsInfo]
             names = [tokens[0].split(';'), tokens[1].split(';')]
-            ids = self.getMatchPlayersIds(names)
+            extraInfo = dict()
+            score = eventsInfo[0][1]['match']['score']
+            if names[0][0].startswith('Game'):
+                try:
+                    names = [e.strip().split('\\') for e in score.split(')')[1].split('-')]
+                    assert len(names) == 2
+                    extraInfo['teams'] = [tokens[0].replace('Game', '').strip()[1:].strip().split(';'), tokens[1].strip().split(';')]
+                    extraInfo['game'] = tokens[0].replace('Game', '').strip()[0]
+                except:
+                    names = [tokens[0].split(';'), tokens[1].split(';')]
+                    print('ERROR_SCORE', eventsInfo)
+            else:
+                try:
+                    extraInfo['round'] = score.split(')')[1].strip()
+                    if extraInfo['round'] == '':
+                        extraInfo.pop('round')
+                except:
+                    pass
+            ids = self.getMatchPlayersIds(names, compName=row[rowNames['compName']], date=dt[:10])
             block.append(MatchBet(row[rowNames['eventId']], dt, row[rowNames['compName']],
-                                  ids, eventsInfo, names=names))
+                                  ids, eventsInfo, names=names, extraInfo=extraInfo))
             self.lastUpdateTime = max(self.lastUpdateTime, curTime)
             lastTime = curTime
         if lastTime is not None:
@@ -144,35 +167,13 @@ class TTModel:
             for finishedMatch in finished:
                 print('FINISHED')
                 print(finishedMatch.toStr())
-                self.addMatch(finishedMatch)
+                self.addMatch('bkfon_live', finishedMatch)
+                isFinished = True
+
+        if isFinished is True:
+            self.sortMatches()
 
         print(self.lastUpdateTime)
-
-    def getHref(self, playerId, playerName, filterFlag=False):
-        if (playerId is not None) and playerId != '':
-            hr = '<a href=/players/' + playerId + ' target="blank">' + str(playerName) + '</a>'
-            if filterFlag:
-                return '<a class="matchFilter" playerId="' + playerId + \
-                       '"><span class="glyphicon glyphicon-search"></span></a>' + hr
-            else:
-                return hr
-        return str(playerName)
-
-    def getCompHref0(self, id, name):
-        return '<a href=/competitions/' + str(id) + ' target="_blank">' + name + '</a>'
-
-    def getCompHref(self, compId, name):
-        if compId is not None:
-            return '<a class="matchFilter" compId="' + str(compId) + '">' + \
-                   '<span class="glyphicon glyphicon-search"></span></a>' + \
-                   '<a href=/competitions/' + str(compId) + ' target="_blank">' + name + '</a>'
-        return name
-
-    def getSourceHref(self, name):
-#        return '<a class="matchFilter" sourceId="' + str(name) + '">' + '<span class="glyphicon glyphicon-search"></span></a>' + \
-#               '<a href=/sources/' + str(name) + ' target="blank">' + name + '</a>'
-        return '<a class="matchFilter" sourceId="' + str(name) + '">' + \
-               '<span class="glyphicon glyphicon-search"></span></a>' + name
 
     def getPlayerNames(self, playerId):
         return self.playersDict.getNames(playerId)
@@ -183,173 +184,100 @@ class TTModel:
     def getMatchPlayersNames(self, ids):
         return [self.playersDict.getName(id) for id in ids]
 
-    def getMatchPlayersIds(self, players):
+    def getMatchPlayersIds(self, players, compName=None, date=None):
         # for i in range(2):
         #    for playerName in players[i]:
         #        playerIds = self.playersDict.getId(playerName)
-        return [[','.join(self.playersDict.getId(playerName)) for playerName in players[0]],
-                [','.join(self.playersDict.getId(playerName)) for playerName in players[1]]]
+
+        ids = [[], []]
+        for i in range(2):
+            for player in players[i]:
+                player = ' '.join(player.split()).strip()
+                playerId = self.playersDict.getId(player)
+                if len(playerId) == 1:
+                    pass
+                elif len(playerId) > 1:
+                    if compName is not None and date is not None:
+                        idGood = []
+                        source = 'bkfon'
+                        if compName.find('Мастер-Тур') != -1:
+                            source = 'master_tour'
+                        elif compName.find('Лига Про') != -1:
+                            source = 'liga_pro'
+
+                        for e in playerId:
+                            if self.matchesStorage.isActive(e, source, date):
+                                idGood.append(e)
+                        if len(idGood) == 1:
+                            playerId = idGood
+                ids[i].append(','.join(playerId))
+
+        return ids
 
     def getMatch(self, matchId):
         if matchId in self.hash2matchInd:
             return self.matches[self.hash2matchInd[matchId]]
+        elif matchId in self.betsStorage.bets:
+            return self.betsStorage.bets[matchId].getMatch()
         return None
 
     def getLiveBet(self, matchId):
-        if matchId in self.betsStorage.liveBets:
-            return self.betsStorage.liveBets[matchId]
+        return self.betsStorage.getBet(matchId)
         return None
 
-    def getPlayersHrefsByIds(self, ids, filterFlag=False):
-        return ' - '.join([self.getHref(e, self.playersDict.getName(e, fl=1), filterFlag=filterFlag) for e in ids])
+    def getFeatures(self, matchBet, dt):
+        mb = dict()
+        if matchBet is None:
+            return dict()
+        if len(matchBet.eventsInfo) != 0:
+            mb = matchBet.eventsInfo[0][1].get('match', dict())
+        allFeatures = \
+            self.predictionMachine.getFeatures(
+                matchBet.getMatch(),
+                dt,
+                score=None,
+                betInfo=mb
+            )
+        return allFeatures
 
-    def getPlayersHrefsByIdsNames(self, ids, names, filterFlag=False):
-        arr = []
-        for e1, e2 in zip(ids, names):
-            name = self.playersDict.getName(e1, fl=1)
-            playerId = e1
-            if name is None:
-                name = e2
-                playerId = None
-            arr.append(self.getHref(playerId, name, filterFlag=filterFlag))
-        return ' - '.join(arr)
+    def predict(self, matchBet, dt, score=None, betInfo=None):
+        pWin = \
+            self.predictionMachine.predict(
+                matchBet.getMatch(),
+                dt,
+                score=score,
+                betInfo=betInfo
+            )
+        return pWin
 
-    def getPlayersIdsHrefs(self, players, ids, filterFlag=False):
-        arr = []
-        for playerName, playerId in zip(players, ids):
-            if playerId == '' or playerId.find(',') != -1:
-                arr.append(playerName)
-            else:
-                arr.append(self.getHref(playerId, playerName))
-        return ' - '.join(arr)
-
-    def getLiveBetsTable(self):
-        data = []
-        for key, matchBet in sorted(self.betsStorage.liveBets.items(), key=lambda x: x[1].dt, reverse=1):
-            names1 = self.getPlayersIdsHrefs(matchBet.names[0], matchBet.ids[0])
-            names2 = self.getPlayersIdsHrefs(matchBet.names[1], matchBet.ids[1])
-            data.append([matchBet.dt, matchBet.eventId, matchBet.compName,
-                        names1, names2, matchBet.getLastScore(), str(matchBet.eventsInfo[-1]), matchBet.getKey()])
-        return data
-
-    def getBetsTable(self):
-        data = []
-        for mKey, matchBet in sorted(self.betsStorage.bets.items(), key=lambda x: x[1].dt, reverse=1):
-            if mKey[0] != 'l':
-                names1 = self.getPlayersIdsHrefs(matchBet.names[0], matchBet.ids[0])
-                names2 = self.getPlayersIdsHrefs(matchBet.names[1], matchBet.ids[1])
-                data.append([matchBet.dt, matchBet.eventId, matchBet.compName,
-                            names1, names2, matchBet.getLastScore(), str(matchBet.eventsInfo[-1]), mKey])
-        return data
-
-    def getMatchesTable(self, matches, filterFlag=False):
-        data = []
-        for i, match in enumerate(matches):
-            #id1 = ' - '.join(match.ids[0])
-            names1 = self.getPlayersHrefsByIdsNames(match.ids[0], match.names[0], filterFlag=filterFlag)
-            #' - '.join(self.getMatchPlayersNames(match.ids[0]))
-            #id2 = ' - '.join(match.ids[1])
-            names2 = self.getPlayersHrefsByIdsNames(match.ids[1], match.names[1], filterFlag=filterFlag)
-            #names2 = ' - '.join(self.getMatchPlayersNames(match.ids[1]))
-            flBet = '+' if match.hash in self.betsStorage.bets else ''
-            data.append([match.date + ', ' + (match.time if match.time else '-'), self.getCompHref(match.compId, match.compName),
-                         names1, names2, match.setsScore + ', (' + match.pointsScore + ')',
-                         '; '.join([self.getSourceHref(e) for e in match.sources]), flBet, match.hash])
-        #data = sorted(data, key = lambda x: x[sortInd], reverse = (sortAsc == 0))
-#        for i,row in enumerate(data):
-#            names1 = ' - '.join([self.getHref(e, self.playersDict.getName(e), filterFlag = filterFlag) for e in row[2].split(' - ')])
-#            names2 = ' - '.join([self.getHref(e, self.playersDict.getName(e), filterFlag = filterFlag) for e in row[4].split(' - ')])
-#            data[i][3] = names1
-#            data[i][5] = names2
-#            data[i] = data[i][:2] + [data[i][3], data[i][5]] + data[i][6:]
-        return data
-
-    def getMatchBetsTable(self, matchHash, sortInd=0, sortAsc=1):
-        data = []
-        if matchHash[0] != 'l':
-            if not (matchHash in self.betsStorage.bets):
-                return data
-            matchBet = self.betsStorage.bets[matchHash]
-            id1 = ' - '.join(matchBet.names[0])
-            id2 = ' - '.join(matchBet.names[1])
-            for i in range(len(matchBet.eventsInfo)):
-                print(matchBet.eventsInfo[i])
-                mb = matchBet.eventsInfo[i][1].get('match', dict())
-                data.append([matchBet.eventsInfo[i][0][:10] + ', ' + matchBet.eventsInfo[i][0][11:],
-                             matchBet.compName, id1, id2, mb.get('score', ''), mb.get('win1', ''), mb.get('win2', '')])
-        else:
-            if not (matchHash in self.betsStorage.liveBets):
-                return data
-            matchBet = self.betsStorage.liveBets[matchHash]
-            id1 = ' - '.join(matchBet.names[0])
-            id2 = ' - '.join(matchBet.names[1])
-            for i in range(len(matchBet.eventsInfo) - 1, -1, -1):
-                print(matchBet.eventsInfo[i])
-                mb = matchBet.eventsInfo[i][1].get('match', dict())
-                data.append([matchBet.eventsInfo[i][0][:10] + ', ' + matchBet.eventsInfo[i][0][11:],
-                             matchBet.compName, id1, id2, mb.get('score', ''), mb.get('win1', ''), mb.get('win2', '')])
-
-        return data
-
-    def getPlayersTable(self, players):
-        data = []
-        for player in players:
-            href = player.hrefs.get('liga_pro', '')
-            if href != '':
-                href = '<a href=' + href + ' target="_blank">' + href + '</a>'
-            data.append([player.id,
-                         self.getHref(player.id, player.name),
-                         href,
-                         len(player.matches)])
-        return data
-
-    def getCompetitionsTable(self, competitions):
-        data = []
-        for comp in competitions:
-            data.append([comp.finishDate, self.getCompHref0(comp.id, comp.name), str(len(comp.playersSet)), str(len(comp.matches)),
-                         '; '.join([self.getSourceHref(e) for e in comp.sources])])
-        return data
-
-    def getFeatures(self, playerId, curDate=datetime.datetime.now().strftime("%Y-%m-%d")):
-        myR = self.rankingStorage.getRankings(playerId, 'my', curDate, ws=5000)
-        rusR = self.rankingStorage.getRankings(playerId, 'ttfr', curDate, ws=5000)
-        ittfR = self.rankingStorage.getRankings(playerId, 'ittf', curDate, ws=1000)
-        ligaproR = self.rankingStorage.getRankings(playerId, 'liga_pro', curDate, ws=5000)
-        return {'rus': rusR, 'ittf': ittfR, 'my': myR, 'liga_pro': ligaproR}
-
-    def getRankings(self, playerId, curDate, ws = 1):
-        #[leftDAte = curDate - ws < date <= curDate]
-        myR = self.rankingStorage.getRankings(playerId, 'my', curDate, ws)
-        rusR = self.rankingStorage.getRankings(playerId, 'ttfr', curDate, ws)
-        ittfR = self.rankingStorage.getRankings(playerId, 'ittf', curDate, ws)
-        ligaproR = self.rankingStorage.getRankings(playerId, 'liga_pro', curDate, ws)
-        return {'rus': rusR, 'ittf': ittfR, 'my': myR, 'liga_pro': ligaproR}
+    def getRankings(self, playerId, curDate, ws=1):
+        return self.rankingsStorage.getRankings(playerId, curDate, ws=ws)
 
     def makePrediction(self, playerId1, playerId2):
-        r1 = self.getFeatures(playerId1, datetime.datetime.now().strftime("%Y-%m-%d"))
-        r2 = self.getFeatures(playerId2, datetime.datetime.now().strftime("%Y-%m-%d"))
-        r1 = [float(e) for e in [r1['liga_pro'], r1['my']]]
-        r2 = [float(e) for e in [r2['liga_pro'], r2['my']]]
-        ff = [[r1[0] - r2[0], r1[1] - r2[1]]]
-        if r1[0] == -1 or r2[0] == -1:
-            ff[0][0] = 0
-        if r1[1] == -1 or r2[1] == -1:
-            ff[0][1] = 0
-        print(ff)
-        self.model = linear_model.LogisticRegression(fit_intercept=False)
-        self.model.coef_ = np.array([[ 0.00957611, 0.10476427]])
-        self.model.intercept_ = 0
-        '''
-        df1 = pd.DataFrame(index=[0], data=ff, columns=['drus', 'dittf', 'dmy'])
-        df2 = -df1
-        '''
-        print(self.model.predict_proba(ff))
-        p1 = self.model.predict_proba(ff)[0, 1]
-        p2 = p1
-        #p2 = self.model.predict_proba(-ff)[0, 0]
-        print([p1, p2])
-        print(r1)
-        print(r2)
-        if ff[0] != 0 or ff[1] != 0:
-            return format((p1 + p2) / 2 * 100, '.1f') + '%, <br>' + 'ставка на игрока 1 от кф ' + format(1 / p1, '.2f') + '; <br>' + 'ставка на игрока 2 от кф ' + format(1 / (1 - p1), '.2f') + ';'
+        # r1 = self.getFeatures(playerId1, datetime.datetime.now().strftime("%Y-%m-%d"))
+        # r2 = self.getFeatures(playerId2, datetime.datetime.now().strftime("%Y-%m-%d"))
+        # r1 = [float(e) for e in [r1['liga_pro'], r1['my']]]
+        # r2 = [float(e) for e in [r2['liga_pro'], r2['my']]]
+        # ff = [[r1[0] - r2[0], r1[1] - r2[1]]]
+        # if r1[0] == -1 or r2[0] == -1:
+        #     ff[0][0] = 0
+        # if r1[1] == -1 or r2[1] == -1:
+        #     ff[0][1] = 0
+        # print(ff)
+        # self.model = linear_model.LogisticRegression(fit_intercept=False)
+        # self.model.coef_ = np.array([[ 0.00957611, 0.10476427]])
+        # self.model.intercept_ = 0
+        # '''
+        # df1 = pd.DataFrame(index=[0], data=ff, columns=['drus', 'dittf', 'dmy'])
+        # df2 = -df1
+        # '''
+        # print(self.model.predict_proba(ff))
+        # p1 = self.model.predict_proba(ff)[0, 1]
+        # p2 = p1
+        # #p2 = self.model.predict_proba(-ff)[0, 0]
+        # print([p1, p2])
+        # print(r1)
+        # print(r2)
+        # if ff[0] != 0 or ff[1] != 0:
+        #     return format((p1 + p2) / 2 * 100, '.1f') + '%, <br>' + 'ставка на игрока 1 от кф ' + format(1 / p1, '.2f') + '; <br>' + 'ставка на игрока 2 от кф ' + format(1 / (1 - p1), '.2f') + ';'
         return '?'

@@ -2,10 +2,65 @@ import hashlib
 import json
 import re
 import numpy as np
+import copy
 from common import *
 
+
+class SetStat:
+    def __init__(self):
+        self.isFinal = False
+        self.events = dict()
+
+    def add(self, t, d):
+        self.events[t] = copy.deepcopy(d)
+
+
+class MatchStat:
+    def __init__(self, eventsInfo):
+        self.sets = dict()
+        self.events = dict()
+        self.score = dict()
+        self.setsCnt = 3
+
+        for j in range(len(eventsInfo)):
+            if 'match' in eventsInfo[j][1]:
+                score = eventsInfo[j][1]['match']['score']
+                self.score[j] = score
+                if score.find('5сетов') != -1:
+                    self.setsCnt = 3
+                elif score.find('7сетов') != -1:
+                    self.setsCnt = 4
+                self.events[j] = copy.deepcopy(eventsInfo[j][1]['match'])
+
+            sets, _, _ = MatchBet.parseScore(score)
+            for e, d in eventsInfo[j][1].items():
+                if e != 'match':
+                    indSet = int(e[0])
+                    if indSet not in self.sets:
+                        self.sets[indSet] = SetStat()
+                    self.sets[indSet].add(j, d)
+                    if np.sum(sets) == 2 * (self.setCnt - 1):
+                        #print(j, score, e, d, sets)
+                        self.sets[indSet].isFinal = True
+
+        for set in self.sets:
+            if self.sets[set].isFinal:
+                #print(set)
+                for t, d in sorted(self.sets[set].events.items(), key=lambda x: x[0]):
+                    sets, _, _ = MatchBet.parseScore(self.score[t])
+                    if np.sum(sets) == set - 1:
+                        for e in ['win1', 'win2']:
+                            if e in d:
+                                if tuple(self.events[t][e]) == (0, -1):
+#                                    print(set, e, d[e])
+                                    self.events[t][e] = d[e]
+                                else:
+                                    print(set, t, d, self.events[t][e])
+                                    #raise
+
+
 class MatchBet:
-    def __init__(self, eventId, dt, compName, ids, eventsInfo, names=None, segment="segment"):
+    def __init__(self, eventId, dt, compName, ids, eventsInfo, names=None, segment="segment", extraInfo=dict()):
         self.eventId = eventId
         self.dt = dt
         self.compName = compName
@@ -13,6 +68,27 @@ class MatchBet:
         self.eventsInfo = eventsInfo
         self.names = names
         self.segment = segment
+        self.match = None
+        self.extraInfo = extraInfo
+
+    def buildMatch(self):
+        score = self.getLastScore()
+        setsScore = pointsScore = None
+        if score is not None:
+            setsScore, pointsScore, setsCnt = MatchBet.parseScore(score, isParsed=False)
+        self.match = Match(self.dt[:10], self.ids,
+                           names=self.names,
+                           setsScore=setsScore,
+                           pointsScore=pointsScore,
+                           time=self.dt[11:],
+                           compName=self.compName,
+                           source='bkfon_live')
+        return self.match
+
+    def getMatch(self):
+        if self.match is None:
+            self.buildMatch()
+        return self.match
 
     def __str__(self):
         return '\t'.join([self.eventId, self.dt, self.compName, ';'.join(self.names[0]), ';'.join(self.names[1]),
@@ -27,8 +103,8 @@ class MatchBet:
     def checkOnMerge(self, matchBet):
         if self.getDate() == matchBet.getDate() and \
            ' '.join([';'.join(self.names[i]) for i in range(2)]) == ' '.join([';'.join(matchBet.names[i]) for i in range(2)]):
-            sets1, points1 = MatchBet.parseScore(self.getLastScore())
-            sets2, points2 = MatchBet.parseScore(matchBet.getLastScore())
+            sets1, points1, _ = MatchBet.parseScore(self.getLastScore())
+            sets2, points2, _ = MatchBet.parseScore(matchBet.getLastScore())
             if sets1[0] <= sets2[0] and sets1[1] <= sets2[1]:
                 for i in range(2):
                     for j in range(min(len(points1[i]), len(points2[i])) - 1):
@@ -38,22 +114,56 @@ class MatchBet:
         return False
 
     @staticmethod
-    def parseScore(score):
+    def parseScore(score, isParsed=True, defaultPointsScore=None):
         sets = [0, 0]
         points = [[0], [0]]
-        if score is None:
-            return [sets, points]
-        score = score.replace('*', '')
-        pattern = r"\(([A-Za-z0-9- ]+)\)"
+
+        setsCnt = None
+        if score.find('5сетов') != -1:
+            setsCnt = 3
+        elif score.find('7сетов') != -1:
+            setsCnt = 4
+
+        pattern = r"\(([A-Za-z0-9- \*]+)\)"
+
         pointsScore = re.search(pattern, score)
         if pointsScore is not None:
-            pointsScore = pointsScore.group(0).replace('(', '').replace(')', '').replace(' ', ';').replace('-', ':') + ';'
-            _, points = Match.getPointsScoreInfo(pointsScore)
-        try:
-            sets = [int(e) for e in score.split(' ')[0].split(':')]
-        except:
-            pass
-        return [sets, points]
+            pointsScore = pointsScore.group(0). \
+                              replace('(', ''). \
+                              replace(')', ''). \
+                              replace('*', ''). \
+                              strip(). \
+                              replace(' ', ';'). \
+                              replace('-', ':') + ';'
+            if isParsed is True:
+                _, points = Match.getPointsScoreInfo(pointsScore)
+                if len(points[0]) == 0:
+                    points = [[0], [0]]
+        else:
+            print('BAD SCORE', score)
+            pointsScore = defaultPointsScore
+        setsScore = ' '.join(score.split()).split(' ')[0].replace('5сетов', '').replace('7сетов', '')
+
+        if isParsed is True:
+            try:
+                sets = [int(e) for e in setsScore.split(' ')[0].split(':')]
+            except:
+                pass
+            return sets, points, setsCnt
+
+        return setsScore, pointsScore, setsCnt
+
+    @staticmethod
+    def isFinalScore(score):
+        if score is None:
+            return False
+
+        setsScore, pointsScore, setsCnt = MatchBet.parseScore(score, isParsed=False)
+
+        if Match.checkSetsScore(setsScore, setsCnt=setsCnt) is False:
+            return False
+        return True
+
 
     def toDict(self):
         res = dict()
@@ -71,9 +181,6 @@ class MatchBet:
 
     def getLastScore(self):
         lastMatchInd = len(self.eventsInfo) - 1
-        #print(self.eventsInfo)
-        #print(self.eventsInfo[lastMatchInd])
-        #print()
         while 'match' not in self.eventsInfo[lastMatchInd][1]:
             try:
                 if 'match' in self.eventsInfo[lastMatchInd][1][0]:
@@ -96,7 +203,7 @@ class MatchBet:
         self.ids = [tokens[4].split(';'), tokens[5].split(';')]
         self.eventsInfo = json.loads(tokens[6])
 
-    def merge(self, matchBet):
+    def merge(self, matchBet, isSplitEvent=False):
         if self.compName != matchBet.compName:
             print(self.compName, matchBet.compName)
 #            raise
@@ -124,77 +231,20 @@ class MatchBet:
 #                raise
             self.names = matchBet.names
         if self.dt < matchBet.dt:
-            #self.ts = self.ts + matchBet.ts
-            self.eventsInfo = self.eventsInfo + matchBet.eventsInfo
+            splitEvent = [[matchBet.eventsInfo[0][0], {}]] if isSplitEvent is True else []
+            self.eventsInfo = self.eventsInfo + \
+                              splitEvent + \
+                              matchBet.eventsInfo
         else:
             self.dt = matchBet.dt
-            #self.ts = matchBet.ts + self.ts
-            self.eventsInfo = matchBet.eventsInfo + self.eventsInfo
+            splitEvent = [[self.eventsInfo[0][0], {}]] if isSplitEvent is True else []
+            self.eventsInfo = matchBet.eventsInfo + \
+                              splitEvent + \
+                              self.eventsInfo
         return self
 
 
-class Competition:
-    def __init__(self, id, name):
-        self.id = id
-        self.name = name
-        self.matches = []
-        self.startDate = None
-        self.finishDate = None
-        self.playersSet = set()
-        self.sources = []
-
-    def addMatch(self, match):
-        self.matches.append(match)
-
-        for i in range(2):
-            for e in match.ids[i]:
-                self.playersSet.add(e)
-        for e in match.sources:
-            if not (e in self.sources):
-                self.sources.append(e)
-
-        if self.startDate is None:
-            self.startDate = match.date
-        else:
-            self.startDate = min(self.startDate, match.date)
-        if self.finishDate is None:
-            self.finishDate = match.date
-        else:
-            self.finishDate = min(self.finishDate, match.date)
-
-class Player:
-    def __init__(self, id, names, mw):
-        self.id = id
-        self.names = names
-        self.name = names[0]
-        self.mw = mw
-        self.matches = list()
-        self.hrefs = dict()
-
-    def findString(self, s):
-        for name in self.names:
-            if name.lower().find(s.lower()) != -1:
-                return True
-        return False
-
-    def addHref(self, source, href):
-        self.hrefs[source] = href
-
-
 class Match:
-    '''
-    def __init__(self, date, isPair, players, wins, sets, setsScore, time = '12:00', points = [-1, -1], pointsScore = ''):
-        self.date = date
-        self.time = time
-        self.isPair = isPair
-        self.players = players
-        self.wins = wins
-        self.sets = sets
-        self.setsScore = setsScore
-        self.points = points
-        self.pointsScore = pointsScore
-    '''
-
     def __init__(self, date, ids, names=None, matchId=None, winsScore=None, setsScore=None, pointsScore=None,
                  time=None, isPair=None, compName=None, source=None, round=None):
         self.date = date
@@ -258,11 +308,7 @@ class Match:
             self.sources.append(source)
 
     def getMW(self):
-        fl_mw = ''
-        for e in self.ids[0] + self.ids[1]:
-            fl_mw += e[0]
-        fl_mw = ''.join(sorted(set(list(fl_mw))))
-        return fl_mw
+        return ''.join(sorted(self.ids[0][0][:1] + self.ids[1][0][:1]))
 
     def getHash(self):
         if self.sets is None:
@@ -270,10 +316,9 @@ class Match:
         else:
             sets = self.sets
         return calcHash([self.date] +
-                        [e1 if e1 != '' else e2 for e1, e2 in zip(self.ids[0], self.names[0])] +
-                        [e1 if e1 != '' else e2 for e1, e2 in zip(self.ids[1], self.names[1])] +
-                        sets + [e * i for i, e in enumerate(Match.getSetSumPoints(self.points))])
-        #return calcHash([self.date, self.round] + self.players[0] + self.players[1] + sets + [e * i for i,e in enumerate(Match.getSetSumPoints(self.points))])
+                        [e1 if e1 not in {'', '?', '-'} else e2 for e1, e2 in zip(self.ids[0], self.names[0])] +
+                        [e1 if e1 not in {'', '?', '-'} else e2 for e1, e2 in zip(self.ids[1], self.names[1])] +
+                        sets + [e * (i + 1) for i, e in enumerate(Match.getSetSumPoints(self.points))])
 
     def reverse(self):
         matchReversed = Match(self.date, [self.ids[1].copy(), self.ids[0].copy()],
@@ -300,6 +345,7 @@ class Match:
         res = dict()
         res['hash'] = self.hash
         res['date'] = self.date
+        res['time'] = self.time
         res['ids'] = [e.copy() for e in self.ids]
         res['names'] = [e.copy() for e in self.names]
         res['setsScore'] = self.setsScore
@@ -372,10 +418,13 @@ class Match:
         return str(set2) + ':' + str(set1)
 
     @staticmethod
-    def checkSetsScore(score):
-        res = score in {'3:0', '3:1', '3:2', '2:3', '1:3', '0:3',
-                        '4:0', '4:1', '4:2', '4:3', '3:4', '2:4', '1:4', '0:4'}
-        return res
+    def checkSetsScore(score, setsCnt=None):
+        sets3 = {'3:0', '3:1', '3:2', '2:3', '1:3', '0:3'}
+        sets4 = {'4:0', '4:1', '4:2', '4:3', '3:4', '2:4', '1:4', '0:4'}
+        #print(score, setsCnt)
+        return (setsCnt == 3 and score in sets3) or \
+               (setsCnt == 4 and score in sets4) or \
+               (setsCnt is None and score in (sets3 | sets4))
 
     @staticmethod
     def getSetSumPoints(points):
@@ -392,3 +441,50 @@ class Match:
         return sum(self.points[0]) + sum(self.points[1])
 
 
+class Player:
+    def __init__(self, id, names, mw):
+        self.id = id
+        self.names = names
+        self.name = names[0]
+        self.mw = mw
+        self.matches = list()
+        self.hrefs = dict()
+
+    def findString(self, s):
+        for name in self.names:
+            if name.lower().find(s.lower()) != -1:
+                return True
+        return False
+
+    def addHref(self, source, href):
+        self.hrefs[source] = href
+
+
+class Competition:
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
+        self.matches = []
+        self.startDate = None
+        self.finishDate = None
+        self.playersSet = set()
+        self.sources = []
+
+    def addMatch(self, match):
+        self.matches.append(match)
+
+        for i in range(2):
+            for e in match.ids[i]:
+                self.playersSet.add(e)
+        for e in match.sources:
+            if not (e in self.sources):
+                self.sources.append(e)
+
+        if self.startDate is None:
+            self.startDate = match.date
+        else:
+            self.startDate = min(self.startDate, match.date)
+        if self.finishDate is None:
+            self.finishDate = match.date
+        else:
+            self.finishDate = min(self.finishDate, match.date)
