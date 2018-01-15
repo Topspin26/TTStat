@@ -1499,7 +1499,7 @@ m1510	BUTLER Jim
 m1511	Floritz Philipp;Филипп Флориц
 m1512	ADEDEJI Kayode
 m1513	TAO Feng
-m1514	Самюэль Калужны;Kaluzny Samuel;Самюэль Калюжны
+m1514	Самюэль Калужны;Kaluzny Samuel;Самюэль Калюжны;Самюэль Калюжный;Самюэль Калужный
 m1515	CHEN Peng
 m1516	Peng Wang-Wei;Ван-Вэй Пэн
 m1517	CALVO Allan
@@ -1645,7 +1645,7 @@ m1657	LEIS Patrick
 m1658	Кохеи Самбе;Sambe Kohei
 m1659	PLOHL Zvonko
 m1660	MAKANAY Ayman
-m1661	Apolonia Tiago;Тиаго Аполония
+m1661	Apolonia Tiago;Тиаго Аполония;Тиаго Аполонья
 m1662	CHOO Sim Guan
 m1663	CROTTI Mattia
 m1664	Патрик Затовка;Zatowka Patryk
@@ -1655,7 +1655,7 @@ m1668	Филипп Шиманский;Szymanski Filip
 m1669	Кристиан Карлссон;Karlsson Kristian;Кристиан Карлсон
 m1670	CHUANG Chun-Yu
 m1671	EVANS Gavin
-m1672	Бастиан Штегер;Steger Bastian
+m1672	Бастиан Штегер;Steger Bastian;Бастиан Штайгер
 m1673	Pletea Cristian;Кристиан Плетя;Кристиан Плетеа
 m1674	MANTUROV Sergei
 m1675	IBRAHIM Muhd Shakirin
@@ -2325,7 +2325,7 @@ m2341	Томо Миядзаки;Miyazaki Tomo
 m2342	Антон Тачалов;TACHALOV Anton
 m2343	QIAN Cheng
 m2344	Park Chan-Hyeok;Пак Чан Хек
-m2345	Хьюго Кальдерано;Calderano Hugo
+m2345	Хьюго Кальдерано;Calderano Hugo;Уго Кальдерано
 m2346	SUAREZ Dino
 m2347	HU Bingtao
 m2348	Schmid Elia;Элия Шмид

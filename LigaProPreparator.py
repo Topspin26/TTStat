@@ -20,6 +20,14 @@ class LigaProPreparator:
         LigaProPreparator.makePlayer2Id(logger, matches)
         player2id, id2player = readPlayer2Id('data/liga_pro/player2id.txt')
 
+        ids = set()
+        for k, v in player2id.items():
+            for e in v:
+                if e in ids:
+                    logger.print('multiple players for id', k, v)
+#                    raise
+                ids.add(e)
+
         idLinks = dict()
         idLinks['2'] = 'm249'
         idLinks['3'] = 'm434'
@@ -79,6 +87,9 @@ class LigaProPreparator:
         idLinks['652'] = 'm521'
         idLinks['665'] = 'w11'
 
+        idLinks['640'] = 'm262'
+        idLinks['778'] = 'm243'
+
         #enrich and check idLinks
         for player, playerId in sorted(player2id.items(), key=lambda x: x[0]):
             idLinked = list(set([idLinks.get(playerId[i]) for i in range(len(playerId)) if playerId[i] in idLinks]))
@@ -105,8 +116,9 @@ class LigaProPreparator:
                     idLinked = idLinks[playerId[-1]]
                     ids = playersDict.getId(player)
                     if idLinked not in ids:
-                        logger.print('strange id in links', player, playerId, idLinked, ids)
-                        raise
+                        if idLinked != 'm243': #Кисилев Максим
+                            logger.print('strange id in links', player, playerId, idLinked, ids)
+                            raise
                     logger.print('solved player', player, playerId, idLinked, playersDict.getNames(idLinked))
                     fout.write('\t'.join([idLinked, player, 'http://tt-liga.pro/players/' + playerId[-1]]) + '\n')
                 else:
@@ -138,48 +150,56 @@ class LigaProPreparator:
         badPlayers = set()
 
         with open('prepared_data/liga_pro/all_results.txt', 'w', encoding='utf-8') as fout:
-            fout.write('date\ttime\tcompName\tid1\tid2\t')
-            fout.write('setsScore\tpointsScore\tname1\tname2\tround\n')
+            fout.write('\t'.join(['date', 'time', 'compName', 'id1', 'id2']) + '\t')
+            fout.write('\t'.join(['setsScore', 'pointsScore', 'round', 'name1', 'name2']) + '\n')
             for match in sorted(matches, key=lambda x: x.date + ' ' + x.time):
-                if match.flError == 0:
-                    flError = 0
-                    ids = [[], []]
-                    for i in range(2):
-                        for player in match.names[i]:
-                            playerName, playerId = player.split(';')
-                            if playerId in idLinks:
-                                id = [idLinks[playerId]]
-                                usedLinks.add(playerId)
-                            else:
-                                id = playersDict.getId(playerName)
-                            if len(id) == 1:
-                                ids[i].append(id[0])
-                            else:
-                                logger.print(playerName, playerId, id)
-                                if match.compName.find('Кубок баттерфляя') == -1:
-                                    badPlayers.add('\t'.join([str(e) for e in [playerName, playerId, id]]))
-                                flError = 1
-                    if flError == 0 and len(ids[0]) > 0 and len(ids[1]) > 0:
-                        if match.hash in matchesDict and match.round in [e.round for e in matchesDict[match.hash]]:
-                            for m in matchesDict[match.hash]:
-                                logger.print('HASHES', m.toArr(round=True))
-                            logger.print('HASHES', match.toArr(round=True))
-                        else:
-                            if match.hash not in matchesDict:
-                                matchesDict[match.hash] = []
-                            matchesDict[match.hash].append(match)
+                if match.flError == 1:
+                    logger.print('match.flError ' + match.toStr())
 
-                            resTokens = match.toArr(round=True)
-                            resTokens.append(resTokens[3].split(';')[0])
-                            resTokens.append(resTokens[4].split(';')[0])
-                            resTokens[3] = ';'.join(ids[0])
-                            resTokens[4] = ';'.join(ids[1])
-                            fout.write('\t'.join(resTokens) + '\n')
-                    else:
+                flError = 0
+                ids = [[], []]
+                for i in range(2):
+                    for player in match.names[i]:
+                        playerName, playerId = player.split(';')
+                        if playerId in idLinks:
+                            id = [idLinks[playerId]]
+                            usedLinks.add(playerId)
+                        else:
+                            id = playersDict.getId(playerName)
+                        if len(id) == 1:
+                            ids[i].append(id[0])
+                        else:
+                            logger.print(playerName, playerId, id)
+                            if match.compName.find('Кубок баттерфляя') == -1:
+                                badPlayers.add('\t'.join([str(e) for e in [playerName, playerId, id]]))
+                            flError = 1
+                            if len(id) == 0:
+                                ids[i].append('-')
+                            else:
+                                ids[i].append('?')
+
+                if len(ids[0]) > 0 and len(ids[1]) > 0:
+                    if flError == 1:
                         if match.compName.find('Кубок баттерфляя') == -1:
                             logger.print('flError ' + match.toStr())
+                    if match.hash in matchesDict and match.round in [e.round for e in matchesDict[match.hash]]:
+                        for m in matchesDict[match.hash]:
+                            logger.print('HASHES', m.toArr(round=True))
+                        logger.print('HASHES', match.toArr(round=True))
+                    else:
+                        if match.hash not in matchesDict:
+                            matchesDict[match.hash] = []
+                        matchesDict[match.hash].append(match)
+
+                        resTokens = match.toArr(round=True)
+                        resTokens.append(resTokens[3].split(';')[0])
+                        resTokens.append(resTokens[4].split(';')[0])
+                        resTokens[3] = ';'.join(ids[0])
+                        resTokens[4] = ';'.join(ids[1])
+                        fout.write('\t'.join(resTokens) + '\n')
                 else:
-                    logger.print('match.flError ' + match.toStr())
+                    if match.compName.find('Кубок баттерфляя') == -1:
+                        logger.print('flError len(ids) ' + match.toStr())
 
         for e in badPlayers:
             logger.print('bad players', e)
@@ -266,6 +286,12 @@ class LigaProPreparator:
                                 setsScore = '1:3'
                                 pointsScore = '4:11;11:9;7:11;13:15'
                                 print(tokens, setsScore, pointsScore)
+
+                        if compName == 'Лига-Про (Премьер-(муж) 2 тур), 2017-12-27' or \
+                           compName.find('(Первенство России. Муж. Молодежный чемпионат до 22 лет. Команды), 2017-12') != -1:
+                            for i in range(2):
+                                names[i][0] = names[i][0].replace('Кисилев', 'Киселев')
+#                            print(names)
 
                         match = Match(matchDate,
                                       names,

@@ -30,7 +30,8 @@ class LigaProChecker:
         for match in matchesStorage.matches:
             for i in range(2):
                 for e in match.ids[i]:
-                    players[e].matches.append(match)
+                    if e not in {'-', '?'}:
+                        players[e].matches.append(match)
 
         rankingSources = list()
         rankingSources.append(['rttf', dirname + '/prepared_data/rttf/ranking_rttf.txt'])
