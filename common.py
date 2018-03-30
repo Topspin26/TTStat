@@ -1,12 +1,22 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 import time
 import hashlib
+import random
 
 
-def initDriver(url, sleepTime=0, port=5938):
-    driver = webdriver.Chrome('chromedriver_win32/chromedriver', port=port)
+def initDriver(url, driver=None, sleepTime=0, is_random=1, port=5938, chrome_options=None):
+    chrome_options = chrome_options or Options()
+
+    if driver:
+        try:
+            driver.quit()
+        except:
+            pass
+
+    driver = webdriver.Chrome('chromedriver_win32/chromedriver', port=port, chrome_options=chrome_options)
     driver.get(url)
-    time.sleep(sleepTime)
+    time.sleep(sleepTime + is_random * random.random())
     return driver
 
 

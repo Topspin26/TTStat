@@ -1,7 +1,3 @@
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.chrome.options import Options
-
 import time
 from datetime import datetime
 import random
@@ -9,25 +5,10 @@ import re
 import os
 from subprocess import Popen
 import psycopg2
-
-from BKFonLiveParser import *
 import json
 
-import config as config
-
-chrome_options = Options()
-
-
-def initDriver(url, driver):
-    if driver:
-        try:
-            driver.quit()
-        except:
-            pass
-    driver = webdriver.Chrome('chromedriver_win32/chromedriver', chrome_options=chrome_options)
-    driver.get(url)
-    time.sleep(5 + random.random())
-    return driver
+from BKFonLiveParser import *
+from common import initDriver
 
 
 class BKFonLiveScraper:
@@ -153,6 +134,7 @@ class BKFonFileWriter:
             except:
                 pass
 
+
 class BKFonDBWriter:
     def __init__(self, con, table):
         self.con = con
@@ -210,7 +192,7 @@ class BKFonScraperEngine:
         self.equal_cnt_threshold = 16
 
     def run(self):
-        self.driver = initDriver(self.url, self.driver)
+        self.driver = initDriver(self.url, driver=self.driver, sleepTime=5, is_random=1)
 
         k = 0
         k_error = -1
@@ -226,7 +208,7 @@ class BKFonScraperEngine:
             timeout = self.passive_timeout
 
             if equal_cnt == self.equal_cnt_threshold:
-                self.driver = initDriver(self.url, self.driver)
+                self.driver = initDriver(self.url, driver=self.driver, sleepTime=5, is_random=1)
                 equal_cnt = 0
 
             cur_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -252,7 +234,7 @@ class BKFonScraperEngine:
                 k_error = k
 
                 try:
-                    self.driver = initDriver(self.url, self.driver)
+                    self.driver = initDriver(self.url, driver=self.driver, sleepTime=5, is_random=1)
                 except:
                     pass
 
