@@ -51,6 +51,8 @@ def main():
                 for filename in sorted(f[2]):
                     if filename.find('parsed_filenames') != -1:
                         continue
+                    if filename.find('_last') != -1:
+                        continue
                     with open('data/bkfon/live_parsed_new2/' + dirname + '/' + filename, encoding='utf-8') as fin:
                         for line in fin:
                             tokens = line.rstrip('\n').split('\t')

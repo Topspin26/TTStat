@@ -30,7 +30,6 @@ def parseDirs(segments, segments1):
                         segmentFilenames[segment].append([fp, 'new'])
                         fl = 1
                         break
-            '''
             if fl == 0:
                 segment = ff[:-4]
                 if segment not in segmentFilenames:
@@ -39,7 +38,6 @@ def parseDirs(segments, segments1):
                     segmentFilenames[segment].append([fp, 'old'])
                 else:
                     segmentFilenames[segment].append([fp, 'new'])
-            '''
 
     for segment, filenames in sorted(segmentFilenames.items(), key=lambda x: -len(x[1])):
         print(segment, len(filenames), filenames)
@@ -100,8 +98,8 @@ def parseDirs(segments, segments1):
                 if matchDate not in dateOutput:
                     dateOutput[matchDate] = []
                 dateOutput[matchDate].append('\t'.join([match.eventId, match.dt, match.compName,
-                                              ';'.join(match.names[0]), ';'.join(match.names[1]),
-                                              json.dumps(match.eventsInfo, ensure_ascii=False, sort_keys=True)]) + '\n')
+                                             ';'.join(match.names[0]), ';'.join(match.names[1]),
+                                             json.dumps(match.eventsInfo, ensure_ascii=False, sort_keys=True)]) + '\n')
                 print([match.eventId, match.dt, match.compName, match.names, match.eventsInfo[0]])
                 print([match.eventId, match.dt, match.compName, match.names, match.eventsInfo[-1]])
 
@@ -115,7 +113,7 @@ def parseDirs(segments, segments1):
             # clean bets
             betsStorage.bets = dict()
 
-        rows = list(betsStorage.liveBets.items())
+        rows = list(betsStorage.bets.items()) + list(betsStorage.liveBets.items())
         dateOutput = dict()
         for mKey, match in sorted(rows, key=lambda x: x[1].dt, reverse=0):
             if mKey[0] != 'l':
@@ -133,6 +131,29 @@ def parseDirs(segments, segments1):
             with open(dirname_parsed_segment + '/' + matchDate + '.txt', 'a', encoding='utf-8') as fout:
                 for s in outputList:
                     fout.write(s)
+
+
+def my_debug():
+    parser = BKFonLiveParserNew()
+    betsStorage = BetsStorage()
+    fname = r'C:\Programming\SportPrognoseSystem\TTStat\data\bkfon\live\2017-09-17\Наст. теннис. TT-CUP. Украина.txt'
+    lastTime = None
+    block = []
+    with open(fname, 'r', encoding='utf-8') as fin:
+        for line in fin:
+            tokens = line.split('\t')
+            if len(tokens) == 1:
+                tokens = ['', tokens[0]]
+            curTime = tokens[0]
+            if curTime != lastTime and lastTime is not None:
+                if curTime == '2017-09-17 11:06:59':
+                    print(curTime)
+                betsStorage.update(parser.addLineBlock(lastTime, block))
+                block = []
+            block.append(tokens[1])
+            lastTime = curTime
+        if lastTime is not None:
+            betsStorage.update(parser.addLineBlock(lastTime, block))
 
 
 def main():
@@ -164,7 +185,7 @@ def main():
     segments1['kchr'] = 'Континентальный чемпионат России'
     segments1['rus'] = 'Первенство России'
 
-    #parseDirs(dict(), {'liga_pro_women': 'Наст. теннис. Жен. Лига Про. Москва.txt'})
+    #parseDirs(dict(), {'liga_pro_men': 'Наст. теннис. Лига Про. Москва.txt'})
     parseDirs(segments, segments1)
 
 if __name__ == "__main__":

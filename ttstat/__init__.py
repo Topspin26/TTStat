@@ -17,9 +17,12 @@ ttModel.setPredictionMachine(predictionMachine)
 
 ttPresenter = Presenter(ttModel)
 
-db = psycopg2.connect("dbname='{}' user='{}' password='{}'".format(ttstat.config.get('DB_NAME'),
-                                                                   ttstat.config.get('DB_USER'),
-                                                                   ttstat.config.get('DB_PASSWORD')))
+db = psycopg2.connect(
+    host=ttstat.config.get('DB_HOST'),
+    dbname=ttstat.config.get('DB_NAME'),
+    user=ttstat.config.get('DB_USER'),
+    password=ttstat.config.get('DB_PASSWORD')
+)
 
 from ttstat import views
 

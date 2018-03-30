@@ -6,14 +6,16 @@ import os
 from os import walk
 import re
 
+
 class BKFonLiveParserNew:
-    def __init__(self, maxCnt=-1):
+    def __init__(self, maxCnt=-1, sport='3088'):
         self.matches = []
         self.matchesDict = dict()
         self.lastEventId = None
         self.lastUpdate = dict()
 #        self.counter = 0
         self.maxCnt = maxCnt
+        self.sport = sport
 
     def addLineBlock(self, dt, lines):
         matchesDict = dict()
@@ -29,7 +31,7 @@ class BKFonLiveParserNew:
             line = re.sub(r'\<\!--[^>]*--\>', '', line)
             tr = html.fromstring(line)
             cl = tr.get('class')
-            if cl.find('table__row _type_segment _sport_3088') != -1:
+            if cl.find('table__row _type_segment _sport_{}'.format(self.sport)) != -1:
                 trSegmentS = line
                 lastEventId = None
             else:
@@ -79,7 +81,7 @@ class BKFonLiveParserNew:
             line = rows[i]
             line = line.replace(' _type-active', '')
             tr = html.fromstring(line)
-            if tr.get('class').find('table__row _type_segment _sport_3088') != -1:
+            if tr.get('class').find('table__row _type_segment _sport_{}'.format(self.sport)) != -1:
                 if compName is None:
                     compName = line.split('"table__title-text"')[1].split('>')[1].split('<')[0]
                 continue
@@ -137,25 +139,25 @@ class BKFonLiveParserNew:
 
             tds = tr.xpath('//td')
             columns = ['', '', 'win1', 'win2', 'fora1', 'win_f1', 'fora2', 'win_f2', 'total', 'total_g', 'total_l']
-            for i in [2, 3]:
-                fl = (tds[i].get('class').find('blocked') == -1)
-                if not (tds[i].text is None):
-                    events[name][columns[i]] = [float(tds[i].text), 1 if fl else -1]
+            for j in [2, 3]:
+                fl = (tds[j].get('class').find('blocked') == -1)
+                if not (tds[j].text is None):
+                    events[name][columns[j]] = [float(tds[j].text), 1 if fl else -1]
                 else:
-                    events[name][columns[i]] = [0, -1]
-            for i in [5, 7]:
-                fl = (tds[i].get('class').find('blocked') == -1)
-                if not (tds[i].text is None):
-                    events[name][columns[i]] = \
-                        [float(tds[i - 1].text.replace('+', '')), float(tds[i].text), 1 if fl else -1]
-                else:
-                    events[name][columns[i]] = [0, 0, -1]
-            for i in [9, 10]:
-                fl = (tds[i].get('class').find('blocked') == -1)
-                if not (tds[i].text is None):
-                    events[name][columns[i]] = [float(tds[8].text), float(tds[i].text), 1 if fl else -1]
+                    events[name][columns[j]] = [0, -1]
+            for j in [5, 7]:
+                fl = (tds[j].get('class').find('blocked') == -1)
+                if not (tds[j].text is None):
+                    events[name][columns[j]] = \
+                        [float(tds[j - 1].text.replace('+', '')), float(tds[j].text), 1 if fl else -1]
                 else:
                     events[name][columns[i]] = [0, 0, -1]
+            for j in [9, 10]:
+                fl = (tds[j].get('class').find('blocked') == -1)
+                if tds[j].text is not None and tds[8].text is not None:
+                    events[name][columns[j]] = [float(tds[8].text), float(tds[j].text), 1 if fl else -1]
+                else:
+                    events[name][columns[j]] = [0, 0, -1]
 
         eventsInfo = events.copy()
         try:
