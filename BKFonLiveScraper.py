@@ -91,7 +91,7 @@ class BKFonLiveScraper:
                 driver.find_element_by_xpath(
                     '''
                     //div[@class="events__filter _type_sport _state_expanded"]
-                    //div[@class="events__filter-text"]
+                    //div[@class="events__filter-text _type_indent"]
                     '''
                 ).click()
                 print('no table-tennis')
@@ -219,6 +219,7 @@ class BKFonScraperEngine:
                 timeout = self.active_timeout
 
             if exc:
+                # raise
                 events_data.append(['error', 'error2\n' + str(exc)])
                 print('error2')
                 print(str(exc))

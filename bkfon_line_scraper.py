@@ -26,8 +26,8 @@ def main():
             file_writer=file_writer,
             sport='3088',
             db_writer=db_writer,
-            active_timeout=15 * 60,
-            passive_timeout=15 * 60
+            active_timeout=5 * 60,
+            passive_timeout=5 * 60
         )
         scraper_engine.run()
 
