@@ -17,7 +17,7 @@ class Driver:
             chrome_options = ChromeOptions()
             for e in self.options:
                 chrome_options.add_argument(e)
-            self.driver = webdriver.Chrome('chromedriver_win32_old/chromedriver',
+            self.driver = webdriver.Chrome('chromedriver_win32/chromedriver',
                                            chrome_options=chrome_options)
         elif self.driver_name == 'firefox':
             firefox_options = FirefoxOptions()
@@ -27,8 +27,9 @@ class Driver:
                                             options=firefox_options)
 
     def run(self, url, sleep_time=0, is_random=1):
-        self.quit()
-        self.start()
+        if self.driver is None:
+            self.start()
+        self.driver.refresh()
         self.driver.get(url)
         time.sleep(sleep_time + is_random * random.random())
 

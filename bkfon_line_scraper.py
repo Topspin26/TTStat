@@ -23,7 +23,7 @@ def main():
         file_writer = BKFonFileWriter('data_fonbet_line')
         db_writer = BKFonDBWriter(con, 'fonbet_line')
 
-        driver = Driver('firefox')
+        driver = Driver('chrome')
 
         scraper_engine = BKFonScraperEngine(
             'https://www.fonbet.ru/#/bets',
