@@ -8,7 +8,7 @@ import psycopg2
 import json
 
 from BKFonLiveParser import *
-from common import initDriver
+from driver import Driver
 
 
 class BKFonLiveScraper:
@@ -177,22 +177,25 @@ class BKFonDBWriter:
 
 class BKFonScraperEngine:
     def __init__(self, url,
+                 driver: Driver,
                  file_writer: BKFonFileWriter=None,
                  db_writer: BKFonDBWriter=None,
                  sport='3088',
-                 active_timeout=5, passive_timeout=60):
+                 active_timeout=5, passive_timeout=60,
+                 driver_name='Chrome'):
         self.url = url
         self.file_writer = file_writer
         self.sport = sport
         self.db_writer = db_writer
-        self.driver = None
+        self.driver = driver
+        self.driver_name = driver_name
 
         self.active_timeout = active_timeout
         self.passive_timeout = passive_timeout
         self.equal_cnt_threshold = 16
 
     def run(self):
-        self.driver = initDriver(self.url, driver=self.driver, sleepTime=5, is_random=1)
+        self.driver.run(self.url, sleep_time=5, is_random=1)
 
         k = 0
         k_error = -1
@@ -208,12 +211,12 @@ class BKFonScraperEngine:
             timeout = self.passive_timeout
 
             if equal_cnt == self.equal_cnt_threshold:
-                self.driver = initDriver(self.url, driver=self.driver, sleepTime=5, is_random=1)
+                self.driver.run(self.url, sleep_time=5, is_random=1)
                 equal_cnt = 0
 
             cur_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-            events_data, exc = BKFonLiveScraper.scrap(self.driver, sport=self.sport)
+            events_data, exc = BKFonLiveScraper.scrap(self.driver.driver, sport=self.sport)
 
             if len(events_data) > 0:
                 timeout = self.active_timeout
@@ -234,9 +237,13 @@ class BKFonScraperEngine:
                     error_cnt = 0
                 k_error = k
 
+                print('driver1')
                 try:
-                    self.driver = initDriver(self.url, driver=self.driver, sleepTime=5, is_random=1)
-                except:
+                    print('driver2')
+                    self.driver.run(self.url, sleep_time=5, is_random=1)
+                except Exception as eee:
+                    print('EXC')
+                    print(eee)
                     pass
 
             if '\t'.join([e[1] for e in events_data]) == '\t'.join([e[1] for e in last_events_data]):

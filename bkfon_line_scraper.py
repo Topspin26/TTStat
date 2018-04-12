@@ -5,12 +5,13 @@ from BKFonLiveScraper import (
     BKFonDBWriter,
     BKFonScraperEngine
 )
+from driver import Driver
 
 
 def main():
 
     con = None
-    scraper_engine = None
+    driver = None
     try:
         con = psycopg2.connect(
             host=config.DB_HOST,
@@ -21,11 +22,15 @@ def main():
 
         file_writer = BKFonFileWriter('data_fonbet_line')
         db_writer = BKFonDBWriter(con, 'fonbet_line')
+
+        driver = Driver('firefox')
+
         scraper_engine = BKFonScraperEngine(
             'https://www.fonbet.ru/#/bets',
+            driver=driver,
             file_writer=file_writer,
-            sport='3088',
             db_writer=db_writer,
+            sport='3088',
             active_timeout=5 * 60,
             passive_timeout=5 * 60
         )
@@ -34,8 +39,8 @@ def main():
     finally:
         if con:
             con.close()
-        if scraper_engine.driver:
-            scraper_engine.driver.quit()
+        if driver:
+            driver.quit()
 
 
 if __name__ == "__main__":
