@@ -77,38 +77,55 @@ class BKFonLiveParserNew:
         players = None
         compName = None
         events = dict()
+
         for i in range(len(rows)):
             line = rows[i]
             line = line.replace(' _type-active', '')
+            line = re.sub('" href="#!/live/table-tennis/([/\d])*">', '">', line)
             tr = html.fromstring(line)
-            if tr.get('class').find('table__row _type_segment _sport_{}'.format(self.sport)) != -1:
-                if compName is None:
-                    compName = line.split('"table__title-text"')[1].split('>')[1].split('<')[0]
-                continue
+            try:
+                if tr.get('class').find('table__row _type_segment _sport_{}'.format(self.sport)) != -1:
+                    if compName is None:
+                        compName = line.split('"table__title-text"')[1].split('>')[1].split('<')[0]
+                    continue
+            except Exception as exc:
+                print('prepareMatch compName parse error')
+                raise exc
 
-            trId = line.split('"table__event-number">')[1].split('<')[0].strip()
+            try:
+                trId = line.split('"table__event-number">')[1].split('<')[0].strip()
+            except Exception as exc:
+                print('prepareMatch trId parse error')
+                raise exc
 
-            if tr.getchildren()[0].get('class').find('_indent_2') == -1:
-                # the whole match
-                name = 'match'
-                if players is None:
+            try:
+                # from lxml import etree
+                # for e in tr.getchildren():
+                #     print(etree.tostring(e, pretty_print=True))
+                if tr.getchildren()[0].get('class').find('_indent_2') == -1:
+                    # the whole match
+                    name = 'match'
+                    if players is None:
+                        arr = line.split('"table__match-title-text">')
+                        if len(arr) > 1:
+                            players = line.split('"table__match-title-text">')[1].split('<')[0]
+                        else:
+                            players = line.split('"table__event-number">')[1].split('</span>')[1].split('<')[0].strip()
+                        players = players.split(' — ')  # defis
+                        for j in range(2):
+                            players[j] = players[j].split('/')
+                else:
+                    # certain set
                     arr = line.split('"table__match-title-text">')
                     if len(arr) > 1:
-                        players = line.split('"table__match-title-text">')[1].split('<')[0]
+                        name = line.split('"table__match-title-text">')[1].split('<')[0].strip()
                     else:
-                        players = line.split('"table__event-number">')[1].split('</span>')[1].split('<')[0].strip()
-                    players = players.split(' — ')  # defis
-                    for j in range(2):
-                        players[j] = players[j].split('/')
-            else:
-                # certain set
-                arr = line.split('"table__match-title-text">')
-                if len(arr) > 1:
-                    name = line.split('"table__match-title-text">')[1].split('<')[0].strip()
-                else:
-                    name = line.split('"table__event-number">')[1].split('</span>')[1].split('<')[0].strip()
-                name = name.replace('-й', '').replace('сет', 'set')
-            events[name] = dict()
+                        name = line.split('"table__event-number">')[1].split('</span>')[1].split('<')[0].strip()
+                    name = name.replace('-й', '').replace('сет', 'set')
+                events[name] = dict()
+            except Exception as exc:
+                print('prepareMatch players/name parse error')
+                raise exc
 
             tscore = ''
 

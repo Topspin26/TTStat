@@ -11,6 +11,9 @@ from BKFonLiveParser import *
 from driver import Driver
 
 
+class SportName:
+    names = {'3088': 'Наст. теннис'}
+
 class BKFonLiveScraper:
 
     @staticmethod
@@ -47,7 +50,8 @@ class BKFonLiveScraper:
             tt = None
             try:
                 tt = driver.find_element_by_xpath(
-                    '//span[@class="events__filter-icon icon _type_sport _icon_{}"]'.format(sport)
+                    '//div[contains(@class, "events__filter") and contains(text(), "{}")]' \
+                        .format(SportName.names[sport])
                 )
             except:
                 pass
@@ -63,7 +67,8 @@ class BKFonLiveScraper:
                 print('click')
                 try:
                     tt = driver.find_element_by_xpath(
-                        '//span[@class="events__filter-icon icon _type_sport _icon_{}"]/..'.format(sport)
+                        '//div[contains(@class, "events__filter") and contains(text(), "{}")]' \
+                            .format(SportName.names[sport])
                     )
                     print('find tt')
                     tt.click()
