@@ -81,7 +81,7 @@ class BKFonLiveParserNew:
         for i in range(len(rows)):
             line = rows[i]
             line = line.replace(' _type-active', '')
-            line = re.sub('" href="#!/live/table-tennis/([/\d])*">', '">', line)
+            line = re.sub('" href="#!/(live|bets)/table-tennis/([/\d])*">', '">', line)
             tr = html.fromstring(line)
             try:
                 if tr.get('class').find('table__row _type_segment _sport_{}'.format(self.sport)) != -1:
