@@ -14,6 +14,7 @@ from driver import Driver
 class SportName:
     names = {'3088': 'Наст. теннис'}
 
+
 class BKFonLiveScraper:
 
     @staticmethod
@@ -48,28 +49,20 @@ class BKFonLiveScraper:
         events_data = []
         try:
             tt = None
+            all_events = '''//div[contains(text(), 'Все события')]'''
+            sport_filter = '''//div[contains(text(), '{}')]'''.format(SportName.names[sport])
+
             try:
-                tt = driver.find_element_by_xpath(
-                    '//div[contains(@class, "events__filter") and contains(text(), "{}")]' \
-                        .format(SportName.names[sport])
-                )
+                tt = driver.find_element_by_xpath(sport_filter)
             except:
                 pass
 
             if tt is None:
                 print('try click')
-                driver.find_element_by_xpath(
-                    '''
-                    //div[@class="events__filter _type_sport"]
-                    //div[@class="events__filter-text _type_indent"]
-                    '''
-                ).click()
+                driver.find_element_by_xpath(all_events).click()
                 print('click')
                 try:
-                    tt = driver.find_element_by_xpath(
-                        '//div[contains(@class, "events__filter") and contains(text(), "{}")]' \
-                            .format(SportName.names[sport])
-                    )
+                    tt = driver.find_element_by_xpath(all_events + '/..' + sport_filter)
                     print('find tt')
                     tt.click()
                 except:
@@ -93,12 +86,7 @@ class BKFonLiveScraper:
 
                 events_data = BKFonLiveScraper.parse(sout, sport=sport)
             else:
-                driver.find_element_by_xpath(
-                    '''
-                    //div[@class="events__filter _type_sport _state_expanded"]
-                    //div[@class="events__filter-text _type_indent"]
-                    '''
-                ).click()
+                driver.find_element_by_xpath(all_events).click()
                 print('no table-tennis')
 
         except Exception as e:
