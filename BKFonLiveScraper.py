@@ -12,7 +12,7 @@ from driver import Driver
 
 
 class SportName:
-    names = {'3088': 'Наст. теннис'}
+    names = {'3088': 'Настольный теннис'}
 
 
 class BKFonLiveScraper:
@@ -49,11 +49,12 @@ class BKFonLiveScraper:
         events_data = []
         try:
             tt = None
-            all_events = '''//div[contains(text(), 'Все события')]'''
+            all_events = '''//div//h1[contains(text(), 'Все события')]'''
+            sport_filter_init = '''//div//h1[contains(text(), '{}')]'''.format(SportName.names[sport])
             sport_filter = '''//div[contains(text(), '{}')]'''.format(SportName.names[sport])
 
             try:
-                tt = driver.find_element_by_xpath(sport_filter)
+                tt = driver.find_element_by_xpath(sport_filter_init)
             except:
                 pass
 
@@ -154,6 +155,7 @@ class BKFonDBWriter:
                     info = '\t'.join([';'.join(matchBet.names[0]),
                                       ';'.join(matchBet.names[1]),
                                       json.dumps(matchBet.eventsInfo, ensure_ascii=False)])
+                    info = info.replace("'", '"')
                     if self.con:
                         self.cur.execute(
                             "INSERT INTO {} (datetime,evendId,compname,info) VALUES('{}','{}','{}','{}')".
