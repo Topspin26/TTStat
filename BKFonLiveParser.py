@@ -86,8 +86,7 @@ class BKFonLiveParserNew:
             try:
                 if tr.get('class').find('table__row _type_segment _sport_{}'.format(self.sport)) != -1:
                     if compName is None:
-                        #compName = line.split('"table__title-text"')[1].split('>')[1].split('<')[0]
-                        compName = line.split('<h2 class="table__title-text"')[1].split('>')[1].split('<')[0]
+                        compName = line.split('"table__title-text"')[1].split('>')[1].split('<')[0]
                     continue
             except Exception as exc:
                 print('prepareMatch compName parse error')

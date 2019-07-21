@@ -35,7 +35,8 @@ class BKFonLiveScraper:
                 flLine = 0
                 if sout[ind[0]:ind[1]].find('sport_{}'.format(sport)) != -1:
                     flLine = 1
-                    s = sout[ind[0]:ind[1]].split('<span class="table__title-text"')[1]
+#                    s = sout[ind[0]:ind[1]].split('<span class="table__title-text"')[1]
+                    s = sout[ind[0]:ind[1]].split('<h2 class="table__title-text"')[1]
                     segmentId = s.split('>')[1].split('<')[0]
                     print(segmentId)
             if flLine == 1:
