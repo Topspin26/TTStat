@@ -86,7 +86,8 @@ class BKFonLiveParserNew:
             try:
                 if tr.get('class').find('table__row _type_segment _sport_{}'.format(self.sport)) != -1:
                     if compName is None:
-                        compName = line.split('"table__title-text"')[1].split('>')[1].split('<')[0]
+                        #compName = line.split('"table__title-text"')[1].split('>')[1].split('<')[0]
+                        compName = line.split('<h2 class="table__title-text"')[1].split('>')[1].split('<')[0]
                     continue
             except Exception as exc:
                 print('prepareMatch compName parse error')
@@ -106,9 +107,9 @@ class BKFonLiveParserNew:
                     # the whole match
                     name = 'match'
                     if players is None:
-                        arr = line.split('"table__match-title-text">')
+                        arr = line.split('<h3 class="table__match-title-text">')
                         if len(arr) > 1:
-                            players = line.split('"table__match-title-text">')[1].split('<')[0]
+                            players = arr[1].split('<')[0]
                         else:
                             players = line.split('"table__event-number">')[1].split('</span>')[1].split('<')[0].strip()
                         players = players.split(' — ')  # defis
@@ -116,6 +117,7 @@ class BKFonLiveParserNew:
                             players[j] = players[j].split('/')
                 else:
                     # certain set
+                    line = line.replace(' no_link', '')
                     arr = line.split('"table__match-title-text">')
                     if len(arr) > 1:
                         name = line.split('"table__match-title-text">')[1].split('<')[0].strip()
